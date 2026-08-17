@@ -94,7 +94,7 @@ def estimate_effects(
     factual_outcome: float,
     factual_replicate: int = 0,
     n_rollouts: int = 4000,
-    pin_probes: int = 48,
+    pin_probes: int = 400,
     alpha: float = 0.05,
     seed: int = 0,
 ) -> list[StepAttribution]:

@@ -1,12 +1,12 @@
 {
   "env": {
-    "python": "3.12.3",
-    "numpy": "2.4.4",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
     "seed": 20260813,
     "n_rollouts": 4000,
     "q": 0.9,
     "w": 0.5,
-    "env_hash": "9c043b7372c27cfc"
+    "env_hash": "24f3e9e5e455a1fc"
   },
   "factual": {
     "actions": [
@@ -25,7 +25,7 @@
       "te_crn": 0.0,
       "de": 0.0,
       "me": 0.0,
-      "pin_plausibility": 0.6447482638888888,
+      "pin_plausibility": 0.6351302083333333,
       "change_rate": 0.50075
     },
     {
@@ -35,7 +35,7 @@
       "te_crn": -0.5005,
       "de": -0.25025,
       "me": -0.25025,
-      "pin_plausibility": 0.537109375,
+      "pin_plausibility": 0.495625,
       "change_rate": 0.5005
     },
     {
@@ -45,7 +45,7 @@
       "te_crn": 0.0,
       "de": 0.0,
       "me": 0.0,
-      "pin_plausibility": 0.91015625,
+      "pin_plausibility": 0.901171875,
       "change_rate": 0.497
     },
     {
