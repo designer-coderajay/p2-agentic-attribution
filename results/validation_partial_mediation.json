@@ -1,0 +1,62 @@
+{
+  "env": {
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "seed": 20260813,
+    "n_rollouts": 4000,
+    "q": 0.9,
+    "w": 0.5,
+    "env_hash": "9c043b7372c27cfc"
+  },
+  "factual": {
+    "actions": [
+      0,
+      1,
+      1,
+      1
+    ],
+    "y": 1.0
+  },
+  "steps": [
+    {
+      "step": 0,
+      "kind": "llm_call",
+      "te_marg": -0.50075,
+      "te_crn": 0.0,
+      "de": 0.0,
+      "me": 0.0,
+      "pin_plausibility": 0.6447482638888888,
+      "change_rate": 0.50075
+    },
+    {
+      "step": 1,
+      "kind": "retrieval",
+      "te_marg": -0.50075,
+      "te_crn": -0.5005,
+      "de": -0.25025,
+      "me": -0.25025,
+      "pin_plausibility": 0.537109375,
+      "change_rate": 0.5005
+    },
+    {
+      "step": 2,
+      "kind": "memory_read",
+      "te_marg": -0.04874999999999996,
+      "te_crn": 0.0,
+      "de": 0.0,
+      "me": 0.0,
+      "pin_plausibility": 0.91015625,
+      "change_rate": 0.497
+    },
+    {
+      "step": 3,
+      "kind": "tool_call",
+      "te_marg": -0.04874999999999996,
+      "te_crn": -0.04874999999999996,
+      "de": -0.04874999999999996,
+      "me": 0.0,
+      "pin_plausibility": NaN,
+      "change_rate": 0.0975
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+# P2 Citation Ledger
+
+Append-only. Nothing enters a manuscript until it appears here as VERIFIED with a checked date.
+Status values: VERIFIED (fetched/searched, URL recorded), RECALLED (training only), FALSE (checked, does not exist as stated).
+
+| arXiv / ref | Title | Authors / venue | Status | Checked | Note |
+|---|---|---|---|---|---|
+| 2605.09168 | CIVeX: Causal Intervention Verification for Language Agents | Fabio Rovai, The Tesseract Academy. Submitted 9 May 2026 | VERIFIED | 2026-08-13 | Ex ante action verifier. Cleared as kill-gate threat. |
+| 2607.25364 | Explanation-Bound Tool Execution for AI Agents | Genliang Zhu, Chu Wang (Accentrust / Georgia Tech / UIUC). v1 28 Jul 2026, v2 29 Jul 2026 | VERIFIED | 2026-08-13 | Ex ante mediation layer. Cleared. |
+| 2606.08275 | Causal Agent Replay: Counterfactual Attribution for LLM-Agent Failures | Jaineet Shah, jaineets@andrew.cmu.edu. v1, 06 Jun 2026, cs.LG. No venue listed. | VERIFIED, FULL TEXT READ | 2026-08-13 | Gate A PASSED. No DE arm (sec 7 names it future work). No observability comparison. Mocked tools only, real side effects out of scope. Repo: github.com/jaineet17/causal-agent-replay |
+| 2605.25338 | CausalFlow: Causal Attribution and Counterfactual Repair for LLM Agent Failures | Akash Bonagiri, Devang Borkar, Gerard Janno Anderias, Setareh Rafatirad, Houman Homayoun. v1 25 May 2026, cs.LG/cs.AI | VERIFIED, authors confirmed on arXiv listing | 2026-08-14 | Cleared. Oracle substitution not same-policy resample; CRS is a binary indicator; purpose is repair and training supervision. |
+| 2607.20827 | Auditing Provenance Sensitivity in LLM Agent Action Selection | Junchi Liao. v1 23 Jul 2026, cs.AI | VERIFIED, FULL TEXT READ | 2026-08-14 | Cleared but takes the "correct action need not be grounded in permitted evidence" framing. Static context-factor ablation, no trajectory re-execution, no DE/ME, no observability comparison. MUST be cited in P2 paragraph one. |
+| 2607.24054 | Success Is Not Self-Explanatory: Auditing Success Provenance in Agent Evaluation | Jingkun Luo, Da-Tian Peng. v1 27 Jul 2026, cs.AI, 17pp | VERIFIED (abstract + listing) | 2026-08-14 | AcquaBench, CLEAN/GOLD/SHAM. Benchmark-contamination object, not step attribution. Owns "a correct answer can conceal why an agent succeeded". |
+| 2607.12747 | Tracing Agentic Failure from the Flow of Success (OAT) | not recorded | VERIFIED (abstract) | 2026-08-14 | Unsupervised failure attribution, one-class learning with neural CDEs. Learned not causal. Cite. |
+| 2603.03116 | Beyond Task Completion: Revealing Corrupt Success in LLM Agents through Procedure-Aware Evaluation | Hongliu Cao, Ilias Driouich, Eoin Thomas. 3 Mar 2026 | VERIFIED (abstract) | 2026-08-14 | Reports 27-78% of benchmark successes as corrupt. Adjacent. |
+| 2606.04990 | From Agent Traces to Trust: A Survey of Evidence Tracing and Execution Provenance in LLM Agents | Yiqi Wang (Griffith), Jiaqi Zhang, Zhangkai Wu, Taotao Cai, Zirui Liu, Qingqiang Sun, Zequn Sun, Manqing Dong, Mingkai Zheng, Xuefei Yin, Yanming Zhu. v4, 28 Jun 2026, cs.CR | VERIFIED, FULL TEXT READ | 2026-08-15 | CLEARS P2. Sec 6.3 Table 5 grades execution-provenance metrics as "Proposed": no agreed definitions, no adopted protocols. LOAD-BEARING for paragraph one. Sec 7.1 and 6.4 give the schema basis for WS6. Repo: github.com/xiaoqi-7/Agent-Tracing-Survey |
+| 2602.10133 | AgentTrace: a structured logging framework for agent system observability | AlSayyad, Huang, Pal 2026 | RECALLED via survey bibliography | 2026-08-15 | Candidate source for a real observability attributor (WS3.3). Verify. |
+| 2604.23374 | Ghost in the Agent: redefining information flow tracking for LLM agents | Cai, Tang, Wen, Qin 2026 | RECALLED via survey bibliography | 2026-08-15 | Semantic taint. Verify. |
+| 2510.21236 | Securing AI Agent Execution | Bühler, Biagiola, Di Grazia, Salvaneschi 2025 | RECALLED via survey bibliography | 2026-08-15 | Execution boundaries. Relevant to WS2.6 side-effect containment. |
+| - | Why do multi-agent LLM systems fail? (MAST) | Cemri, Pan, Yang, Agrawal, Chopra, Tiwari, Keutzer, Parameswaran, Klein, Ramchandran et al. NeurIPS 38 | RECALLED via survey bibliography | 2026-08-15 | Verify. |
+| 2504.19413 | Mem0: building production-ready AI agents with scalable long-term memory | Chhikara, Khant, Aryan, Singh, Yadav 2025 | RECALLED via survey bibliography | 2026-08-15 | Memory node type context. |
+| - | W3C PROV-DM; OpenTelemetry; PROV-AGENT; Agent-Sentry; FIDES; NeuroTaint; CaMeL; AgentSpec; AgentBound; TRAIL; LADYBUG; Aegis; AgentOps | various | RECALLED via survey bibliography | 2026-08-15 | Bulk related-work set. Several load-bearing for WS6 Annex IV schema. Verify individually before any enters the bibliography. |
+| 2603.10749 | AttriGuard: defeating indirect prompt injection in LLM agents via causal attribution of tool invocations | He, Zhu, Li, Shao, Yao, Liu, Qin 2026 | RECALLED via Liao bibliography | 2026-08-14 | Verify directly. Likely ex ante guardrail. |
+| 2602.07918 | CausalArmor: efficient indirect prompt injection guardrails via causal attribution | Kim, Parmar, Wallis, Miculicich, Jung, Dvijotham, Le, Pfister 2026 | RECALLED via Liao bibliography | 2026-08-14 | Verify directly. Likely ex ante guardrail. |
+| 2011.09464 / AAAI'18 | Counterfactual credit assignment; COMA | Mesnard et al. ICML 2021; Foerster et al. AAAI 2018 | RECALLED, now seen in TWO independent bibliographies | 2026-08-14 | Still verify directly before citing. |
+| 2606.09692 | Observability for Delegated Execution in Agentic AI Systems | not yet recorded | VERIFIED (exists) | 2026-08-13 | Proves non-identifiability of delegation scope from audit logs. Read before drafting Annex IV spec. |
+| 2505.00212 | Which Agent Causes Task Failures and When? | Zhang et al., ICML 2025. Who&When benchmark | RECALLED | 2026-08-13 | Seen only via citation inside other papers. Verify directly. |
+| 2509.03312 | AgenTracer | not recorded | RECALLED | 2026-08-13 | Seen only via citation. Verify directly. |
+| 2407.08734 | Transformer Circuit Faithfulness Metrics Are Not Robust | COLM 2024 | VERIFIED in P1 | (P1) | Cross-cite for the resample-over-remove argument. |
+| Pearl | *Causality: Models, Reasoning, and Inference*, Cambridge University Press, 2nd edition, 2009 | J. Pearl | VERIFIED-SECONDARY | 2026-08-13 | Appears as ref [9] in 2606.08275's bibliography with these exact details. Matches recollection. Confirm against a library record before final submission, but safe to draft against. |
+| 2509.08682 | Automatic Failure Attribution and Critical Step Prediction via Causal Inference | Y. Ma et al., 2025 | RECALLED | 2026-08-13 | New. Shapley paired with causal discovery over STATIC logs. Read on D2; static-log basis suggests it is not a threat to the intervention arm but may touch the observability arm. |
+| 2011.09464 | Counterfactual Credit Assignment in Model-Free RL | T. Mesnard et al., ICML 2021 | RECALLED | 2026-08-13 | Via CAR ref [4]. The RL ancestor of the single-action counterfactual. |
+| - | Counterfactual Multi-Agent Policy Gradients (COMA) | J. Foerster et al., AAAI 2018 | RECALLED | 2026-08-13 | Via CAR ref [5]. |
+| - | Polynomial calculation of the Shapley value based on sampling | Castro, Gomez, Tejada, *Computers & OR* 36(5):1726-1730, 2009 | RECALLED | 2026-08-13 | Via CAR ref [6]. Use this rather than Lundberg & Lee for the permutation-sampling estimator. |
+| 2102.01685 | Agent Incentives: A Causal Perspective | Everitt, Carey, Langlois, Ortega, Legg, AAAI 2021 | RECALLED | 2026-08-13 | Via CAR ref [7]. Causal influence diagrams. |
+| 2208.08345 | Discovering Agents | Kenton, Kumar, Farquhar, Richens, MacDermott, Everitt, *Artificial Intelligence* 322, 2023 | RECALLED | 2026-08-13 | Via CAR ref [8]. |
+| - | Engineering Record and Replay for Deployability | O'Callahan, Jones, Froyd, Huey, Noll, Partush, USENIX ATC 2017 | RECALLED | 2026-08-13 | Via CAR ref [10]. The record-replay discipline the harness is built on. |
+| - | Defeating Nondeterminism in LLM Inference | Thinking Machines Lab, 2025, thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/ | RECALLED | 2026-08-13 | Via CAR ref [11]. Load-bearing for the replay-floor gate. Fetch directly. |
+| Shapley 1953; Lundberg & Lee | Shapley value; SHAP | - | RECALLED | - | Verify before citing. |
+| Reg (EU) 2024/1689 | Arts. 11, 12, 13, 86; Annex III, Annex IV | Primary text | - | - | Read the regulation, not summaries. Article 86 (right to explanation) added: it is the hook for attributing correct decisions, not only failures. |
+
+## Numbers not to reuse without checking
+- "73.4 SWE-Bench Verified" for a 35B-class MoE: RECALLED from a comparison site. Not a primary model card.
+- "Gemma 3 27B runs on one RTX 4090": RECALLED, same source.
+- "approximately 14 percent step-level attribution accuracy on Who&When": VERIFIED as a claim made in the full text of 2606.08275 (abstract, intro, and related work), NOT verified against 2505.00212 itself. Cite the primary source or cite it as reported.
+- CAR Shapley validation figures (phi_0 = 0.44, phi_1 = 0.45, phi_2 approx 0, efficiency sum 0.909 vs analytic 0.91): VERIFIED from the full text. Synthetic SCM, not a real system.

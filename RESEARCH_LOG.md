@@ -1,0 +1,53 @@
+# P2 Research Log
+
+Append-only. Dated. What was run and what was learned.
+
+## 2026-08-13
+
+**Scope.** Literature and design session. No compute. P1's specification sweep is the owning project this week; this session is reading and writing only, which does not contend for GPU.
+
+**Ran.** Four web searches verifying the P2 kill-gate papers and scanning for prior art on intervention-based agent attribution.
+
+**Learned, and it changes the paper.**
+
+1. arXiv 2605.09168 (CIVeX) and 2607.25364 (EBTE), the two papers the brief named as kill-gate threats, both VERIFIED to exist and both **cleared**. Both are ex ante gatekeepers deciding whether a proposed action should execute. P2 is post hoc attribution over an executed trajectory. Different object.
+
+2. **arXiv 2606.08275, Causal Agent Replay, is the real threat and was absent from the brief.** VERIFIED. It contains an SCM over agent runs, a do-operation with run-forward under the same stochastic policy, an intervention algebra over steps, a Monte Carlo Shapley estimator, confidence intervals throughout, an action-match rate for replay, and the framing that observability answers what happened but not what caused it. That overlaps section 4 of the brief nearly line for line.
+
+3. Also found: 2605.25338 (CausalFlow), 2606.09692 (Observability for Delegated Execution, proves a non-identifiability result about audit logs and delegation scope), and a prior chain via 2505.00212 (Who&When) and 2509.03312 (AgenTracer).
+
+**Consequence.** The flagship rationale in section 1 of the brief does not survive. The intervention algebra and Shapley estimator are prior art. What survives: the measured object is regulated decisions rather than failures, the comparison is a rank-agreement plus bias decomposition rather than a scalar accuracy, the ME/DE decomposition (pending confirmation that CAR has no DE arm), and the Annex IV conversion.
+
+**Written.** `docs/POSITIONING.md`, `docs/P2-RESEARCH-PLAN.md` (revision 2), `docs/CITATION-LEDGER.md`, this log. Two skills created: `p2-research-protocol`, `agentic-intervention-design`.
+
+**Also flagged, not P2's to resolve.** The P3 kill gate was dated 10 August. Its outcome is not recorded in this chat. If it failed, reallocation has already changed P2's calendar.
+
+**Next.** Full read of 2606.08275, priority one, deadline 15 August. The specific question: does it have a direct-effect arm and any observability comparison beyond the single Who&When number. Gate A on 24 August, Ajay re-scores.
+
+**Open for Ajay.** Five decisions listed in `docs/P2-RESEARCH-PLAN.md` section 11.
+
+## 2026-08-13, second entry
+
+**Sprint declared.** Ajay compressed P2 to 13 to 31 August, 15 hours per day, arXiv 31 August. Plan written to `docs/AUGUST-SPRINT.md`. Daily log opened at `docs/DAILY.md`.
+
+Cuts: Stage 3 Shapley dropped (prior art, CAR ships it), third-party framework arm dropped, second system reduced, N set by power simulation rather than the undelivered N >= 300 figure. Kept: DE/ME decomposition, the five attributors, the bias decomposition, pre-registration, Annex IV spec.
+
+Five gates, all moved forward. Gate A is 14 August and it decides whether the remaining 250 hours happen at all.
+
+Flagged to Ajay: P1's 24 to 31 August analysis window collides with this sprint; recommended P1 slips to 1 to 5 September. Also flagged that P2 will now appear on arXiv before P1, inverting the intended reading order.
+
+## 2026-08-13, third entry
+
+**GATE A PASSED, a day early.** Full text of arXiv 2606.08275v1 fetched and read.
+
+Four things confirmed, all VERIFIED from the full text:
+1. Sec 7: isolating a step direct effect "is left as a refinement". No DE arm. H4 and the ME decomposition are open, and named by the authors as future work.
+2. No observability comparison anywhere in the paper beyond the cited Who&When 14 percent figure. H1, H2, H3 untouched.
+3. Sec 7: real tools with side effects are out of scope; demonstrations use mocked, reproducible tools; validation is against synthetic SCMs. The live-BFSI differentiator is conceded in print.
+4. Sec 6: CAR explicitly disclaims novelty on counterfactual replay and Shapley for agent blame. Field commons, not their property.
+
+Six decisions taken and logged at the foot of docs/POSITIONING.md. Most consequential: adopt CAR five-operator algebra (do_resample, do_action, do_observation, do_context, do_policy) rather than the remove/resample/corrupt triple, and add a head-to-head of ME/DE against their point-of-commitment locus rule as a named contribution.
+
+Citation ledger gained nine references harvested from CAR bibliography, including the Pearl reference that was load-bearing and unverified: Causality: Models, Reasoning, and Inference, CUP, 2nd ed, 2009. Marked VERIFIED-SECONDARY pending a library record.
+
+Residual risk: 2605.25338 and 2509.08682 unread. On the D2 calendar.

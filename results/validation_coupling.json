@@ -1,0 +1,72 @@
+{
+  "env": {
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "seed": 20260813,
+    "n_draws": 40000,
+    "vocab": 32,
+    "env_hash": "6e1224b9f63551b9"
+  },
+  "rows": [
+    {
+      "shift": 0.0,
+      "tv": 0.0,
+      "quantile_bound": 0.9999999999999998,
+      "quantile_emp": 1.0,
+      "maximal_bound": 1.0,
+      "maximal_emp": 1.0,
+      "gain": 2.220446049250313e-16,
+      "prob_sorted": 1.0
+    },
+    {
+      "shift": 0.25,
+      "tv": 0.0855609390923308,
+      "quantile_bound": 0.7850901920567604,
+      "quantile_emp": 0.783925,
+      "maximal_bound": 0.9144390609076691,
+      "maximal_emp": 0.914225,
+      "gain": 0.12934886885090868,
+      "prob_sorted": 0.529775
+    },
+    {
+      "shift": 0.5,
+      "tv": 0.17881840525656595,
+      "quantile_bound": 0.412101157491765,
+      "quantile_emp": 0.4087,
+      "maximal_bound": 0.8211815947434341,
+      "maximal_emp": 0.822075,
+      "gain": 0.4090804372516691,
+      "prob_sorted": 0.085775
+    },
+    {
+      "shift": 1.0,
+      "tv": 0.3968596259315442,
+      "quantile_bound": 0.27773934048874244,
+      "quantile_emp": 0.273975,
+      "maximal_bound": 0.6031403740684558,
+      "maximal_emp": 0.60745,
+      "gain": 0.32540103357971334,
+      "prob_sorted": 0.0447
+    },
+    {
+      "shift": 2.0,
+      "tv": 0.4245270101947246,
+      "quantile_bound": 0.30568169398165634,
+      "quantile_emp": 0.30535,
+      "maximal_bound": 0.5754729898052754,
+      "maximal_emp": 0.580125,
+      "gain": 0.26979129582361905,
+      "prob_sorted": 0.165525
+    },
+    {
+      "shift": 4.0,
+      "tv": 0.9368532626388071,
+      "quantile_bound": 0.016703958248045898,
+      "quantile_emp": 0.017675,
+      "maximal_bound": 0.06314673736119292,
+      "maximal_emp": 0.0654,
+      "gain": 0.04644277911314702,
+      "prob_sorted": 0.025175
+    }
+  ]
+}
