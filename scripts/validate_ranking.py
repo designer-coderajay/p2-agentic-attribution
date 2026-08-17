@@ -34,7 +34,7 @@ def make(n_dec, noise, seed, n_steps=N_STEPS):
 def main():
     print("1. Plackett-Luce, correctly specified (Gumbel)")
     d = make(400, "gumbel", SEED)
-    b, se, it = fit_plackett_luce(d, 3)
+    b, se, V, it = fit_plackett_luce(d, 3)
     print(f"   converged in {it} Newton steps")
     for j, nm in enumerate(["causal", "recency", "verbosity"]):
         cov = abs(b[j] - TRUE[j]) <= Z * se[j]
@@ -45,13 +45,13 @@ def main():
     print("\n2. Coverage over 300 sims, 120 decisions each (nominal 0.950)")
     hits = np.zeros(3)
     for s in range(300):
-        bb, ss, _ = fit_plackett_luce(make(120, "gumbel", SEED + 3000 + s), 3)
+        bb, ss, _, _ = fit_plackett_luce(make(120, "gumbel", SEED + 3000 + s), 3)
         hits += (np.abs(bb - TRUE) <= Z * ss)
     print(f"   {np.round(hits/300, 3)}")
     assert (hits / 300).min() >= 0.90, "PL cluster-robust CIs under-cover"
 
     print("\n3. Misspecified (Gaussian latents, as our trace generator uses)")
-    bg, seg, _ = fit_plackett_luce(make(400, "gauss", SEED + 7), 3)
+    bg, seg, _, _ = fit_plackett_luce(make(400, "gauss", SEED + 7), 3)
     scale = bg[0] / TRUE[0]
     print(f"   {'term':>10} {'true':>7} {'est':>7} {'est/scale':>10}")
     for j, nm in enumerate(["causal", "recency", "verbosity"]):

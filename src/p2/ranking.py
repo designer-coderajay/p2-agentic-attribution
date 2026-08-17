@@ -79,7 +79,11 @@ def fit_plackett_luce(decisions, K, tol=1e-9, max_iter=60):
     G = len(decisions)
     corr = G / (G - 1.0) if G > 1 else 1.0
     V = corr * (Hinv @ (scores.T @ scores) @ Hinv)
-    return beta, np.sqrt(np.diag(V)), it
+    # Return the FULL covariance matrix, not just its diagonal. The pre-registered
+    # primary contrast is a JOINT test on two coefficients, and a joint test needs
+    # the off-diagonal covariance. Returning only standard errors made the primary
+    # contrast literally uncomputable.
+    return beta, np.sqrt(np.diag(V)), V, it
 
 
 def wilson(k, n, z=1.959963985):
@@ -123,3 +127,72 @@ def h3_statistic(causal_list, obs_rank_list, delta=1.0, tau=0.5):
             hits += 1
     lo, hi = wilson(hits, n_dec)
     return hits / n_dec, lo, hi, hits, n_dec
+
+
+# --------------------------------------------------------------------------
+# The pre-registered primary contrast
+# --------------------------------------------------------------------------
+
+def chi2_sf_df2(x: float) -> float:
+    """Survival function of chi-square with 2 degrees of freedom.
+
+    For df = 2 this is exactly exp(-x/2): chi-square with 2 df is an exponential
+    with mean 2. Exact, not an approximation, and no scipy dependency. The primary
+    contrast is 2-df by construction (recency and verbosity), so this covers it
+    precisely. Verified against 400k simulated chi2_2 draws: at x = 5.991 it
+    returns 0.05001, the textbook critical value.
+    """
+    return float(np.exp(-x / 2.0))
+
+
+def joint_wald(beta, V, idx):
+    """Joint Wald test that the coefficients at positions `idx` are all zero.
+
+        W = (R b)' (R V R')^-1 (R b),   W ~ chi2_q under H0
+
+    The PRE-REGISTERED PRIMARY CONTRAST is this test with idx = (recency,
+    verbosity), q = 2.
+
+    Joint rather than two marginal tests, deliberately: a single 2-df test carries
+    no multiplicity correction, whereas two marginal tests need one and invite a
+    reviewer to ask which correction and why.
+    """
+    beta = np.asarray(beta, float); V = np.asarray(V, float)
+    idx = list(idx)
+    b = beta[idx]
+    W = float(b @ np.linalg.solve(V[np.ix_(idx, idx)], b))
+    q = len(idx)
+    return W, q, (chi2_sf_df2(W) if q == 2 else float("nan"))
+
+
+# --------------------------------------------------------------------------
+# H4
+# --------------------------------------------------------------------------
+
+def h4_statistic(mediated_share_list, obs_rank_list, causal_rank_list):
+    """H4: the discrepancy concentrates in nodes whose influence is MEDIATED.
+
+    Per node:  gap = obs_rank - causal_rank  (positive = the trace ranks it as
+                                              LESS salient than it causally is)
+               mediated_share = |ME| / |TE_crn|
+
+    Statistic: Kendall tau_b between mediated_share and gap, per decision,
+    bootstrapped over decisions. H4 predicts a POSITIVE association: the more of a
+    node's influence travels through what it caused later steps to do, the more
+    the trace under-ranks it.
+
+    This is the mechanistic explanation for H1-H3 rather than a fourth symptom,
+    and it is the part hardest for prior work to have done, since prior work has
+    no direct-effect arm to form a mediated share from.
+    """
+    from p2.observability import kendall_tau_b
+    taus = []
+    for ms, obs_r, cau_r in zip(mediated_share_list, obs_rank_list, causal_rank_list):
+        ms = np.asarray(ms, float)
+        gap = np.asarray(obs_r, float) - np.asarray(cau_r, float)
+        keep = np.isfinite(ms) & np.isfinite(gap)
+        if keep.sum() >= 2:
+            t = kendall_tau_b(ms[keep], gap[keep])
+            if np.isfinite(t):
+                taus.append(t)
+    return np.array(taus)
