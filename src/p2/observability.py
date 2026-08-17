@@ -2,7 +2,12 @@
 a provider would file says was decisive, versus what intervention shows.
 
 Every attributor must be traceable to a real shipping tool before it enters the
-paper. Provenance strings are UNVERIFIED pending WS3.3, or the attributor is cut.
+paper. WS3.3 audit completed 2026-08-17, see docs/PROVENANCE.md.
+
+RECENCY WAS CUT. No shipping tool was found that ranks trace steps by recency; it
+was an inference about how humans read a trace. It survives only as a COVARIATE in
+the H2 regression, where it is a bias term rather than an attributor and needs no
+tool provenance. H1's tau_b set is therefore three attributors, not four.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -31,14 +36,15 @@ class Attributor:
 
 ATTRIBUTORS = [
     Attributor("span_duration", lambda ss: [s.duration_ms for s in ss],
-               "UNVERIFIED: trace UIs sort spans by latency by default"),
+               "VERIFIED 2026-08-17: Langfuse documents sorting traces by duration to find "
+               "slow queries; OTel GenAI defines an operation-duration histogram"),
     Attributor("token_count", lambda ss: [s.output_tokens for s in ss],
-               "UNVERIFIED: cost dashboards rank by tokens"),
-    Attributor("recency", lambda ss: [s.index for s in ss],
-               "UNVERIFIED: the last step before the outcome is read as the cause"),
+               "VERIFIED 2026-08-17: OTel gen_ai.usage.*_tokens; per-span token accounting "
+               "documented as how an anomalous step becomes visible"),
     Attributor("terminal_action", lambda ss: [1.0 if s.is_terminal else 0.0 for s in ss],
-               "UNVERIFIED: CAR 2606.08275 says the executing step is usually not "
-               "the deciding step; this attributor is that error made explicit"),
+               "VERIFIED 2026-08-17: OTel defines execute_tool as a first-class span type; "
+               "CAR 2606.08275 says the executing step is usually not the deciding "
+               "step. This attributor is that error made explicit."),
 ]
 
 
