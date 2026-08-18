@@ -54,20 +54,39 @@ def pl_negloglik_grad_hess(beta, decisions):
     return nll, grad, H, np.array(scores)
 
 
-def fit_plackett_luce(decisions, K, tol=1e-9, max_iter=60):
-    """Newton with step-halving. Returns (beta, se_cluster, n_iter).
+def fit_plackett_luce(decisions, K, tol=1e-9, max_iter=60, ridge=0.0):
+    """Newton with a step-halving safeguard.
+    Returns (beta, se_cluster, V, n_iter).
 
     No intercept: PL is invariant to adding a constant to every theta within a
-    decision, so an intercept is unidentified. Including one silently produces a
-    singular Hessian, so it is excluded by construction rather than caught later."""
+    decision, so an intercept is not identified. Including one would silently
+    produce a singular Hessian, so it is excluded by construction.
+
+    Returns the FULL covariance matrix, because the pre-registered primary
+    contrast is a JOINT test on two coefficients and needs the off-diagonal.
+
+    `ridge` is an L2 penalty, zero by default. Under quasi-complete separation
+    the unpenalised MLE diverges: a covariate that predicts the ranking perfectly
+    drives its coefficient to infinity and the Wald statistic becomes meaningless
+    while looking overwhelmingly significant. The penalty bounds it. Its value is
+    a pre-registered constant, never tuned to a result.
+    """
     beta = np.zeros(K)
     nll_prev = np.inf
     for it in range(1, max_iter + 1):
         nll, grad, H, _ = pl_negloglik_grad_hess(beta, decisions)
+        if ridge > 0.0:
+            nll = nll + 0.5 * ridge * float(beta @ beta)
+            grad = grad - ridge * beta
+            H = H + ridge * np.eye(K)
         step = np.linalg.solve(H + 1e-10 * np.eye(K), grad)
         lam = 1.0
         for _ in range(30):
-            if pl_negloglik_grad_hess(beta + lam * step, decisions)[0] <= nll:
+            cand = beta + lam * step
+            cand_nll = pl_negloglik_grad_hess(cand, decisions)[0]
+            if ridge > 0.0:
+                cand_nll += 0.5 * ridge * float(cand @ cand)
+            if cand_nll <= nll:
                 break
             lam *= 0.5
         beta = beta + lam * step
@@ -75,15 +94,39 @@ def fit_plackett_luce(decisions, K, tol=1e-9, max_iter=60):
             break
         nll_prev = nll
     _, _, H, scores = pl_negloglik_grad_hess(beta, decisions)
+    if ridge > 0.0:
+        H = H + ridge * np.eye(K)
     Hinv = np.linalg.pinv(H)
     G = len(decisions)
     corr = G / (G - 1.0) if G > 1 else 1.0
     V = corr * (Hinv @ (scores.T @ scores) @ Hinv)
-    # Return the FULL covariance matrix, not just its diagonal. The pre-registered
-    # primary contrast is a JOINT test on two coefficients, and a joint test needs
-    # the off-diagonal covariance. Returning only standard errors made the primary
-    # contrast literally uncomputable.
     return beta, np.sqrt(np.diag(V)), V, it
+
+
+def separation_diagnostic(beta, se, H=None, beta_max=25.0, cond_max=1e10):
+    """Detect quasi-complete separation in a Plackett-Luce fit.
+
+    Under separation a covariate predicts the ranking perfectly, the unpenalised
+    MLE diverges, and the Wald statistic explodes while the p-value looks
+    overwhelming. The first end-to-end dry run produced exactly this: a verbosity
+    coefficient of +172 with p = 1e-98, from data where token count was nearly
+    deterministic in the ranked score. Reporting that as a rejection would be a
+    false positive of the worst kind, because it looks like the strongest result
+    in the paper.
+
+    Returns (separated, reason). If separated, the pre-registered fallback is a
+    ridge-penalised refit with the penalty fixed in advance, and the FACT of
+    separation is reported rather than hidden behind the refit.
+    """
+    beta = np.asarray(beta, float); se = np.asarray(se, float)
+    if np.max(np.abs(beta)) > beta_max:
+        return True, f"|beta|max = {np.max(np.abs(beta)):.1f} exceeds {beta_max}"
+    z = np.abs(beta) / np.maximum(se, 1e-12)
+    if np.max(z) > 40.0:
+        return True, f"|z|max = {np.max(z):.1f} exceeds 40"
+    if H is not None and np.linalg.cond(H) > cond_max:
+        return True, f"Hessian condition number {np.linalg.cond(H):.2e} exceeds {cond_max:.0e}"
+    return False, "no separation detected"
 
 
 def wilson(k, n, z=1.959963985):
