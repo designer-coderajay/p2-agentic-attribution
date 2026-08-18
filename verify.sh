@@ -6,7 +6,7 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 fail=0
-for s in validate_estimators validate_coupling validate_analysis validate_ranking; do
+for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation; do
   printf '%-24s' "$s"
   if out=$(python3 "scripts/$s.py" 2>&1); then
     echo "PASS  $(echo "$out" | grep -o 'env_hash [0-9a-f]*' | head -1)"

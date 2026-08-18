@@ -1,0 +1,8 @@
+{
+  "env": {
+    "python": "3.11.9",
+    "module": "mediation",
+    "env_hash": "2da91cb9eeec63fa"
+  },
+  "unsafe_executions": 0
+}
