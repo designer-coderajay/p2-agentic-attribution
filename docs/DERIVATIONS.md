@@ -233,3 +233,72 @@ This is a result about samplers, established on synthetic categorical
 distributions. It has not yet been run against a language model, and the
 preconditions it assumes (per-request seed control, single-stream inference,
 fixed vocabulary order) are model-selection constraints that Gate C must confirm.
+
+---
+
+# Part IV: separation in the primary contrast
+
+Added 17 August 2026 (D5), after the first end-to-end dry run.
+
+## 20. What the dry run found
+
+The first run of the full chain returned a verbosity coefficient of `+172.195`
+with `p = 1.19e-98` under the pre-registered primary contrast. That is not a
+finding. It is quasi-complete separation: in the dry-run generator, token count
+and span duration both derived from the same salience variable, so verbosity
+nearly perfectly predicted the ranking being fitted and the unpenalised
+Plackett-Luce MLE diverged.
+
+The danger is specific. Under separation the Wald statistic is meaningless while
+looking like the **strongest result in the paper**. Without the dry run this
+would have shipped unguarded, and the first live H2 fit meeting a
+near-deterministic covariate would have reported it as the headline.
+
+In a real trace this is not hypothetical: span duration and token count are
+strongly correlated, and either can become near-deterministic for a given
+attributor ranking.
+
+## 21. A detector that was itself wrong
+
+The first detector flagged separation when `|beta| / se > 40`. That rule is
+invalid, and the reason is dimensional rather than empirical: `z` grows like
+`sqrt(N)`, so any fixed cut fires on a strong, well-identified effect once the
+sample is large enough.
+
+Measured on the reference Gumbel design, where PL is correctly specified,
+recovers its own generative model, and no separation exists:
+
+| n_decisions | 100 | 200 | 400 | 800 | 1600 |
+|---|---|---|---|---|---|
+| beta_causal | 0.981 | 0.971 | 0.993 | 1.010 | 1.004 |
+| se | 0.0502 | 0.0347 | 0.0243 | 0.0170 | 0.0117 |
+| \|z\| | 19.5 | 28.0 | 40.8 | 59.5 | 86.0 |
+| rule fires | no | no | **yes** | **yes** | **yes** |
+
+With a corpus in the hundreds of decisions the rule would have discarded a
+genuine H2 rejection as an artifact, and it would have done so **more readily
+the stronger the true effect was**. `z` measures strength of evidence, not
+degeneracy.
+
+## 22. The two signals that are valid
+
+Both structural, neither scaling with `N`:
+
+1. `|beta|max > 25`. Separation drives a coefficient to infinity.
+2. Hessian condition number `> 1e10`. Separation is near-singularity in the
+   direction of the separating covariate.
+
+The conditioning rule is skipped under a ridge penalty, because the penalty
+inflates `H` by construction and its conditioning is no longer informative.
+
+## 23. The penalty, and what it does not do
+
+`ridge = 1.0`, fixed in advance. On the separated reference design it bounds the
+coefficient from 28.7 to 4.74. On the well-behaved design it shifts coefficients
+by 0.0007, which is why it is safe to fix unconditionally rather than switch on.
+
+**A penalty bounds the estimate. It does not remove the separation.** The
+penalised fit on a separated design still returns `p = 0`. The diagnostic is
+therefore a detector to be read on the unpenalised fit, never an "is it fixed
+now" check, and the pre-registered response to detection is to report the primary
+contrast as INDETERMINATE rather than to refit and claim significance.

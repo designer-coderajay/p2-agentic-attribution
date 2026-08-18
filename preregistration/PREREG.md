@@ -106,6 +106,35 @@ afforded, it is dropped entirely rather than run at `J = 1`.
 - **LOCKED:** H3 reported across the full `(delta, tau)` grid,
   `delta in {1.0, 0.9, 0.8}` x `tau in {0.25, 0.5, 0.75}`. A single cell is a
   tuned number.
+- **LOCKED, separation rule.** Quasi-complete separation is detected on the
+  **unpenalised** Plackett-Luce fit by two structural signals, neither of which
+  scales with sample size: `|beta|max > 25`, or Hessian condition number
+  `> 1e10`.
+
+  A `|z| > 40` rule was written and then **removed**, because it is wrong.
+  `z = |beta|/se` grows like `sqrt(N)`, so a fixed cut fires on strong,
+  perfectly well-identified effects. Measured on the reference design where PL
+  recovers its own generative model and no separation exists: `z` = 19.5, 28.0,
+  40.8, 59.5, 86.0 at 100, 200, 400, 800 and 1600 decisions. With a corpus in
+  the hundreds it would have flagged a genuine H2 rejection as separation, and
+  more readily the stronger the result.
+
+  **If separation is detected, the primary contrast is reported as
+  INDETERMINATE.** Not refitted and reported as significant. A ridge-penalised
+  fit is shown as a bounded descriptive estimate with **no p-value claimed**,
+  because the penalised p-value is not trustworthy either: on a separated design
+  the ridge fit still returns `p = 0`. The fact of separation is reported in the
+  results, not hidden behind the refit.
+
+  **LOCKED, `ridge = 1.0`**, fixed here and never tuned to a result. Verified to
+  bound a separated fit (28.7 to 4.74) while distorting a well-behaved fit by
+  0.0007, so it costs nothing when it is not needed.
+
+  **LOCKED, separation pre-check.** Before fitting, report the maximum absolute
+  correlation between each ranked attributor score and each H2 covariate. This
+  is the quantity that produces separation, and reporting it lets a reader see
+  the risk before seeing the test.
+
 - **RULE, replay floor:** the null-replay action-match rate measured in Stage 0
   is the noise floor. No effect smaller than it is reported as an effect.
 
