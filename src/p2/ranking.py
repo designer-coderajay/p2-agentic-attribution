@@ -103,31 +103,46 @@ def fit_plackett_luce(decisions, K, tol=1e-9, max_iter=60, ridge=0.0):
     return beta, np.sqrt(np.diag(V)), V, it
 
 
-def separation_diagnostic(beta, se, H=None, beta_max=25.0, cond_max=1e10):
+def separation_diagnostic(beta, se=None, H=None, ridge=0.0,
+                          beta_max=25.0, cond_max=1e10):
     """Detect quasi-complete separation in a Plackett-Luce fit.
 
     Under separation a covariate predicts the ranking perfectly, the unpenalised
     MLE diverges, and the Wald statistic explodes while the p-value looks
     overwhelming. The first end-to-end dry run produced exactly this: a verbosity
     coefficient of +172 with p = 1e-98, from data where token count was nearly
-    deterministic in the ranked score. Reporting that as a rejection would be a
-    false positive of the worst kind, because it looks like the strongest result
-    in the paper.
+    deterministic in the ranked score.
 
-    Returns (separated, reason). If separated, the pre-registered fallback is a
-    ridge-penalised refit with the penalty fixed in advance, and the FACT of
-    separation is reported rather than hidden behind the refit.
+    TWO SIGNALS, both structural and both independent of sample size:
+      1. |beta| exceeding beta_max. Separation drives a coefficient to infinity.
+      2. Hessian condition number exceeding cond_max. Near-singularity in the
+         direction of the separating covariate.
+
+    A |z| > 40 rule was tried and REMOVED, because it is wrong. z = |beta|/se
+    grows like sqrt(N), so any fixed z cut eventually fires on a strong,
+    perfectly well-identified effect. Measured on the reference well-behaved
+    Gumbel design where PL recovers its own generative model: z = 19.5 at 100
+    decisions, 28.0 at 200, 40.8 at 400, 59.5 at 800, 86.0 at 1600. The rule
+    would have flagged a genuine H2 rejection as separation, and would have done
+    so MORE readily the stronger the result. z measures strength of evidence,
+    not degeneracy.
+
+    Read this on the UNPENALISED fit. It is a detector, not an "is it fixed now"
+    check: a ridge penalty bounds the estimate without removing the separation,
+    and it inflates H by construction, so the conditioning rule is skipped when
+    ridge > 0.
+
+    Returns (separated, reason).
     """
-    beta = np.asarray(beta, float); se = np.asarray(se, float)
+    beta = np.asarray(beta, float)
     if np.max(np.abs(beta)) > beta_max:
         return True, f"|beta|max = {np.max(np.abs(beta)):.1f} exceeds {beta_max}"
-    z = np.abs(beta) / np.maximum(se, 1e-12)
-    if np.max(z) > 40.0:
-        return True, f"|z|max = {np.max(z):.1f} exceeds 40"
-    if H is not None and np.linalg.cond(H) > cond_max:
-        return True, f"Hessian condition number {np.linalg.cond(H):.2e} exceeds {cond_max:.0e}"
-    return False, "no separation detected"
-
+    if H is not None and ridge == 0.0:
+        c = float(np.linalg.cond(H))
+        if c > cond_max:
+            return True, f"Hessian condition number {c:.2e} exceeds {cond_max:.0e}"
+    return False, ("no separation detected" if ridge == 0.0
+                   else f"bounded under ridge={ridge}")
 
 def wilson(k, n, z=1.959963985):
     if n == 0:
