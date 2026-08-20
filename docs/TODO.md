@@ -71,13 +71,18 @@ manuscript from the second or third category.
 
 ## WS5. Statistics and pre-registration
 
+**Note, 2026-08-20: this table was last updated D1 and had drifted from the
+repo's actual state. Corrected below against `preregistration/PREREG.md`,
+`docs/DERIVATIONS.md`, and `verify.sh` (ALL GREEN) rather than left stale.**
+
 | # | Item | Acceptance check | Status |
 |---|---|---|---|
-| 5.1 | Simulation-based power analysis | `N` derived from Stage 0 variance, not chosen | open, D8 |
-| 5.2 | Kendall tau_b with bootstrap over decisions | Distribution reported, not the mean alone | open |
-| 5.3 | H2 model: rank-ordered primary, OLS-on-ranks secondary | Both pre-specified; VIFs reported | open |
-| 5.4 | **Pre-registration committed with a timestamp** | Commit exists before any pooled result is viewed | D8. **Gate D, hard stop** |
-| 5.5 | Both abstracts drafted | Result-positive and result-negative, both committed | D8 |
+| 5.1 | Simulation-based power analysis | `N` derived from Stage 0 variance, not chosen | **RULE locked** (PREREG s3). Number needs Stage 0, **blocked on BFSI pipeline access** |
+| 5.2 | Kendall tau_b with bootstrap over decisions | Distribution reported, not the mean alone | **DONE.** `analysis.bootstrap_over_decisions`, used in `dry_run.py` H1/H4 |
+| 5.3 | H2 model: rank-ordered primary, OLS-on-ranks secondary | Both pre-specified; VIFs reported | **DONE**, primary (`ranking.fit_plackett_luce`). Secondary CR1 OLS exists (`analysis.ols_cluster`) but not yet wired into `dry_run.py`'s H2 block; VIF (`analysis.vif`) implemented but not yet reported there either. **open, small** |
+| 5.4 | **Pre-registration committed with a timestamp** | Commit exists before any pooled result is viewed | **Drafted, one known defect fixed 2026-08-20** (ratio-to-causal convention, `docs/DERIVATIONS.md` Part V). Gate D sign-off is Ajay's call |
+| 5.5 | Both abstracts drafted | Result-positive and result-negative, both committed | **DONE.** PREREG s8 |
+| 5.6 | Normalised-beta reporting convention | Point estimate, delta-method se, bootstrap CI, all validated against invariance and coverage | **DONE, 2026-08-20.** `ranking.normalized_beta`, `ranking.bootstrap_normalized_beta`, `validate_primary.py` s6 |
 
 ## WS6. Annex IV traceability specification
 

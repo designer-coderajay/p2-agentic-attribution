@@ -3,6 +3,14 @@
 **Status: DRAFT. Becomes binding at the Gate D commit, target 20 August 2026.**
 Nothing pooled, inspected or analysed before that commit exists.
 
+**2026-08-20.** The one known defect blocking this document (the ratio-to-causal
+convention in s2, see `docs/DERIVATIONS.md` Part V) is fixed, implemented, and
+validated (`scripts/validate_primary.py` s6, `verify.sh` ALL GREEN). This is a
+correction to a reporting convention, not a change to any hypothesis, estimator,
+or the primary contrast itself. The document is technically ready to lock;
+whether to treat this session's fix as satisfying Gate D, or to hold the gate
+open for a second read, is Ajay's call, not mine to make unilaterally.
+
 Two kinds of entry below.
 **LOCKED** is a fixed choice, final at the Gate D commit.
 **RULE** is a decision procedure whose output is determined mechanically by a
@@ -42,9 +50,28 @@ labelled as such in every table.
 **LOCKED:** `ME` is reported with per-step TV and coupling efficiency attached.
 **LOCKED:** `DE` uses maximal coupling, not quantile coupling. Fixed vocabulary
 order in the sampler. `keyed_uniform` remains a pure function of its key.
-**LOCKED:** PL coefficients are reported as **ratios**, never as levels.
-Misspecification absorbs a common scale factor (measured at 1.039 under Gaussian
-latents), so levels are not identified.
+**LOCKED, corrected 2026-08-20 (Gate D deviation, see `docs/DERIVATIONS.md` Part
+V):** PL coefficients are reported as **ratios**, never as levels, because
+misspecification absorbs a common scale factor (measured at approximately 1.04
+to 1.09 under Gaussian latents, `scripts/validate_ranking.py`) and levels are
+therefore not identified.
+
+The first draft of this rule anchored the ratio on `beta_causal`. That is
+**wrong** and is now corrected. H1 and H2 both predict `beta_causal` is small,
+so anchoring on it makes the reporting convention unstable exactly when the
+paper's headline finding is true; `dry_run.py`'s own fit demonstrated this
+(`beta_causal = -0.029` produced a "ratio to causal" of -26.7 for verbosity,
+unbounded as `beta_causal -> 0`). **Corrected convention:** report
+`g = beta / ||beta||_2`, the coefficient vector's own direction, exactly
+invariant to the same scale ambiguity and well-defined whenever any
+coefficient carries signal. Point estimate and delta-method se from
+`ranking.normalized_beta`; the **reported confidence interval** is the
+decision-level bootstrap from `ranking.bootstrap_normalized_beta`, consistent
+with the bootstrap-over-decisions rule below, because the delta method is
+shown to under-cover near `|g_j| = 1`. The joint Wald primary contrast itself
+(s6) is unaffected: it is algebraically invariant to `beta -> c*beta`,
+`V -> c^2*V`, so this correction changes only follow-up magnitude reporting,
+not the hypothesis test.
 
 ## 3. Corpus
 

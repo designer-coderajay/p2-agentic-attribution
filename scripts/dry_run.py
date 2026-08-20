@@ -31,7 +31,8 @@ from p2.effects import estimate_effects
 from p2.observability import SpanRecord, ATTRIBUTORS, rank_desc, kendall_tau_b
 from p2.analysis import bootstrap_over_decisions
 from p2.ranking import (fit_plackett_luce, joint_wald, h3_statistic,
-                        h4_statistic, separation_diagnostic)
+                        h4_statistic, separation_diagnostic, normalized_beta,
+                        bootstrap_normalized_beta)
 
 SEED, N_DEC, N_ROLL, Q, RIDGE = 20260813, 40, 300, 0.9, 1.0
 
@@ -123,16 +124,25 @@ def main():
         beta, se, V, it = fit_plackett_luce(dec, 3, ridge=RIDGE)
         print(f"    -> ridge={RIDGE} refit shown as a BOUNDED DESCRIPTIVE estimate,")
         print("       no p-value claimed.")
+    g, se_g, g_note = normalized_beta(beta, V)
+    g_boot, lo_boot, hi_boot = bootstrap_normalized_beta(dec, 3, n_boot=80, seed=SEED)
     for j, nm in enumerate(["causal", "recency", "verbosity"]):
-        print(f"    {nm:>16} {beta[j]:>+8.3f}  se {se[j]:.3f}   ratio to causal "
-              f"{beta[j]/beta[0]:>+7.3f}")
+        print(f"    {nm:>16} {beta[j]:>+8.3f}  se {se[j]:.3f}   "
+              f"g={g[j]:>+.3f} (delta se {se_g[j]:.3f})   "
+              f"bootstrap [{lo_boot[j]:>+.3f}, {hi_boot[j]:>+.3f}]")
+    if g_note:
+        print(f"    NOTE: {g_note}")
     W, q, p = joint_wald(beta, V, (1, 2))
     if sep:
         print(f"    W = {W:.3f} (df {q}) NOT REPORTED AS A TEST under separation")
     else:
         print(f"    joint Wald W = {W:.3f}, df = {q}, p = {p:.3g}   "
               f"{'REJECT' if p < 0.05 else 'no rejection'} at alpha=0.05")
-    print("    coefficients are RATIOS: PL absorbs a common scale factor")
+    print("    coefficients are reported as beta / ||beta||_2 (direction on the")
+    print("    unit sphere), NOT as a ratio to beta_causal. Gate D deviation,")
+    print("    2026-08-20: the causal-anchored ratio is unstable exactly when")
+    print("    H1/H2 hold, because both predict beta_causal is near zero. See")
+    print("    docs/DERIVATIONS.md Part V and ranking.normalized_beta().")
 
     print("\nH3  causally dominant but ranked negligible, (delta, tau) grid")
     obs_rank_l = [rank_desc(o["span_duration"]) for o in obs_l]
@@ -157,7 +167,9 @@ def main():
     os.makedirs("results", exist_ok=True)
     json.dump({"SYNTHETIC_NOT_RESULTS": True, "env": env,
                "h1": {k: list(v) for k, v in h1.items()},
-               "h2": {"beta": beta.tolist(), "se": se.tolist(), "separated": bool(sep)},
+               "h2": {"beta": beta.tolist(), "se": se.tolist(), "separated": bool(sep),
+                      "g_normalized": g.tolist(), "g_delta_se": se_g.tolist(),
+                      "g_bootstrap_lo": lo_boot.tolist(), "g_bootstrap_hi": hi_boot.tolist()},
                "h4": [m4, lo4, hi4]},
               open("results/dry_run.json", "w"), indent=2)
     print(f"env_hash {env['env_hash']} -> results/dry_run.json")

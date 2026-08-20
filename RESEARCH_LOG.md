@@ -51,3 +51,47 @@ Six decisions taken and logged at the foot of docs/POSITIONING.md. Most conseque
 Citation ledger gained nine references harvested from CAR bibliography, including the Pearl reference that was load-bearing and unverified: Causality: Models, Reasoning, and Inference, CUP, 2nd ed, 2009. Marked VERIFIED-SECONDARY pending a library record.
 
 Residual risk: 2605.25338 and 2509.08682 unread. On the D2 calendar.
+
+## 2026-08-20
+
+**Scope.** Gate D day, handed to a Cowork session via `docs/HANDOVER.md`. Full
+repo review top to bottom against the incoming state (`verify.sh` ALL GREEN,
+git log to `10f7cbd`), then work on the two OPEN items HANDOVER listed as
+blocking the gate.
+
+**Resolved.** PREREG s2's ratio-to-causal convention for reporting Plackett-Luce
+coefficients was identification-broken: it divides by `beta_causal`, and both
+H1 and H2 predict `beta_causal` is small, so the convention was guaranteed to
+misbehave exactly in the regime the paper is built to detect. Confirmed on the
+project's own dry-run numbers (`beta_causal = -0.029` producing a "ratio to
+causal" of -26.7 for verbosity, unbounded under an arbitrarily small
+perturbation of `beta_causal`). Fixed by reporting `beta / ||beta||_2`
+(coefficient direction on the unit sphere, exactly invariant to the same PL
+scale ambiguity, well-defined whenever any coefficient carries signal) with a
+decision-level bootstrap confidence interval, matching the bootstrap-over-
+decisions convention already locked for every other interval in the paper.
+Six new validation checks in `scripts/validate_primary.py`, all passing,
+including confirmation that the primary contrast's Wald test itself was never
+affected (it is algebraically invariant to the scale ambiguity that broke the
+ratio). Full derivation: `docs/DERIVATIONS.md` Part V. Deviation logged in
+`docs/DAILY.md` the same day per PREREG s7.
+
+**Not resolved.** The second OPEN item, `sigma_resid` for the corpus-size power
+rule, needs a Stage 0 measurement against the live BFSI pipeline. Gates B, C, E
+remain blocked on pipeline access, overdue since 17 August. This is not
+resolvable without either the live system or fabricating a number, and the
+standing rules forbid the second option. **This is the single item blocking
+further empirical progress on P2 and it needs Ajay's action, not more
+analysis.**
+
+**Backfilled.** DAILY.md had no entries between D4 (16 Aug) and today, despite
+five days of committed work (WS1.6, H1/H2 machinery, Plackett-Luce, WS3.3
+provenance audit, the pre-registration draft, the primary contrast, H4, the
+separation guard and its correction, the mediation safety test, the first
+end-to-end dry run). Reconstructed retroactively from git log and flagged as
+such rather than presented as a same-day record.
+
+**Next.** Blocked on Ajay: (1) BFSI pipeline access for Stage 0 / Gates B, C, E,
+(2) a decision on whether today's fix satisfies Gate D or the gate stays open
+pending a second read. Not blocked, and available to continue in parallel:
+WS0 remaining citation verification, WS6 Annex IV drafting, WS1.7/1.9.

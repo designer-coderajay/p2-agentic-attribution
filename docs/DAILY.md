@@ -117,3 +117,91 @@ At `TV = 0.179` the numbers are 0.412 versus 0.821. A naive probability-sorted s
 **Deviations from pre-registration.** None. Gate D is 20 August.
 
 **Tomorrow, D5. Gates B, C and E.** Trajectory capture from Langfuse/OTel into the schema, node-level checkpoint and restore, and Stage 0 null replay measuring action-match rate and per-rollout cost. All three gates depend on access to the BFSI pipeline, which I do not have. **This is the point at which the sprint needs Ajay's system, not more of my code.**
+
+---
+
+## D5 to D8, 17 to 20 August 2026 (retroactive summary, reconstructed from git log)
+
+**This entry was not written same-day and is flagged as such.** The chat that
+did this work did not keep DAILY.md current; the record below is reconstructed
+from commit messages and file contents on 20 August, not written live. Treat
+timestamps within this entry as approximate and the content as a summary, not
+a same-day account.
+
+**Shipped, per commit history.** WS1.6 pin-plausibility and H1/H2 machinery
+(cluster coverage 0.95 vs naive 0.35 on intercept); Plackett-Luce rank-ordered
+estimator and the H3 statistic; WS3.3 provenance audit (`docs/PROVENANCE.md`,
+recency cut, three attributors survive); `preregistration/PREREG.md` first
+draft; the pre-registered primary contrast implemented and validated, plus H4;
+`verify.sh`; the mediation safety test; the separation guard for the primary
+contrast, then the `|z| > 40` rule removed after it was shown to be a
+false-positive generator (DERIVATIONS Part IV); the separation rule
+pre-registered; an end-to-end dry run, first generator collinear rather than
+correlated (verbosity coefficient +172, p = 1e-98, quasi-complete separation,
+caught before any manuscript claim), fixed; `docs/HANDOVER.md` written for a
+Cowork transfer.
+
+**Gates B, C, E: still not reached.** Confirmed still blocked on BFSI pipeline
+access as of this entry. No Stage 0 measurement exists. `sigma_resid` for the
+power RULE in PREREG s3 remains unmeasured; the rule itself does not need to
+change, only the number, and the number needs the live system.
+
+**Deviations from pre-registration.** None recorded in this window beyond what
+is logged under D8 below.
+
+---
+
+## D8 (cont.), 20 August 2026, Cowork session
+
+**Scope.** Gate D day. Handed off via `docs/HANDOVER.md` from the prior
+session with two OPEN items blocking the gate. Reviewed the full repo,
+`verify.sh` ALL GREEN on the incoming state, then worked the first blocking
+item, which is a pure math and statistics problem solvable without pipeline
+access.
+
+**DEVIATION FROM PRE-REGISTRATION, logged same day per s7.** PREREG s2's
+ratio-to-causal convention for reporting PL coefficients is replaced with
+`beta / ||beta||_2` (normalised direction), CI by decision-level bootstrap
+instead of the causal-anchored ratio. Reason: the causal-anchored ratio is
+provably unbounded as `beta_causal -> 0`, and both H1 and H2 predict
+`beta_causal` is small, so the convention meant to make the result readable
+was guaranteed to malfunction exactly when the paper's headline finding holds.
+Demonstrated on the project's own dry-run fit (`beta_causal = -0.029` ->
+"ratio to causal" of -26.7 for verbosity, unstable under a perturbation smaller
+than its own se). Full derivation in `docs/DERIVATIONS.md` Part V. Implemented
+as `ranking.normalized_beta` (point estimate + delta-method se, both validated
+exactly invariant to the PL scale ambiguity) and `ranking.bootstrap_normalized_beta`
+(the interval actually reported, because the delta method is shown to
+under-cover near the unit-sphere pole at 30.7% relative difference against
+Monte Carlo). `scripts/validate_primary.py` s6, six sub-checks, all passing.
+`scripts/dry_run.py` updated to print and save the corrected convention.
+`verify.sh` ALL GREEN after the change. This does not touch the primary
+contrast itself: the joint Wald test is algebraically invariant to
+`beta -> c*beta, V -> c^2*V` and was never affected by the bug, verified as
+part of the same check.
+
+**Not resolved, and not resolvable from here.** The second OPEN item at
+handover, `sigma_resid` for the power rule, requires a Stage 0 measurement
+against the live BFSI pipeline. Gates B, C, E remain blocked on the same
+access, now overdue since 17 August, four days. Nothing in this session's
+scope can substitute for that measurement without inventing a number, which
+the standing rules forbid.
+
+**Status for Gate D.** The one defect identified as blocking the gate at
+handover is fixed and validated. Whether that satisfies Gate D, or the corpus
+RULE items (unmeasured until Stage 0 runs) mean the gate is better described as
+"pre-registration mechanically complete, awaiting Stage 0 to instantiate two
+RULE-determined numbers," is Ajay's call. Recommendation, INFERRED: lock the
+document now, since every entry is either LOCKED outright or a RULE whose
+procedure (not outcome) is fixed, which is what the RULE/LOCKED distinction in
+PREREG s0 exists to allow. Stage 0 then resolves the RULE entries mechanically
+without reopening the document.
+
+**Tomorrow.** Blocked on Ajay for Gates B, C, E (BFSI pipeline access) and the
+Gate D sign-off decision above. If access does not arrive, the fallback
+already pre-registered in PREREG s7 applies: report synthetic and
+sampler-level results only, state the absent live arm in the abstract. Work
+continues in parallel on items that do not need pipeline access: WS0 remaining
+literature verification (Pearl 2009 library record, Shapley citations, AttriGuard,
+CausalArmor), WS6 Annex IV drafting against the primary EU AI Act text, WS1.7
+non-binary outcome estimators, WS1.9 pytest/CI.

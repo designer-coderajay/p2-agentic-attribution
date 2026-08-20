@@ -1,5 +1,13 @@
 # P2 Handover, 17 August 2026 (sprint day 5 of 19)
 
+**Update, 20 August 2026 (Cowork session, Gate D day).** The first OPEN item
+below is fixed and validated; struck through in place rather than deleted, so
+this doc still reads as the record of what handover looked like. See
+`docs/DAILY.md` D8 entry, `docs/RESEARCH_LOG.md` 2026-08-20, and
+`docs/DERIVATIONS.md` Part V for the full account. The second OPEN item and the
+BLOCKED section are unchanged: still blocked on BFSI pipeline access, now
+overdue since 17 August, four days as of this update.
+
 Repo: github.com/designer-coderajay/p2-agentic-attribution (PRIVATE)
 Local: ~/Desktop/"Evidential Validity of AI Explanations"/p2-agentic-attribution
 One command to check health: `./verify.sh` -> must print ALL GREEN (7 suites).
@@ -28,7 +36,8 @@ are occupied by others. Four survive:
   mediation.py   4 purity classes; EFFECTFUL_UNSAFE never executes (20 checks)
   observability.py  3 attributors, all provenance VERIFIED; tau_b with ties
   analysis.py    CR1 cluster-robust sandwich; coverage 0.95 vs naive 0.35
-  ranking.py     Plackett-Luce by Newton, joint Wald, H3, H4, separation guard
+  ranking.py     Plackett-Luce by Newton, joint Wald, H3, H4, separation guard,
+                 normalised-beta reporting (2026-08-20)
   dry_run.py     end-to-end chain on synthetic data
 
 ## Bugs the validation caught before any of them reached a result
@@ -39,11 +48,18 @@ are occupied by others. Four survive:
   prereg locked an unimplemented primary contrast     uncomputable
   |z| > 40 separation rule                            fired on healthy fits
   dry run generator was degenerate                    +172, p = 1e-98
+  ratio-to-causal convention, div-by-near-zero         -2.29 / -26.7, unbounded
 
 ## OPEN, blocking Gate D (20 August)
-  - PREREG s2 ratio convention anchors on the causal coefficient, which the
-    hypotheses predict is near zero. Anchor must change.
+  - ~~PREREG s2 ratio convention anchors on the causal coefficient, which the
+    hypotheses predict is near zero. Anchor must change.~~ FIXED 2026-08-20:
+    report beta / ||beta||_2 with a decision-level bootstrap CI. Validated
+    (invariance to the PL scale ambiguity, exact; bounded as beta_causal -> 0,
+    demonstrated on this repo's own dry-run numbers where the old convention
+    produced -26.7). `verify.sh` ALL GREEN with the fix. Primary contrast
+    (the joint Wald test) unaffected, confirmed algebraically invariant.
   - Power rule needs sigma_resid from Stage 0. RULE is locked, number is not.
+    STILL OPEN, needs Stage 0, see BLOCKED below.
 
 ## BLOCKED on pipeline access, overdue since 17 August
   Gates B (cost), C (replay floor), E (harness working). All three need the

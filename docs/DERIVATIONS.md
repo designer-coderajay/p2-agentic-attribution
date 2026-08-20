@@ -302,3 +302,153 @@ penalised fit on a separated design still returns `p = 0`. The diagnostic is
 therefore a detector to be read on the unpenalised fit, never an "is it fixed
 now" check, and the pre-registered response to detection is to report the primary
 contrast as INDETERMINATE rather than to refit and claim significance.
+
+---
+
+# Part V: the ratio-to-causal convention was broken, and what replaces it
+
+Added 20 August 2026 (Gate D day). This is the deviation blocking Gate D at
+handover: PREREG s2 locked coefficients as "ratios, never levels" without
+specifying an anchor, and the anchor used in `dry_run.py` was `beta_causal`.
+That choice is wrong, and the wrongness is now visible in the project's own
+numbers, not hypothetically.
+
+## 24. Why a ratio convention exists at all
+
+Plackett-Luce assumes `theta_j = x_j' beta + Gumbel(0,1)`. The Gumbel(0,1)
+scale is a normalisation, not a measured fact: if the true noise has a
+different scale or a different shape entirely, the unpenalised MLE does not
+recover `beta`, it recovers a distorted version of it. `scripts/validate_ranking.py`
+measures this directly: fit under the assumed Gumbel model against data
+generated with Gaussian latents, and every coefficient comes back scaled up by
+close to a common factor (`pl_gauss / pl_gumbel` = 1.052, 1.088, 1.036 on three
+planted coefficients, single seed; treat as approximate, not exact, since Gumbel
+and Gaussian are not related by a pure scale transform, only close to one at
+this signal-to-noise ratio).
+
+Consequence: reporting `beta` as a level is not defensible, because a reviewer
+can ask "scaled by what noise assumption" and there is no principled answer.
+A RATIO of two coefficients cancels a common multiplicative factor exactly:
+`(c beta_j) / (c beta_k) = beta_j / beta_k` for any `c > 0`. This is real and
+correct. The question the first draft got wrong is which coefficient to divide
+by.
+
+## 25. The failure, in the project's own numbers
+
+`dry_run.py`'s H2 fit on the synthetic chain (planted mechanism: trace salience
+tracks DIRECT effect, causal ranking tracks TOTAL effect, so H1 and H2 are
+BOTH true by construction) returned:
+
+    beta_causal    = -0.029   se 0.074
+    beta_recency   = +0.067   se 0.096
+    beta_verbosity = +0.780   se 0.099
+
+Anchoring on `beta_causal`, as the first draft did:
+
+    ratio_recency   = beta_recency   / beta_causal = -2.29
+    ratio_verbosity = beta_verbosity / beta_causal = -26.7
+
+Both numbers are artifacts of dividing by a coefficient close to zero. The
+actual signal in this fit is `beta_verbosity` at 0.780, roughly the entire
+magnitude of the vector; `-26.7` does not describe that. Perturbing
+`beta_causal` from -0.029 to -0.001 (a change smaller than its own standard
+error) moves `ratio_verbosity` from -26.7 to -780, without the underlying fit
+changing at all. That is not a rounding artifact, it is unboundedness: as
+`beta_causal -> 0` the ratio has no limit.
+
+This was not a hypothetical risk to be caught later. It IS the H1/H2-true
+regime, by design: **H1 predicts low agreement between observed and causal
+rank, and the primary contrast H2 predicts recency and verbosity dominate
+AFTER conditioning on causal rank. Both predict `beta_causal` is small.** The
+reporting convention that was supposed to make the result readable was
+guaranteed to malfunction exactly when the paper's headline finding is true.
+Anchoring a scale-free quantity on a coefficient the hypotheses themselves
+predict is near zero is the same category of error as the `|z| > 40`
+separation rule in Part IV: a diagnostic that gets less trustworthy the
+stronger the true effect.
+
+## 26. The fix: report the coefficient vector's own direction
+
+Instead of dividing by one component of `beta`, divide by the vector's own
+norm:
+
+    g_j(beta) = beta_j / ||beta||_2
+
+This is exactly invariant to `beta -> c*beta` for `c > 0`, the identical
+algebraic fact that makes any pairwise ratio invariant (`c` cancels between
+numerator and the norm). It differs from ratio-to-causal only in being
+well-defined and numerically stable whenever ANY coefficient carries signal,
+which is exactly the case a causal-anchored ratio breaks in. It is undefined
+only when the entire fitted vector is zero, a degenerate outcome ("no
+attributor predicts the ranking at all") that should be reported as itself,
+not smoothed into a ratio.
+
+Geometrically: `beta` up to a positive scalar is a point on the projective
+half-sphere, and `g` is the canonical representative of that point on the unit
+sphere. There is no `beta_causal`-style asymmetry; every coefficient is
+normalised against the same quantity.
+
+On the dry-run numbers:
+
+    g_causal    = -0.037
+    g_recency   = +0.085
+    g_verbosity = +0.996
+
+Bounded in `[-1, 1]` by construction, and reads correctly: verbosity carries
+essentially all the direction, causal and recency are both small. This is the
+same information the paper wants to report, expressed in a form that does not
+depend on which coefficient happens to be small in a given fit.
+
+## 27. Standard error: delta method, with a documented failure mode
+
+    grad g_j = (||beta||^2 e_j - beta_j * beta) / ||beta||^3
+    Var(g_j) ~ grad g_j' V grad g_j
+
+Implemented in `ranking.normalized_beta`. Validated in `validate_primary.py`
+s6:
+
+- **Exact invariance under `beta -> c*beta`, `V -> c^2*V`**, `c` in
+  `{0.3, 1, 5, 50}`: `g` and its delta-method se are bit-identical to machine
+  precision across all four rescalings. This is the property the whole fix
+  depends on and it holds exactly, not approximately.
+- **The old convention is empirically unbounded, the new one is not**, sweeping
+  `beta_causal` from 0.5 down through 0 (holding `beta_recency`, `beta_verbosity`
+  fixed at the dry-run values): `ratio_verbosity` runs from 1.56 to -780 and
+  never stabilises; `g_verbosity` stays in `[0.84, 1.00]` throughout.
+- **Delta-method se matches 200,000-draw Monte Carlo to within 1.7% and 1.3%**
+  on the two components away from the unit-sphere pole, at a covariance scale
+  representative of the pre-registered corpus (`se(beta) ~ 0.06-0.15`, matching
+  N >= 300).
+- **Known, documented limitation: the delta method under-covers near `|g_j| = 1`.**
+  `d g_j / d beta_j` scales like `(1 - g_j^2)`, so near a pole of the sphere the
+  linear term vanishes and the first-order expansion misses curvature that a
+  resampling method captures. Measured at 30.7% relative difference against
+  Monte Carlo for the verbosity component at `g = 0.996` in the validation. This
+  is not a bug to be papered over; it is why the interval reported IN THE PAPER
+  is not the delta-method se.
+
+## 28. What is actually reported: a decision-level bootstrap
+
+PREREG already LOCKS "bootstrap over decisions, never over rows" for every
+other interval in the paper (tau_b, H3, H4). `ranking.bootstrap_normalized_beta`
+extends the identical convention here instead of introducing a second interval
+method for one quantity: resample decisions with replacement, refit
+Plackett-Luce on each resample, renormalise, take the empirical percentile
+interval. This is correct at the pole because it makes no linearity assumption
+at all.
+
+Validated in `validate_primary.py` s6e against a planted verbosity-dominant
+direction (`beta = (0.05, 0.15, 1.2)`, `g_true = (0.041, 0.124, 0.991)`, the
+H2-true regime): the 95% bootstrap interval covers the planted direction on all
+three components, including the pole component (`g_hat = 0.995`,
+`[0.984, 0.999]`, true `0.991`).
+
+**Reporting rule, replacing PREREG s2's ratio-to-causal language:** coefficients
+are reported as `g = beta / ||beta||_2`; the confidence interval reported is the
+decision-level bootstrap percentile interval; the delta-method se from
+`normalized_beta` is shown alongside as a fast diagnostic only, with the
+pole-undercoverage caveat stated wherever it is shown. The joint Wald test
+(the actual pre-registered primary contrast, s6 of PREREG) is unaffected by any
+of this: `W = (Rb)'(RVR')^{-1}(Rb)` is itself invariant to `beta -> c*beta`,
+`V -> c^2*V` by the same cancellation, so the hypothesis test was never broken.
+Only the follow-up magnitude reporting was.

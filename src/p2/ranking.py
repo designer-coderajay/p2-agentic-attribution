@@ -144,6 +144,108 @@ def separation_diagnostic(beta, se=None, H=None, ridge=0.0,
     return False, ("no separation detected" if ridge == 0.0
                    else f"bounded under ridge={ridge}")
 
+def normalized_beta(beta, V):
+    """Report PL coefficients as a direction on the unit sphere, not as a ratio
+    to one named coefficient.
+
+    THE PROBLEM THIS REPLACES. PREREG s2 (first draft) reported coefficients as
+    ratios to beta_causal, because PL is a random-utility model with an
+    unidentified noise scale: fitting under the WRONG noise family (Gumbel
+    assumed, something else true) does not recover beta, it recovers c * beta for
+    some scale c > 0 absorbed into the fit. Measured empirically at c = 1.039
+    when the truth is Gaussian rather than Gumbel (validate_ranking.py). Any
+    ratio beta_j / beta_k is exactly invariant to this c, so a ratio convention
+    is the right idea.
+
+    THE BUG. Anchoring on beta_causal fails exactly when H1 or H2 hold, because
+    both predict beta_causal is small: H1 is low agreement between observed and
+    causal rank, H2 is that recency/verbosity dominate AFTER conditioning on
+    causal rank. Dividing by a coefficient the hypotheses expect to be near zero
+    is a ratio-of-normals problem (Fieller 1954): as beta_causal's sampling
+    distribution puts mass near 0, the ratio's distribution grows heavy tails and
+    its confidence interval can be unbounded or two-piece. This is not
+    hypothetical: the first end-to-end dry run (results/dry_run.json) fit
+    beta_causal = -0.029 and reported "ratio to causal" of -2.29 for recency and
+    -26.74 for verbosity, from a beta vector whose actual signal is dominated by
+    verbosity at 0.780. The old convention would have put that number, unedited,
+    in Figure 1.
+
+    THE FIX. Report beta_j / ||beta||_2, the coefficient vector's own direction
+    on the unit sphere, instead of dividing by one of its own components.
+    Exactly invariant to beta -> c*beta for c > 0 (the same algebraic property
+    that makes any pairwise ratio invariant), but well-defined and numerically
+    stable whenever ANY component carries signal, which is exactly the regime a
+    ratio-to-causal breaks in. It is undefined only if the entire fitted vector
+    is the zero vector, a degenerate case ("no attributor predicts the ranking
+    at all") that is reported separately, not smoothed over.
+
+    Delta-method standard errors, since ||beta|| is generically bounded away
+    from zero and a first-order expansion is well-posed here even though it is
+    not for the causal-anchored ratio:
+
+        g_j(beta) = beta_j / ||beta||
+        grad g_j  = (||beta||^2 e_j - beta_j * beta) / ||beta||^3
+        Var(g_j) ~= grad g_j' V grad g_j          (delta method)
+
+    Returns (g, se_g, note). `note` is a plain-language flag when ||beta|| is
+    small enough that even this normalisation should be read with caution.
+    """
+    beta = np.asarray(beta, float)
+    V = np.asarray(V, float)
+    norm = float(np.linalg.norm(beta))
+    K = len(beta)
+    if norm < 1e-12:
+        return (np.full(K, np.nan), np.full(K, np.nan),
+                "beta is the zero vector: no attributor carries signal, "
+                "direction is undefined, report this fact directly")
+    g = beta / norm
+    se = np.zeros(K)
+    for j in range(K):
+        ej = np.zeros(K); ej[j] = 1.0
+        grad = (norm**2 * ej - beta[j] * beta) / norm**3
+        se[j] = float(np.sqrt(max(grad @ V @ grad, 0.0)))
+    note = ("caution: ||beta|| is small relative to its se, direction is "
+            "poorly determined" if norm < 2 * np.sqrt(np.mean(np.diag(V)))
+            else "")
+    return g, se, note
+
+
+def bootstrap_normalized_beta(decisions, K, n_boot=2000, alpha=0.05, seed=0,
+                              ridge=0.0, max_iter=60):
+    """Decision-level bootstrap CI for the normalised-beta reporting convention.
+
+    normalized_beta()'s delta-method se under-covers near |g_j| = 1 (validated
+    in validate_primary.py s6c: the map is locally flat there, so the first-
+    order expansion misses curvature). PREREG already LOCKS bootstrap over
+    decisions, never over rows, for every other interval in this paper (tau_b,
+    H3, H4). This extends the same convention to the normalised-beta reporting
+    convention rather than introducing a second interval-construction method:
+    refit Plackett-Luce on decisions resampled with replacement, renormalise
+    each refit, and take the percentile interval. Slower than the delta method,
+    correct at the pole, and consistent with every other reported interval in
+    the paper.
+
+    Returns (g_hat, lo, hi), each length K. Point estimate is fit on the full
+    (non-resampled) sample, matching bootstrap_over_decisions' convention.
+    """
+    beta_hat, _, V_hat, _ = fit_plackett_luce(decisions, K, ridge=ridge,
+                                               max_iter=max_iter)
+    g_hat, _, _ = normalized_beta(beta_hat, V_hat)
+    rng = np.random.default_rng(seed)
+    n = len(decisions)
+    draws = np.zeros((n_boot, K))
+    for b in range(n_boot):
+        idx = rng.integers(0, n, size=n)
+        resampled = [decisions[i] for i in idx]
+        beta_b, _, V_b, _ = fit_plackett_luce(resampled, K, ridge=ridge,
+                                              max_iter=max_iter)
+        g_b, _, _ = normalized_beta(beta_b, V_b)
+        draws[b] = g_b
+    lo = np.nanquantile(draws, alpha / 2, axis=0)
+    hi = np.nanquantile(draws, 1 - alpha / 2, axis=0)
+    return g_hat, lo, hi
+
+
 def wilson(k, n, z=1.959963985):
     if n == 0:
         return float("nan"), float("nan")
