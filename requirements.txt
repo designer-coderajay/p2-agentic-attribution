@@ -1,4 +1,21 @@
-# The validation scripts need numpy only. scipy and pandas are not imported
-# anywhere yet and are deliberately not pinned, so nothing fails to install
-# on a Python version they do not have wheels for.
-numpy>=1.26
+# PINNED, not floored. Standing rule 10: every number in the paper must be
+# reproducible from committed code AND a pinned environment.
+#
+# History of why this is now an exact pin. This file previously said
+# `numpy>=1.26`, which is a floor. A floor permits 1.26 through 2.x, and three
+# different numpy versions duly ended up producing artifacts in results/:
+# 1.26.4 on the machine of record, 2.2.6 from a stray interpreter on the same
+# machine, and 2.4.4 from a remote cloud session. The numbers agreed to ~1e-16
+# across all three, so nothing was ever WRONG, but "reproducible from a pinned
+# environment" was not a true statement about this repository, and that is a
+# claim the paper makes. Pinned 2026-08-21.
+#
+# Machine of record: python 3.11.9, numpy 1.26.4.
+# env_hash in every results/*.json is a hash over {python, numpy, ...}, so
+# changing either value intentionally will change every recorded hash. That is
+# correct behaviour, not a failure. If you deliberately move the pin, re-run
+# `bash verify.sh && python3 scripts/dry_run.py` and commit the regenerated
+# artifacts in the SAME commit as the pin change, so the two never disagree.
+#
+# scipy and pandas remain absent because nothing imports them.
+numpy==1.26.4

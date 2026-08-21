@@ -2,6 +2,13 @@ __pycache__/
 *.pyc
 .venv/
 .DS_Store
+# Session scratch harnesses (check_session.sh, fix_session.sh, push_session.sh,
+# and any later sibling). Written during the 2026-08-20/21 Cowork sessions to
+# audit repo health, repair results/ provenance, and gate the push. They carry
+# session-specific commentary and are not part of the paper's reproducibility
+# surface, so they stay local. If a permanent health check is wanted later,
+# promote a cleaned version deliberately rather than committing one by accident.
+*_session.sh
 # results/ is committed for now: the validation JSONs are small and every
 # reported number must be traceable to a committed artifact. Revisit when
 # Stage 1 rollouts start producing large outputs.

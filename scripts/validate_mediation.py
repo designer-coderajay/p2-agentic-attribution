@@ -17,6 +17,7 @@ account. Tested by handing the mediator a live function that records every
 invocation, then asserting the recorder stays empty.
 """
 import sys, os, json, hashlib, platform
+import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from p2.mediation import (Purity, ToolSpec, ToolMediator, MediationError,
                           request_hash)
@@ -131,7 +132,16 @@ def main():
     print("All mediation checks passed.")
     print("No EFFECTFUL_UNSAFE tool executed on any path, including when a live")
     print("callable was supplied and sandboxing was enabled.")
-    env = {"python": platform.python_version(), "module": "mediation"}
+    # `numpy` is recorded even though src/p2/mediation.py imports no numpy and
+    # this test does not use it. The env block exists to answer one question,
+    # "were all artifacts in results/ produced in the same environment", and a
+    # fingerprint that omits a field on some files cannot answer it: a provenance
+    # audit reads the absent field as a THIRD environment rather than as "not
+    # applicable". Recording it uniformly is what makes results/ auditable under
+    # standing rule 10. Added 2026-08-21 after the audit surfaced this file as
+    # `numpy=?`.
+    env = {"python": platform.python_version(), "numpy": np.__version__,
+           "module": "mediation"}
     env["env_hash"] = hashlib.sha256(json.dumps(env, sort_keys=True).encode()).hexdigest()[:16]
     os.makedirs("results", exist_ok=True)
     json.dump({"env": env, "unsafe_executions": 0},
