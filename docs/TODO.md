@@ -15,14 +15,16 @@ manuscript from the second or third category.
 | # | Item | Acceptance check | Status |
 |---|---|---|---|
 | 0.1 | Full read 2606.08275 (CAR) | DE arm present or absent, established from the text | **DONE.** Absent, sec 7. Gate A passed |
-| 0.2 | Full read 2605.25338 (CausalFlow) | Confirm no DE arm, no observability rank comparison | open, D2 |
-| 0.3 | Full read 2509.08682 (Ma et al., Shapley over static logs) | Confirm static-log basis, no interventional arm | open, D2 |
-| 0.4 | Verify 2505.00212 (Who&When) directly | Authors, venue, and the ~14% figure read from the source, not from CAR | open, D2 |
-| 0.5 | Verify 2509.03312 (AgenTracer) directly | Oracle-substitution basis confirmed from the source | open, D2 |
-| 0.6 | Full read 2606.09692 (delegated-execution observability) | Its non-identifiability result stated precisely; scope WS6 against it | open, D2 |
-| 0.7 | Pearl 2009 against a library record | Edition, publisher, year confirmed outside CAR's bibliography | open |
-| 0.8 | Fetch Thinking Machines nondeterminism post | Load-bearing for the replay-floor gate; must be read not cited blind | open |
-| 0.9 | Final ledger pass | Every bibliography entry VERIFIED with a checked date. RECALLED entries cut, not chased | D18 |
+| 0.2 | Full read 2605.25338 (CausalFlow) | Confirm no DE arm, no observability rank comparison | **DONE 2026-08-14.** Cleared |
+| 0.3 | Full read 2509.08682 (Ma et al., Shapley over static logs) | Confirm static-log basis, no interventional arm | **DONE 2026-08-21.** Static-log basis confirmed, cleared. **Citation was WRONG in title and first author, corrected, see ledger C1** |
+| 0.4 | Verify 2505.00212 (Who&When) directly | Authors, venue, and the ~14% figure read from the source, not from CAR | **DONE 2026-08-21.** ICML 2025 PMLR v267 pp.76583-76599 confirmed. 14.2% verified as a four-cell abstract-only average; realistic-log value is single-digit. See ledger C2 |
+| 0.5 | Verify 2509.03312 (AgenTracer) directly | Oracle-substitution basis confirmed from the source | **DONE 2026-08-21.** Confirmed for the failed-trajectory branch only; fault injection is the other half |
+| 0.6 | Full read 2606.09692 (delegated-execution observability) | Its non-identifiability result stated precisely; scope WS6 against it | **DONE 2026-08-21.** Result is narrower than assumed (authorization relation, a Proposition true by construction). Zero EU AI Act content. See ledger C3 |
+| 0.7 | Pearl 2009 against a library record | Edition, publisher, year confirmed outside CAR's bibliography | **DONE 2026-08-21.** Stanford + CUP. Sections 4.5.4/4.5.5 located. Pearl 2001 UAI added as the primary citation, Robins & Greenland 1992 for priority |
+| 0.8 | Fetch Thinking Machines nondeterminism post | Load-bearing for the replay-floor gate; must be read not cited blind | **DONE 2026-08-21.** Changes what Gate C asks: batch invariance, not single-stream. DERIVATIONS s15. See ledger C4 |
+| 0.10 | Verify AttriGuard 2603.10749 and CausalArmor 2602.07918 | Ex ante or post hoc established from the text | **DONE 2026-08-21.** Both ex ante guardrails, both cleared, titles and authors exact. Pin AttriGuard v2 |
+| 0.11 | **Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text** | Provisions quoted from the Official Journal text, not from summaries | **OPEN. Now the highest-risk unverified item in the project.** All of WS6 rests on it |
+| 0.9 | Final ledger pass | Every bibliography entry VERIFIED with a checked date. RECALLED entries cut, not chased | D18. Remaining RECALLED set ranked by risk at the foot of the ledger |
 
 ## WS1. Estimator core
 

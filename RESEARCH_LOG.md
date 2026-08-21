@@ -95,3 +95,94 @@ such rather than presented as a same-day record.
 (2) a decision on whether today's fix satisfies Gate D or the gate stays open
 pending a second read. Not blocked, and available to continue in parallel:
 WS0 remaining citation verification, WS6 Annex IV drafting, WS1.7/1.9.
+
+## 2026-08-21
+
+**Scope.** Two pieces of work. First a provenance repair, then the WS0 citation
+verification sweep that had been sitting since 13 August.
+
+**Provenance repair, committed and pushed.** `requirements.txt` said
+`numpy>=1.26`, a floor rather than a pin, and three numpy versions had produced
+artifacts in `results/`: 1.26.4 on the machine of record, 2.2.6 from a stray
+interpreter, 2.4.4 from a cloud session. Standing rule 10 requires a pinned
+environment and that was not a true statement about the repo. Pinned to
+`numpy==1.26.4`; `validate_mediation.py` now records numpy so the fingerprint is
+uniform across all seven artifacts; every artifact regenerated on the machine of
+record. Verified field-by-field against HEAD before committing: worst non-env
+delta 1.110e-16, everything else bit-identical, so this was pure provenance and
+no claim moved. `git fsck` clean, which also retires the iCloud-corruption worry
+flagged in PUSH.md. Commits `6b3d2f6` and `c91b3f4` are now on the private
+GitHub remote, verified by SHA match after fetch.
+
+**Citation sweep, five parallel verifications against primary sources.** This is
+the substantive result of the day.
+
+1. **A wrong citation was caught before it reached the bibliography.** 2509.08682
+   was recorded as "Automatic Failure Attribution and Critical Step Prediction via
+   Causal Inference" by "Y. Ma et al.". Both title and first author are wrong. The
+   actual title is "... Method for Multi-Agent Systems Based on Causal Inference"
+   and the first author is **Guoqing Ma**; the only "Y." initial belongs to the
+   last author. It sat in the ledger for eight days marked RECALLED. Standing
+   rule 1 exists for exactly this and the ledger discipline worked.
+
+2. **On substance 2509.08682 clears P2**, verified from full text: static logs,
+   no re-execution for attribution, zero occurrences of mediation or direct
+   effect, Shapley over agents rather than steps, no regulatory content. One
+   qualification worth pre-empting in related work: it compares trace-reading
+   LLM-judge baselines against its causal method, but scores both against human
+   annotation rather than against causal ground truth, so it is not a measurement
+   of whether observability tracks causation. That gap is still ours.
+
+3. **The Who&When 14.2% figure is real but three obvious ways of citing it are
+   wrong.** It appears exactly once in the paper, in the abstract, in no table,
+   and is the mean of four Table 1 cells. The best single cell is 25.51%. More
+   importantly, **on realistic hand-crafted long logs it is 7.02 and 8.77 against
+   a 4.16 random baseline**. If P2's argument is about long-horizon traces the
+   honest number is single-digit, which is stronger for the thesis than 14.2%.
+
+4. **The delegation non-identifiability result is narrower than recorded and
+   must be cited more carefully.** 2606.09692 proves the *authorization relation*
+   is non-identifiable, as a Proposition whose proof defines the observation
+   function to discard the quantity. It is a scoping result, not an impossibility
+   barrier. Cite as "must be bound at execution time", never as "attribution from
+   logs is impossible". It also has zero EU AI Act content, so the regulatory
+   bridge in WS6 is entirely ours and must not be attributed to them. Vendor
+   paper, no seeds or CIs on its metrics.
+
+5. **The replay floor needs batch invariance, and our stated precondition was
+   wrong.** DERIVATIONS section 14 listed "single-stream inference" as a
+   precondition. The primary source does not claim that. The forward pass is
+   already run-to-run deterministic; nondeterminism comes from lack of batch
+   invariance under varying server load; temperature 0 plus a fixed seed is not
+   sufficient, and their measurement is 80 unique completions from 1000
+   temperature-0 samples, collapsing to 1 with batch-invariant kernels.
+   Determinism is also not version-invariant. **This changes what Gate C is
+   asking**: not "can we replay" but "can we obtain batch-invariant inference on
+   the serving stack we have". Written up as DERIVATIONS section 15.
+
+6. **Pearl attribution improved.** Pearl 2009 is now verified against the Stanford
+   library record and CUP catalogue rather than CAR's bibliography, sections 4.5.4
+   and 4.5.5 located, and 2nd edition confirmed as necessary. But Pearl (2001)
+   UAI is the standard primary citation for the natural direct effect, with Robins
+   & Greenland (1992) holding priority. All three now cited in DERIVATIONS s4.
+
+Also cleared: AttriGuard 2603.10749 and CausalArmor 2602.07918, both ex ante
+guardrails, both with titles and author lists exactly as believed. AgenTracer
+oracle-substitution basis confirmed, with the qualification that it is only the
+failed-trajectory half of the method. Castro et al. 2009 fully verified, surname
+takes an accent, Gómez.
+
+**Operational finding.** One verification agent had its scratchpad file
+overwritten mid-task by a concurrent process. It detected the substitution,
+re-fetched in isolation, and re-derived every quote. Parallel verification must
+use isolated working directories; silent cross-contamination between two citation
+checks would be very hard to catch after the fact.
+
+**What is now the single load-bearing unverified item.** Regulation (EU)
+2024/1689 primary text, Articles 11, 12, 13, 86 and Annex IV. The entire WS6
+deliverable rests on it and no verified reading exists. Nothing else on the
+RECALLED list is close in importance.
+
+**Still blocked on Ajay, now five days overdue.** BFSI pipeline access for Stage
+0, which gates B, C, E and the `sigma_resid` number for the corpus-size rule.
+Unchanged since 17 August and not substitutable by any work I can do.

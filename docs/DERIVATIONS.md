@@ -71,8 +71,29 @@ probability `q`. So `y = w + (1-w) a'_3`.
 ## 4. Direct effect
 
 Intervene at `k`, pin every `j > k` to its factual action. This is Pearl's natural
-direct effect: mediators held at the values they took under the factual run
-(Pearl, *Causality*, CUP 2nd ed. 2009).
+direct effect: mediators held at the values they took under the factual run.
+
+**Citation, corrected 2026-08-21.** This was previously attributed to Pearl,
+*Causality*, CUP 2nd ed. 2009 alone. That is defensible but is not the strongest
+attribution, and the ledger check found the standard primary reference is the
+earlier paper:
+
+- **Primary:** Judea Pearl, "Direct and Indirect Effects", *Proceedings of the
+  Seventeenth Conference on Uncertainty in Artificial Intelligence (UAI 2001)*,
+  Morgan Kaufmann, pp. 411-420. VERIFIED via dblp.
+- **Textbook treatment:** Pearl, *Causality: Models, Reasoning, and Inference*,
+  Cambridge University Press, 2nd ed., 2009, **section 4.5.4** (natural direct
+  effects) and **4.5.5** (indirect effects and the mediation formula), in
+  chapter 4 "Actions, Plans, and Direct Effects". VERIFIED against the Stanford
+  library record and the CUP catalogue, ISBN 9780521895606, DOI
+  10.1017/CBO9780511803161. Note section 4.5 is material added in the 2nd
+  edition: citing the 1st edition (2000) for natural direct effects would be
+  wrong.
+- **Priority:** the natural/pure direct effect concept predates Pearl's
+  counterfactual formalisation. Robins and Greenland, "Identifiability and
+  exchangeability for direct and indirect effects", *Epidemiology* 3(2):143-155,
+  1992, DOI 10.1097/00001648-199203000-00013. VERIFIED via PubMed. Cite this if
+  the paper makes any priority claim about the estimand.
 
 **Step 0.** Pins `a1 = 1, a2 = 1, a3 = 1`, so `y = 1`.        DE(0) = 0
 **Step 1.** Pins `a3 = 1`, so `y = w a'_1 + (1-w)`.
@@ -230,9 +251,69 @@ efficiency attached, so a reader can see exactly where the estimate is tight and
 where divergence has eroded it.
 
 This is a result about samplers, established on synthetic categorical
-distributions. It has not yet been run against a language model, and the
-preconditions it assumes (per-request seed control, single-stream inference,
-fixed vocabulary order) are model-selection constraints that Gate C must confirm.
+distributions. It has not yet been run against a language model.
+
+## 15. What replay actually requires, corrected 2026-08-21
+
+The preconditions were previously written as "per-request seed control,
+single-stream inference, fixed vocabulary order". Two of those three are right.
+The middle one was an inference, and the source does not support it. Verified
+this session against the primary source: He, Horace and Thinking Machines Lab,
+"Defeating Nondeterminism in LLM Inference", *Thinking Machines Lab:
+Connectionism*, 10 Sep 2025, DOI 10.64434/tml.20250910.
+
+**The forward pass is already deterministic.** Quoting the source: "Thus, the
+forward pass in an LLM is in fact 'run-to-run deterministic.'" The common
+explanation, floating-point non-associativity racing with concurrent execution,
+is explicitly rejected: "concurrency (and atomic adds) end up being completely
+uninvolved in LLM inference nondeterminism!"
+
+**The actual cause is lack of batch invariance under varying server load.**
+Quoting: "it's because our forward pass lacks 'batch invariance', causing our
+request's output to depend on the batch size of our forward pass", and "the
+primary reason nearly all LLM inference endpoints are nondeterministic is that
+the load (and thus batch-size) nondeterministically varies!"
+
+Three consequences, all binding on Gate C and none of them previously stated
+correctly here:
+
+1. **Temperature 0 and a fixed seed are NOT sufficient.** This is the important
+   one. A replay harness that sets both and assumes determinism will silently
+   produce a non-zero null-replay divergence and mis-measure the replay floor.
+   The source's own measurement: 1000 completions at temperature 0 from one
+   prompt gave **80 unique completions**, identical for the first 102 tokens and
+   diverging at the 103rd. With batch-invariant kernels, all 1000 were identical.
+
+2. **The remedy is batch-invariant kernels, not serialisation.** Single-stream
+   inference holds batch size constant and so removes the symptom, but the post
+   never claims it is required and it must not be cited as though it does. The
+   stated requirement is: "if we'd like to avoid nondeterminism in our inference
+   servers, we must achieve batch invariance in our kernels", with "the reduction
+   order for each element must be fixed regardless of the batch-size of the
+   kernel". Reported cost: about 20% below cuBLAS on matmul, and 55s vs 26s
+   unoptimised on their Qwen3-8B benchmark, improving to 42s with a better
+   attention kernel.
+
+3. **Determinism does not survive an environment change.** "It is not
+   'hardware/software version invariant' - your GPU/PyTorch version may return a
+   different value, but it should deterministically return the same value." A
+   replay is therefore only valid within one pinned GPU and framework version,
+   which is the same discipline `requirements.txt` now applies to the analysis
+   environment, extended to the inference stack.
+
+**Consequence for the paper.** The CRN construction in Part II assumes the
+uniform draw is a pure function of its key and that both branches consume
+identical draws. That assumption holds only if the underlying forward pass is
+reproducible, and per the above it is not reproducible by default on a loaded
+endpoint. So Gate C is not merely "can we replay", it is "can we obtain
+batch-invariant inference on the serving stack we have". If the answer is no,
+`ME` inherits an irreducible noise floor that is a property of the serving
+infrastructure rather than of the system under study, and the honest fallback
+already pre-registered in PREREG s6 applies: no effect smaller than the measured
+null-replay floor is reported as an effect.
+
+The fixed-vocabulary-order requirement from section 13 is unaffected and still
+stands; it is a property of our own sampler, not of the server.
 
 ---
 
