@@ -186,3 +186,74 @@ RECALLED list is close in importance.
 **Still blocked on Ajay, now five days overdue.** BFSI pipeline access for Stage
 0, which gates B, C, E and the `sigma_resid` number for the corpus-size rule.
 Unchanged since 17 August and not substitutable by any work I can do.
+
+## 2026-08-23
+
+**Scope.** Status check after a two-day gap, then repair of two integrity
+defects found by that check. A parallel session had committed `4e8de3c` on 23
+August touching `src/p2/ranking.py` and the ledger.
+
+**What the other session did, and it was right to.** It lifted `CAUTION_K = 2.0`
+out of an inline literal in `normalized_beta` into a named constant, on the
+correct reasoning that a threshold deciding whether a reader is told to distrust
+the reported direction is an analysis choice, not an implementation detail. It
+also caught a citation failure of mine (below).
+
+**DEFECT 1, in the incoming commit: a pre-registration claim that was not true.**
+`ranking.py` carried the comment "Pre-registered constant, PREREG s2" while
+`preregistration/PREREG.md` contained **zero** occurrences of `CAUTION_K`, and
+that commit did not touch PREREG. Committed code asserting a pre-registration
+that does not exist is precisely the failure this programme's thesis is about,
+and a reviewer checking the claim would find it immediately.
+
+Resolved by making the claim true rather than deleting it, since the underlying
+instinct was correct: `CAUTION_K = 2.0` is now LOCKED in PREREG s2 with its
+rationale and with the provenance of the discrepancy recorded openly. This is
+legitimate rather than retrospective **only** because Gate D is unsigned and no
+pooled result has been inspected, which is the condition PREREG s9 sets. Had
+either been false, the honest action would have been to strike "pre-registered"
+from the code instead. Stated in the PREREG entry itself so the reasoning is
+auditable.
+
+**DEFECT 2, mine: a citation reached committed source without reaching the
+ledger.** The `normalized_beta` docstring I committed on 20 August cites
+"(Fieller 1954)" as the authority for the ratio-of-normals argument that
+justifies the paper's headline reporting convention. I never added it to the
+ledger. It sat in committed source, in a RECALLED state, inside the
+justification for a pre-registered analysis choice, and would have travelled
+into the manuscript's methods section unchecked. The other session caught it by
+eye and logged it RECALLED.
+
+Verified today: E. C. Fieller, "Some Problems in Interval Estimation", *JRSS
+Series B (Methodological)* 16(2):175-185, July 1954, DOI
+10.1111/j.2517-6161.1954.tb00159.x, confirmed against the Oxford Academic
+record and corroborated by the Wiley DOI page and the JSTOR volume listing.
+Upgraded to VERIFIED.
+
+**The lesson is about scope and it is now enforced mechanically.** The ledger
+rule was practised as "nothing enters a MANUSCRIPT until VERIFIED", treating
+docstrings as outside the boundary. In this project the docstrings are where the
+methodological arguments are actually written, so that boundary was wrong.
+`scripts/check_citations.py` now extracts every arXiv ID and author-year
+citation from `src/` and `scripts/` and fails if any is absent from the ledger,
+and it is wired into `verify.sh`. Tested in both directions: passes on the
+current tree, and catches a planted unledgered reference. Recorded as ledger
+correction C6.
+
+**Also added to `verify.sh`'s import-surface check.** `CAUTION_K == 2.0` is
+pinned so a silent retune cannot change what a reader is told, and
+`normalized_beta` is asserted exactly scale-invariant under
+`beta -> c*beta, V -> c^2*V`. Both are one-line assertions on properties the
+paper depends on and neither existed before.
+
+**Attempted and not completed.** The EU AI Act primary-text retrieval
+(Articles 11, 12, 13, 19, 26, 86, Annex III point 5, Annex IV, and the Article
+113 application dates). One agent hit an API session limit mid-task and the
+other failed to start. **Nothing from that attempt is recorded anywhere**, and
+no partial legal text was retained, deliberately: a half-retrieved regulation is
+worse than none. Reg (EU) 2024/1689 therefore remains the highest-risk
+unverified item, unchanged from 21 August. The application-date question in
+particular must be settled before the paper claims the Act applies to agentic
+credit underwriting now.
+
+**Unchanged and now seven days overdue.** BFSI pipeline access for Stage 0.

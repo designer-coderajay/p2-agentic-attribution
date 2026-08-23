@@ -73,6 +73,29 @@ shown to under-cover near `|g_j| = 1`. The joint Wald primary contrast itself
 `V -> c^2*V`, so this correction changes only follow-up magnitude reporting,
 not the hypothesis test.
 
+**LOCKED, `CAUTION_K = 2.0`, added 2026-08-23.** `ranking.normalized_beta`
+attaches a plain-language caution to its output when the fitted coefficient
+vector is short relative to its own standard errors, specifically when
+`||beta|| < CAUTION_K * sqrt(mean(diag(V)))`. The direction `g` is defined
+whenever any component carries signal, but it becomes poorly determined as
+`||beta||` approaches the noise scale, and a reader shown a direction with no
+warning would over-read it.
+
+This constant is fixed here, in advance, and **never tuned to a result**, for
+the same reason `ridge = 1.0` is (section 6): it gates what a reader is told
+about how far to trust the headline reporting quantity, so it is a
+pre-registered analysis choice and not an implementation detail.
+
+**Why this entry exists.** `CAUTION_K` was introduced into `src/p2/ranking.py`
+in commit `4e8de3c` carrying the source comment "Pre-registered constant,
+PREREG s2" at a time when **this document contained no such constant**. The
+instinct was right and the constant belongs here; the pre-registration claim
+simply had not been made yet. Recording it now makes the code's claim true
+going forward. This is legitimate rather than retrospective because Gate D is
+not signed off and no pooled result has been inspected, which is precisely the
+condition section 9 sets. Had either been true, the honest action would have
+been to strike the "pre-registered" wording from the code instead.
+
 ## 3. Corpus
 
 - **LOCKED:** stratified across outcome classes of the BFSI underwriting decision.

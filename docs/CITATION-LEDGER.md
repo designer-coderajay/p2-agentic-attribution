@@ -179,6 +179,36 @@ cites all three in that order. Citing Pearl 2009 alone was defensible; citing th
 
 ---
 
+### C6. A citation entered committed code without entering this ledger
+
+Found 2026-08-23, and worth recording as a process failure rather than quietly
+fixing, because it is the exact failure this ledger exists to prevent and it was
+committed by the same session that wrote the sweep above.
+
+The `normalized_beta` docstring in `src/p2/ranking.py`, added in commit
+`6b3d2f6` (2026-08-20), contains the parenthetical "(Fieller 1954)" as the
+authority for the ratio-of-normals argument. **That reference was never added
+to this ledger.** It went into committed source, in the justification for the
+paper's headline reporting convention, in a RECALLED state, and it would have
+travelled from the docstring into the manuscript's methods section without ever
+being checked.
+
+It was caught by a different session (commit `4e8de3c`), which logged it as
+RECALLED with the correct instruction to verify before use. Verified today
+against the JRSS-B record and now upgraded.
+
+**The lesson is about scope, not about Fieller.** The rule as practised was
+"nothing enters a *manuscript* until it appears here as VERIFIED". Code
+docstrings were treated as outside that boundary. They are not: a docstring that
+justifies a pre-registered analysis choice is a load-bearing citation, and in
+this project docstrings are where the methodological arguments are actually
+written. The rule at the top of this file should be read as covering **any
+committed artifact**, source included.
+
+A cheap mechanical check: grep the source tree for author-year patterns and
+confirm each appears here. Worth adding to `verify.sh` rather than relying on
+noticing.
+
 ## Numbers not to reuse without checking
 
 - "73.4 SWE-Bench Verified" for a 35B-class MoE: RECALLED from a comparison site. Not a primary model card. **Still unverified.**
@@ -216,4 +246,4 @@ to detect after the fact. And the incident is itself an argument for the discipl
 already in force here: every claim in this sweep carries a URL and an exact quote,
 so a contaminated intermediate could be caught and discarded rather than
 propagating into the bibliography.
-| - | Some Problems in Interval Estimation (ratio-of-normals confidence intervals) | E. C. Fieller, JRSS-B, 1954 | RECALLED | 2026-08-17 | Cited in the normalized_beta docstring as the reason a ratio to a near-zero coefficient has heavy tails and possibly unbounded intervals. Verify against a library record before it enters the manuscript. |
+| **Fieller 1954** | **Some Problems in Interval Estimation** | **E. C. Fieller.** *Journal of the Royal Statistical Society: Series B (Methodological)* **16(2):175-185**, July 1954. **DOI 10.1111/j.2517-6161.1954.tb00159.x** | **VERIFIED** | **2026-08-23** | Upgraded from RECALLED. Confirmed against the Oxford Academic JRSS-B record, corroborated by the Wiley DOI landing page and the JSTOR volume listing for Vol. 16 No. 2 (1954). Cited in the `normalized_beta` docstring as the reason a ratio to a near-zero coefficient has heavy tails and a possibly unbounded interval. **Logged only because another session caught it: it was referenced in committed code without ever entering this ledger.** See correction C6. |
