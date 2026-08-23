@@ -144,6 +144,10 @@ def separation_diagnostic(beta, se=None, H=None, ridge=0.0,
     return False, ("no separation detected" if ridge == 0.0
                    else f"bounded under ridge={ridge}")
 
+# Pre-registered constant, PREREG s2. Never tuned to a result.
+CAUTION_K = 2.0
+
+
 def normalized_beta(beta, V):
     """Report PL coefficients as a direction on the unit sphere, not as a ratio
     to one named coefficient.
@@ -204,8 +208,12 @@ def normalized_beta(beta, V):
         ej = np.zeros(K); ej[j] = 1.0
         grad = (norm**2 * ej - beta[j] * beta) / norm**3
         se[j] = float(np.sqrt(max(grad @ V @ grad, 0.0)))
+    # CAUTION_K is a pre-registered constant (PREREG s2). It gates whether a
+    # reader is told to distrust the direction, so it is locked here rather than
+    # left as an implementation detail. Fires when the fitted vector's length is
+    # below CAUTION_K times the average coefficient standard error.
     note = ("caution: ||beta|| is small relative to its se, direction is "
-            "poorly determined" if norm < 2 * np.sqrt(np.mean(np.diag(V)))
+            "poorly determined" if norm < CAUTION_K * np.sqrt(np.mean(np.diag(V)))
             else "")
     return g, se, note
 

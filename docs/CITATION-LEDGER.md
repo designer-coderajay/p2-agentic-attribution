@@ -216,3 +216,4 @@ to detect after the fact. And the incident is itself an argument for the discipl
 already in force here: every claim in this sweep carries a URL and an exact quote,
 so a contaminated intermediate could be caught and discarded rather than
 propagating into the bibliography.
+| - | Some Problems in Interval Estimation (ratio-of-normals confidence intervals) | E. C. Fieller, JRSS-B, 1954 | RECALLED | 2026-08-17 | Cited in the normalized_beta docstring as the reason a ratio to a near-zero coefficient has heavy tails and possibly unbounded intervals. Verify against a library record before it enters the manuscript. |
