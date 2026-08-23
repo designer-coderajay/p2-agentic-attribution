@@ -44,7 +44,8 @@ cited. Details in the corrections section at the foot of this file.
 | **Robins & Greenland 1992** | **Identifiability and exchangeability for direct and indirect effects** | *Epidemiology* **3(2):143-155**, 1992. DOI 10.1097/00001648-199203000-00013, PMID 1576220 | **VERIFIED (PubMed)** | **2026-08-21** | Priority for the natural/pure direct effect concept, predating Pearl's counterfactual formalisation. Cite if the paper makes any priority claim about the estimand. |
 | 2407.08734 | Transformer Circuit Faithfulness Metrics Are Not Robust | COLM 2024 | VERIFIED in P1 | (P1) | Cross-cite for the resample-over-remove argument. |
 | Shapley 1953; Lundberg & Lee | Shapley value; SHAP | - | RECALLED | - | Verify before citing. Castro et al. 2009 is the better estimator citation and is now verified. |
-| Reg (EU) 2024/1689 | Arts. 11, 12, 13, 86; Annex III, Annex IV | Primary text | - | - | Read the regulation, not summaries. Article 86 (right to explanation) added: it is the hook for attributing correct decisions, not only failures. **Now the only load-bearing unverified item for WS6.** |
+| **Reg (EU) 2024/1689** | **Regulation (EU) 2024/1689 (Artificial Intelligence Act)** | **Consolidated text as at 27 July 2026, CELEX 02024R1689-20260727** | **PARTIALLY VERIFIED** | **2026-08-23** | Art. 113, Art. 6(1)-(2), Annex III pt 5, Art. 11(1) 2nd subpara: **VERBATIM, see `docs/REGULATORY-BASIS.md`**. Arts. 11 (full), 12, 13, 19, 26, 86 and Annex IV (full): **STILL NOT RETRIEVED**. Consolidated text carries "no legal effect"; quote the OJ text for anything load-bearing. |
+| **Reg (EU) 2026/1744** | **Regulation (EU) 2026/1744 of 8 July 2026 amending Regulations (EU) 2024/1689, (EU) 2018/1139 and (EU) 2023/1230 as regards the simplification of the implementation of harmonised rules on artificial intelligence (Digital Omnibus on AI)** | **European Parliament and Council. OJ L series, 2026/1744, 24.7.2026. In force 27 July 2026** | **VERIFIED, PRIMARY TEXT** | **2026-08-23** | **PROGRAMME-ALTERING. Art. 1(40) defers Chapter III Sections 1-3 to 2 Dec 2027 (Annex III) and 2 Aug 2028 (Annex I).** Arts. 11, 12, 13 and Annex IV are therefore NOT in application today. Only four articles exist: cite **Article 1(40)**, never "Article 40". **Recital (40) is separate, non-binding, and is the strongest regulatory hook the programme has.** See correction C7. |
 
 ---
 
@@ -208,6 +209,55 @@ committed artifact**, source included.
 A cheap mechanical check: grep the source tree for author-year patterns and
 confirm each appears here. Worth adding to `verify.sh` rather than relying on
 noticing.
+
+### C7. The AI Act obligations this paper is about are not in application
+
+Found 2026-08-23. The largest single correction the ledger has recorded, and it
+changes paragraph one.
+
+**Regulation (EU) 2026/1744**, the "Digital Omnibus on AI", adopted 8 July 2026
+and in force 27 July 2026, amended Article 113 of the AI Act. Chapter III
+Sections 1, 2 and 3 now apply from **2 December 2027** for Annex III high-risk
+systems and 2 August 2028 for Annex I. Articles 11, 12 and 13 sit in Chapter III
+Section 2, and Annex IV is operative only through Article 11(1), so all of them
+are deferred.
+
+**The original brief's claim "the AI Act applies to them now" is FALSE** as of
+today for every provision this paper is built on. It survives only in
+`paper-2-agentic-attribution.md`; the repo documents never asserted it, which is
+the one piece of luck here.
+
+Three things follow.
+
+1. **Do not trust any secondary source on AI Act dates.** Almost all of them
+   predate the Omnibus and still say 2 August 2026. This includes law-firm
+   briefings published as recently as May 2026, one of which was consulted this
+   session and described the change as a *proposal* because at the time it was.
+   Only EUR-Lex, and only with the publication date checked.
+
+2. **The framing improves rather than weakens.** A conformity specification
+   published in 2026 for an obligation that bites in December 2027 arrives when
+   it can still be adopted, and Article 11(1) as amended now requires the
+   Commission to produce a simplified technical documentation form for SMEs that
+   does not yet exist. The deliverable has a live target.
+
+3. **Recital (40) of 2026/1744 is a gift to the programme thesis** and should be
+   in paragraph one of all three papers. The legislature's stated reason for the
+   deferral, verbatim: "the delayed availability of standards, common
+   specifications, and alternative guidance and the delayed establishment of
+   national competent authorities lead to challenges that jeopardise the
+   effective entry into application of those obligations". That is the Union
+   saying on the record that the apparatus for demonstrating conformity was not
+   ready. Cite as a **recital**: explanatory, non-binding, never as operative law.
+
+**A citation trap worth stating explicitly.** Regulation (EU) 2026/1744 has only
+four articles. Recital (40) and Article 1 point (40) both exist and concern the
+same subject. "Article 40" does not exist. The binding amendment is **Article
+1(40)**. A paper about regulatory evidence that miscites a regulation loses the
+argument before it starts.
+
+Full verbatim record, with URLs and epistemic markers, in
+`docs/REGULATORY-BASIS.md`.
 
 ## Numbers not to reuse without checking
 

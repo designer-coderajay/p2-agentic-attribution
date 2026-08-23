@@ -257,3 +257,73 @@ particular must be settled before the paper claims the Act applies to agentic
 credit underwriting now.
 
 **Unchanged and now seven days overdue.** BFSI pipeline access for Stage 0.
+
+## 2026-08-23, second entry
+
+**The AI Act obligations this paper is about are not in application, and will not
+be until 2 December 2027.** Verified from EUR-Lex primary text. This is the
+largest single finding since Gate A and it changes paragraph one.
+
+**What happened.** Regulation (EU) 2026/1744, the "Digital Omnibus on AI",
+adopted 8 July 2026, published in the OJ on 24 July 2026, in force 27 July 2026,
+amended Article 113 of the AI Act. Its Article 1(40) replaces Article 113 third
+paragraph point (c) so that Chapter III Sections 1, 2 and 3 apply from **2
+December 2027** for Annex III high-risk systems and 2 August 2028 for Annex I.
+
+Articles 11 (technical documentation), 12 (record-keeping) and 13 (transparency)
+sit inside Chapter III Section 2, and Annex IV is operative only through Article
+11(1). All of them are therefore deferred for a credit underwriting system.
+Annex III point 5(b), creditworthiness, is itself unchanged and still captures
+the BFSI pipeline.
+
+**The brief is wrong and must be corrected.** `paper-2-agentic-attribution.md`
+says "Agentic systems are the 2026 deployment story, the AI Act applies to them
+now". False as of today for every provision this paper rests on. The repo
+documents never made that claim, which is luck rather than discipline.
+
+**This is a better position, not a worse one.** A conformity specification
+published in 2026 for an obligation that bites in December 2027 arrives while it
+can still be adopted, which is the entire point of the WS6 deliverable. And
+Article 11(1) as amended now obliges the Commission to produce a simplified
+Annex IV form for SMEs and SMCs which **does not yet exist**, so the deliverable
+has a live target rather than a hypothetical one.
+
+**Recital (40) is the strongest regulatory hook the programme has found, and it
+belongs in all three papers.** The legislature's own stated reason for the
+deferral, verbatim: "the delayed availability of standards, common
+specifications, and alternative guidance and the delayed establishment of
+national competent authorities lead to challenges that jeopardise the effective
+entry into application of those obligations". The Union is saying on the record
+that it could not bring the high-risk regime into application because the
+apparatus for demonstrating conformity was not ready. P1 argues interpretability
+evidence cannot support a conformity claim; P2 argues observability evidence does
+not track causation; recital (40) is the regulator conceding the general point.
+Cite as a recital: explanatory, non-binding, never as operative law.
+
+**A trap now recorded in the ledger.** Regulation (EU) 2026/1744 has only four
+articles. Recital (40) and Article 1 point (40) both exist and concern the same
+subject. There is no "Article 40". The binding amendment is Article 1(40).
+
+**Methodological note that cost nothing and would have cost a lot.** The first
+search surfaced a law-firm briefing describing the deferral as a *proposal* with
+formal adoption "expected in the coming weeks". It was published 27 May 2026 and
+was accurate then. Had it been trusted rather than used only to locate the
+instrument, the paper would have recorded a proposed change as unadopted, or the
+old dates as current. Every secondary source on AI Act dates is now suspect
+unless its publication date is checked against 24 July 2026.
+
+**Written.** `docs/REGULATORY-BASIS.md`, the verbatim primary-text foundation for
+WS6, with epistemic markers throughout and an explicit list of what is still not
+retrieved. Ledger correction C7. Ledger rows added for 2024/1689 (PARTIALLY
+VERIFIED) and 2026/1744 (VERIFIED).
+
+**One load-bearing link needs a second pair of eyes.** That Articles 11, 12 and
+13 sit inside Chapter III Section 2 was established by inspecting where the
+Section headings fall in the consolidated text, not by direct quotation. The
+whole framing depends on it. Flagged in REGULATORY-BASIS section 7 as a
+two-minute check to do before the claim enters the manuscript.
+
+**Still not retrieved, all load-bearing for WS6.** Article 12 in full, which is
+the single most important provision for the deliverable, plus Articles 11, 13,
+19, 26, 86 and Annex IV in full. EUR-Lex HTML truncates on retrieval, so these
+need fetching in sections or from the PDF. Next block.
