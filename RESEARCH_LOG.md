@@ -327,3 +327,79 @@ two-minute check to do before the claim enters the manuscript.
 the single most important provision for the deliverable, plus Articles 11, 13,
 19, 26, 86 and Annex IV in full. EUR-Lex HTML truncates on retrieval, so these
 need fetching in sections or from the PDF. Next block.
+
+## 2026-08-23, third entry
+
+**WS6 now has its full legal foundation.** Articles 11, 12, 13, 18(1), 19, 26, 86
+and Annex IV retrieved complete and verbatim, plus recitals 71 and 171. Written
+into `docs/REGULATORY-BASIS.md` sections 8 to 14. Article 12 was verified
+character for character against the OJ original.
+
+**Retrieval note worth keeping.** EUR-Lex is behind an AWS WAF challenge that
+returns HTTP 202 and zero bytes of legal text to programmatic fetches, which is
+why the earlier attempts truncated. The working route is the **Publications
+Office Cellar repository**, EUR-Lex's official backing store, which serves the
+identical consolidated document at
+`https://publications.europa.eu/resource/celex/02024R1689-20260727`. Recorded so
+the next session does not rediscover it.
+
+**Four findings, and they are stronger than the original framing.**
+
+1. **Article 12 is system-level and says so.** The unit of obligation is "the
+   system", and the three purposes in 12(2) are risk identification, post-market
+   monitoring and deployer monitoring. None is attribution of an output to an
+   internal cause.
+
+2. **For credit scoring there is no minimum log content at all.** Article 12(3),
+   the only enumerated minimum, binds solely Annex III **point 1(a)**, remote
+   biometric identification. Creditworthiness is point 5(b) and falls outside it.
+   So for the BFSI pipeline the Regulation prescribes no minimum log content
+   whatsoever, only that capability exist. Stronger than what the paper claimed.
+
+3. **The Act has no vocabulary for agentic systems.** Across the six units that
+   constitute the entire high-risk documentation and record-keeping package,
+   "agent", "agentic", "multi-agent", "orchestration" and "reasoning" appear
+   **zero times**. "tool" appears once, plural, meaning third-party development
+   artefacts. "step" appears once, meaning a step in the **development process**.
+   The only internal-component reference is Annex IV 2(c).
+
+4. **The retention asymmetry is a factor of twenty.** Technical documentation is
+   kept 10 years (Art. 18(1)); logs are kept 6 months (Arts. 19(1) and 26(6)).
+   The static architecture description outlives the dynamic execution record
+   twentyfold. If attribution needs the runtime record, the mandated evidence
+   expires before litigation or market surveillance would reach it. Both
+   retention duties are also limited to logs "to the extent such logs are under
+   their control", which writes accountability diffusion into the duty itself.
+
+**The sharpest single point found so far.** Article 86 gives an affected person
+the right to "clear and meaningful explanations of the role of the AI system in
+the decision-making procedure and the main elements of the decision taken". Two
+limbs, and neither covers how the system produced its output. The duty-holder is
+the **deployer**, whose evidentiary base is Article 13 instructions plus Article
+12 logs, both system-level. **The right terminates at exactly the layer where
+causal attribution would have to begin.** That is the paper's thesis stated in
+the structure of the Regulation.
+
+**Also relevant to BFSI specifically.** Articles 19(2) and 26(6) second
+subparagraph fold a financial institution's AI Act log duty into its existing
+financial-services record-keeping, whose granularity was never designed for
+causal attribution over an agent trajectory.
+
+**Three reviewer objections identified and answers drafted** in REGULATORY-BASIS
+section 13, including one that needs more work: a reviewer may say Article 25
+(AI value chain) is where the Act handles multi-component systems. Article 25 and
+the Article 3 definitions are **not yet retrieved** and should be before the
+manuscript. The answer is that allocating responsibility between actors is not
+the same as producing evidence of which component caused an output, but it must
+be met explicitly.
+
+**Discipline note.** Two formulations are supported by the text and two are not.
+Supported: the obligation is specified at system level, and neither Article 12
+nor Annex IV requires records sufficient to attribute an output to a specific
+component. Not supported and must not be written: that the Act "prohibits" or
+"excludes" component-level logging, or that it "defines traceability as
+system-level". The word "traceability" appears once in the entire Article and is
+never defined in the Act.
+
+**Still not retrieved:** Articles 25, 72, 74, 79(1) and the Article 3
+definitions.

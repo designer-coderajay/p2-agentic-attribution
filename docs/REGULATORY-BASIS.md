@@ -214,27 +214,266 @@ two-minute check and the entire framing depends on it.
 
 ---
 
-## 8. Still outstanding for WS6
+## 8. Article 12, the provision the whole deliverable is about
 
-Retrieved this session: Article 113, Article 6(1) and 6(2), Annex III point 5,
-Article 11(1) second subparagraph, recital (40) of 2026/1744, Article 1(40) and
-Article 4 of 2026/1744.
+`VERBATIM`, consolidated text, marker `B`. **Article 12 is NOT amended by
+Regulation (EU) 2026/1744**, confirmed both by the absence of an M1 marker and
+against the amending act's own list of instructions.
 
-**Not yet retrieved, and all of it load-bearing:**
+> **Article 12 — Record-keeping**
+>
+> 1. High-risk AI systems shall technically allow for the automatic recording of events (logs) over the lifetime of the system.
+>
+> 2. In order to ensure a level of traceability of the functioning of a high-risk AI system that is appropriate to the intended purpose of the system, logging capabilities shall enable the recording of events relevant for:
+> (a) identifying situations that may result in the high-risk AI system presenting a risk within the meaning of Article 79(1) or in a substantial modification;
+> (b) facilitating the post-market monitoring referred to in Article 72; and
+> (c) monitoring the operation of high-risk AI systems referred to in Article 26(5).
+>
+> 3. For high-risk AI systems referred to in point 1 (a), of Annex III, the logging capabilities shall provide, at a minimum:
+> (a) recording of the period of each use of the system (start date and time and end date and time of each use);
+> (b) the reference database against which input data has been checked by the system;
+> (c) the input data for which the search has led to a match;
+> (d) the identification of the natural persons involved in the verification of the results, as referred to in Article 14(5).
 
-- **Article 12 (record-keeping) in full.** This is the single most important
-  provision for the deliverable. The whole argument is that Article 12 mandates
-  logging that is insufficient for causal attribution, and that argument cannot be
-  made without its exact words.
-- **Article 11 in full**, beyond the amended second subparagraph.
-- **Annex IV in full**, all enumerated points. The deliverable is a specification
-  against this list.
-- **Article 13** (transparency to deployers) in full.
-- **Article 19** (automatically generated logs) in full.
-- **Article 26** (deployer obligations), especially any log-retention period.
-- **Article 86** (right to explanation of individual decision-making) in full,
-  including its conditions and limits. Load-bearing for the "attribute correct
-  decisions, not only failures" framing.
+That is the complete Article. The odd punctuation in paragraph 3 ("point 1 (a),
+of Annex III") is authentic and identical in the OJ original.
 
-EUR-Lex HTML truncates on retrieval, so these need fetching in sections or from
-the PDF. Do not fill any of it from a summary site.
+**Retrieval note.** EUR-Lex sits behind an AWS WAF challenge that returns HTTP
+202 and zero bytes of legal text to programmatic fetches. All text in sections 8
+to 13 was taken from the **Publications Office Cellar repository**, EUR-Lex's
+official backing store, which serves the identical consolidated document:
+`https://publications.europa.eu/resource/celex/02024R1689-20260727` (851,286
+bytes, header `02024R1689 — EN — 27.07.2026 — 001.001`), cross-checked against
+`.../32024R1689` (OJ original) and `.../32026R1744` (the amending act). Article
+12 was verified character for character against the OJ original.
+
+---
+
+## 9. The four findings that make the argument
+
+### 9.1 The obligation is system-level, and says so
+
+`VERBATIM` the unit of obligation is "the system": *"automatic recording of
+events (logs) over the lifetime of the system"*. The purpose clause fixes
+granularity by reference to three system-level regulatory functions: risk
+identification under Article 79(1), post-market monitoring under Article 72, and
+deployer monitoring under Article 26(5). **None of them is attribution of an
+output to an internal cause.**
+
+`INFERRED`, and this is the formulation to use because it does not overstate:
+the Regulation mandates logging capability sufficient for system-level risk and
+monitoring functions, leaves granularity to the provider against the intended
+purpose, and **nowhere sets attribution of an output to an internal cause as the
+specification**. What must NOT be written: "the Act prohibits component-level
+logging", or "the Act defines traceability as system-level". The word
+"traceability" appears exactly once, in the 12(2) chapeau, and is never defined
+in the Act.
+
+### 9.2 For credit scoring there is no minimum log content at all
+
+Article 12(3) is the only enumerated minimum, and it binds **only** systems under
+Annex III **point 1(a)**, remote biometric identification. A creditworthiness
+system is Annex III **point 5(b)**. It therefore falls outside 12(3) entirely.
+
+`INFERRED`. For the BFSI pipeline, and for every Annex III category except
+biometric identification, the Regulation prescribes **no minimum log content
+whatsoever** — only that logging capability exist and that logged events be
+"relevant for" the three purposes. This is stronger than the paper's original
+framing and it is directly quotable.
+
+Note also the direction of 12(3)(d): the single identification requirement in the
+whole Article attributes to a **natural person who verified the result**, not to a
+system component.
+
+### 9.3 The Act has no vocabulary for agentic systems
+
+`VERBATIM` word counts across the six units that constitute the entire high-risk
+documentation and record-keeping package (Articles 11, 12, 13, 19, 26 and Annex
+IV), case-insensitive, whole-word:
+
+| Term | Count | Where |
+|---|---|---|
+| agent | **0** | nowhere |
+| agentic | **0** | nowhere |
+| multi-agent | **0** | nowhere |
+| orchestration | **0** | no `orchestrat*` stem at all |
+| reasoning | **0** | nowhere (2 irrelevant `reason*` hits) |
+| tool / tools | 1 | Annex IV 2(a), third-party development artefacts |
+| component / components | 2 | Annex IV 1(f) and 2(c) |
+| step / steps | 1 | Annex IV 2(a) |
+| trace / traceability | 1 | Article 12(2) chapeau |
+
+The only occurrence of "step" means a step in the **development process**:
+*"the methods and steps performed for the development of the AI system"*. Not a
+step in an execution trace. The only internal-component occurrence is Annex IV
+2(c); the other, 1(f), treats the AI system as a component **of a physical
+product**, inherited from product-safety law.
+
+### 9.4 The one component-aware provision is static and design-time
+
+`VERBATIM`, Annex IV point 2(c), the most component-aware sentence in the entire
+compliance package:
+
+> the description of the system architecture explaining how software components build on or feed into each other and integrate into the overall processing; the computational resources used to develop, train, test and validate the AI system;
+
+`INFERRED`. This is a **design-time documentation** duty discharged before
+placing on the market and kept up to date under Article 11(1). It requires a
+static description of how components relate **in general**, not a runtime record
+of how they related **on any particular occasion**. It yields a diagram of the
+pipeline. Article 12 yields events over the system's lifetime. **Neither yields a
+per-output execution trace.** That is the gap, and the text supports the claim as
+stated.
+
+The distinction doing most of the work in the paper is therefore
+**description versus record**, and **general versus per-instance**. Make it
+explicit early.
+
+---
+
+## 10. The retention asymmetry, a factor of twenty
+
+`VERBATIM`, Article 19(1), binding the **provider**:
+
+> Providers of high-risk AI systems shall keep the logs referred to in Article 12(1), automatically generated by their high-risk AI systems, to the extent such logs are under their control. Without prejudice to applicable Union or national law, the logs shall be kept for a period appropriate to the intended purpose of the high-risk AI system, of at least six months, unless provided otherwise in the applicable Union or national law, in particular in Union law on the protection of personal data.
+
+`VERBATIM`, Article 26(6) first subparagraph, binding the **deployer**, in
+near-identical terms and with the same six-month floor.
+
+`VERBATIM`, Article 18(1), the documentation retention period:
+
+> The provider shall, for a period ending 10 years after the high-risk AI system has been placed on the market or put into service, keep at the disposal of the national competent authorities: (a) the technical documentation referred to in Article 11;
+
+`INFERRED`, and it is one of the sharpest points available to the paper. **The
+static architectural description is retained for 10 years. The dynamic execution
+record is retained for 6 months. A factor of twenty.** If causal attribution
+requires the runtime record, the mandated evidence expires long before most
+accountability processes — litigation, regulatory investigation, market
+surveillance under Article 74 — would reach it.
+
+**And no single actor need hold the whole trace.** Both Article 19(1) and Article
+26(6) are limited to logs *"to the extent such logs are under their control"*.
+`INFERRED`: in a multi-actor pipeline with five external MCP services, that
+limitation is exactly the accountability-diffusion problem the governance
+literature named, written into the retention duty itself.
+
+**Financial-institution carve-out, directly relevant to BFSI.** `VERBATIM`,
+Article 19(2): providers that are financial institutions *"shall maintain the
+logs automatically generated by their high-risk AI systems as part of the
+documentation kept under the relevant financial services law."* Article 26(6)
+second subparagraph does the same for deployers. `INFERRED`: for a bank, the AI
+Act's log duty is absorbed into existing financial-services record-keeping, whose
+granularity was never designed for causal attribution over an agent trajectory.
+Worth a paragraph.
+
+---
+
+## 11. Article 86 terminates exactly where attribution would begin
+
+`VERBATIM`, Article 86, unamended:
+
+> **Article 86 — Right to explanation of individual decision-making**
+>
+> 1. Any affected person subject to a decision which is taken by the deployer on the basis of the output from a high-risk AI system listed in Annex III, with the exception of systems listed under point 2 thereof, and which produces legal effects or similarly significantly affects that person in a way that they consider to have an adverse impact on their health, safety or fundamental rights shall have the right to obtain from the deployer clear and meaningful explanations of the role of the AI system in the decision-making procedure and the main elements of the decision taken.
+>
+> 2. Paragraph 1 shall not apply to the use of AI systems for which exceptions from, or restrictions to, the obligation under that paragraph follow from Union or national law in compliance with Union law.
+>
+> 3. This Article shall apply only to the extent that the right referred to in paragraph 1 is not otherwise provided for under Union law.
+
+`INFERRED`. The entitlement has **two** limbs joined by "and": the **role of the
+AI system in the decision-making procedure** (a procedural fact: at what point it
+was used, whether determinative or advisory), and **the main elements of the
+decision taken** (the substance of the human deployer's decision). There is no
+third limb covering **how the AI system produced its output**. The explanandum is
+the system's *position in the procedure*, not its *processing*.
+
+**The sharpest point in the whole regulatory analysis.** The duty-holder is the
+**deployer**, not the provider. The actor best placed to explain the system's
+internals has no obligation under this Article; the actor who is obliged holds
+only what Article 13 instructions and Article 12 logs give them, and both are
+system-level. **The right therefore terminates at exactly the layer where causal
+attribution would have to begin.**
+
+Two drafting traps:
+- Recital 171 says *"based mainly upon the output"*; Article 86(1) says only
+  *"on the basis of the output"*. The enacting text controls. Do not import
+  "mainly" into the operative test.
+- The adverse-impact element is **subjective**: *"in a way that they consider to
+  have an adverse impact"*. Unusually claimant-friendly; worth flagging.
+
+Scope limits: Annex III only, point 2 excluded, Annex I systems entirely outside;
+Article 86(3) is a subsidiarity clause deferring to existing Union rights such as
+GDPR Article 22.
+
+---
+
+## 12. Article 13, and the two provisions that nearly help but do not
+
+`VERBATIM`, Article 13(3)(b)(iv):
+
+> where applicable, the technical capabilities and characteristics of the high-risk AI system to provide information that is relevant to explain its output;
+
+`VERBATIM`, Article 13(3)(f):
+
+> where relevant, a description of the mechanisms included within the high-risk AI system that allows deployers to properly collect, store and interpret the logs in accordance with Article 12.
+
+`INFERRED`. Both are **disclosure** duties about whatever capability the system
+happens to have. "Where applicable" and "where relevant" make each contingent on
+the capability existing. Neither creates an obligation to build an explanatory
+capability, and neither creates an obligation to record its outputs. They are the
+strongest counter-text a reviewer will find, and they do not carry the weight.
+
+---
+
+## 13. The reviewer objections, and how to meet them
+
+`INFERRED` throughout. Three are worth pre-empting in the paper rather than
+waiting for.
+
+1. **"Article 12(2) is open-textured, so component-level logging could be
+   required."** True and should be conceded. If component-level records were
+   genuinely necessary to make risk situations identifiable under 12(2)(a), a
+   regulator or harmonised standard could argue they are "events relevant for"
+   that purpose. The text does not foreclose component-level logging; it does not
+   mandate it, and supplies no criterion by which an assessor could demand it in
+   the general case. Concede the first half, hold the second.
+
+2. **"Annex IV points 2(b) and 3 are broad enough to reach component
+   behaviour."** Point 2(b) requires "the general logic of the AI system and of
+   the algorithms"; point 3 requires "Detailed information about the monitoring,
+   functioning and control of the AI system". Both are, on their face,
+   requirements to **describe** in general terms, and neither is a **recording**
+   requirement attaching to individual outputs. This is why the
+   description/record and general/per-instance distinctions must be stated early.
+
+3. **"Article 25 on the AI value chain is where the Act handles multi-component
+   systems, not Article 12."** `NOT RETRIEVED` — Article 25 and the Article 3
+   definitions of "AI system", "provider" and "deployer" were not fetched and
+   should be, before the manuscript. This is a genuine counter-argument and it
+   does not defeat the point: **allocating legal responsibility between actors is
+   not the same as producing evidence of which component caused an output.** Meet
+   it explicitly.
+
+---
+
+## 14. Still outstanding
+
+Retrieved and verbatim: Articles 6(1), 6(2), 11, 12, 13, 18(1), 19, 26, 86, 113;
+Annex III point 5; Annex IV complete; recitals 71 and 171; Regulation (EU)
+2026/1744 Articles 1(40) and 4 and recital (40).
+
+**Not retrieved:**
+
+- **Article 25** (responsibilities along the AI value chain) and the **Article 3**
+  definitions. Needed to meet reviewer objection 3 above.
+- **Article 72** (post-market monitoring) and **Article 79(1)**, both referenced
+  by Article 12(2) and so load-bearing for what "relevant events" means.
+- **Article 74** (market surveillance powers), for the argument that logs expire
+  before investigations reach them.
+
+**Citation discipline for the manuscript.** The consolidated text carries the
+standard disclaimer that it "is meant purely as a documentation tool and has no
+legal effect". For a paper turning on exact wording, cite **OJ L, 2024/1689,
+12.7.2024** (ELI `http://data.europa.eu/eli/reg/2024/1689/oj`) for Articles 12,
+13, 19, 26, 86 and Annex IV, all unamended and therefore identical in the OJ
+original, and **OJ L, 2026/1744, 24.7.2026** for the replaced second subparagraph
+of Article 11(1) and for the Article 113 amendment.
