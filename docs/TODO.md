@@ -37,7 +37,7 @@ manuscript from the second or third category.
 | 1.5 | CAR point-of-commitment rule, reproduced verbatim in intent | Locus matches CAR's stated semantics on the planted SCM | **DONE.** Returns step 3 |
 | 1.6 | Pin-plausibility diagnostic | Analytic value 0.5 at step 3 under DE(1) recovered | partial. Estimated 0.54; needs a tightened probe and its own derivation |
 | 1.10 | Maximal-coupling sampler wired into the estimators | `DE` arm uses maximal coupling; per-step TV and coupling efficiency reported alongside ME | open |
-| 1.7 | Non-binary and continuous outcome functions | Estimators correct where `Y` is not in {0,1} | open |
+| 1.7 | Non-binary and continuous outcome functions | Estimators correct where `Y` is not in {0,1} | **DONE 2026-08-25.** Estimators confirmed correct on a continuous `Y` with OPPOSING direct and mediated paths (`y = w*a1 - (1-w)*a3`), all four steps within MC error of a hand derivation, identity residual 5.6e-17. **Found a real defect in the reporting layer, not the estimators:** `|ME|/|TE|` exceeds 1 under suppression and would rank a suppressed node above a pure mediator, inverting H4. Fixed by `effects.mediated_share`, LOCKED in PREREG s2, derived in DERIVATIONS Part VI, guarded by `scripts/validate_suppression.py` in `verify.sh`. Changed the dry-run H4 from +0.698 to +0.855 |
 | 1.8 | Replay-nondeterminism arm | Factual side resampled too; effect intervals widen correctly | open |
 | 1.9 | Unit tests, pinned seeds, CI | `pytest` green from a clean checkout | open |
 
@@ -81,7 +81,7 @@ repo's actual state. Corrected below against `preregistration/PREREG.md`,
 |---|---|---|---|
 | 5.1 | Simulation-based power analysis | `N` derived from Stage 0 variance, not chosen | **RULE locked** (PREREG s3). Number needs Stage 0, **blocked on BFSI pipeline access** |
 | 5.2 | Kendall tau_b with bootstrap over decisions | Distribution reported, not the mean alone | **DONE.** `analysis.bootstrap_over_decisions`, used in `dry_run.py` H1/H4 |
-| 5.3 | H2 model: rank-ordered primary, OLS-on-ranks secondary | Both pre-specified; VIFs reported | **DONE**, primary (`ranking.fit_plackett_luce`). Secondary CR1 OLS exists (`analysis.ols_cluster`) but not yet wired into `dry_run.py`'s H2 block; VIF (`analysis.vif`) implemented but not yet reported there either. **open, small** |
+| 5.3 | H2 model: rank-ordered primary, OLS-on-ranks secondary | Both pre-specified; VIFs reported | **DONE 2026-08-25.** Both LOCKED reports were implemented and validated in `analysis.py` but never called in `dry_run.py`, so the specification was satisfied in the library and unsatisfied in the analysis. Now wired: VIFs per covariate with a flag above the 6.11 level coverage was verified to, CR1 OLS secondary with cluster and naive se side by side, and an explicit primary-vs-secondary agreement line implementing the "state it in the abstract" clause |
 | 5.4 | **Pre-registration committed with a timestamp** | Commit exists before any pooled result is viewed | **Drafted, one known defect fixed 2026-08-20** (ratio-to-causal convention, `docs/DERIVATIONS.md` Part V). Gate D sign-off is Ajay's call |
 | 5.5 | Both abstracts drafted | Result-positive and result-negative, both committed | **DONE.** PREREG s8 |
 | 5.6 | Normalised-beta reporting convention | Point estimate, delta-method se, bootstrap CI, all validated against invariance and coverage | **DONE, 2026-08-20.** `ranking.normalized_beta`, `ranking.bootstrap_normalized_beta`, `validate_primary.py` s6 |

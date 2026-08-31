@@ -352,15 +352,31 @@ def h4_statistic(mediated_share_list, obs_rank_list, causal_rank_list):
     This is the mechanistic explanation for H1-H3 rather than a fourth symptom,
     and it is the part hardest for prior work to have done, since prior work has
     no direct-effect arm to form a mediated share from.
+
+    SUPPRESSED NODES ARE EXCLUDED, and the exclusion is not silent. Pass shares
+    produced by `effects.mediated_share`, which returns NaN wherever |ME|/|TE| is
+    not a share (opposite-signed direct and total effects, or |DE| > |TE|). Those
+    NaNs are dropped here. Including them would rank a suppressed node above a
+    pure mediator, since the raw ratio is unbounded above while a pure mediator
+    sits at exactly 1.0, which inverts the ordering H4 is about. See
+    `effects.mediated_share` and `scripts/validate_suppression.py`.
+
+    Returns (taus, n_dropped, n_total) so the caller can report the exclusion
+    rate alongside the statistic. PREREG s4 requires discard rates be reported
+    rather than repaired, and a share silently dropped is still a discard.
     """
     from p2.observability import kendall_tau_b
     taus = []
+    n_dropped = 0
+    n_total = 0
     for ms, obs_r, cau_r in zip(mediated_share_list, obs_rank_list, causal_rank_list):
         ms = np.asarray(ms, float)
         gap = np.asarray(obs_r, float) - np.asarray(cau_r, float)
         keep = np.isfinite(ms) & np.isfinite(gap)
+        n_total += ms.size
+        n_dropped += int(ms.size - keep.sum())
         if keep.sum() >= 2:
             t = kendall_tau_b(ms[keep], gap[keep])
             if np.isfinite(t):
                 taus.append(t)
-    return np.array(taus)
+    return np.array(taus), n_dropped, n_total

@@ -27,9 +27,9 @@ import sys, os, json, hashlib, platform, time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 import numpy as np
 from p2.scm import SyntheticSCM, CRNStream
-from p2.effects import estimate_effects
+from p2.effects import estimate_effects, mediated_share
 from p2.observability import SpanRecord, ATTRIBUTORS, rank_desc, kendall_tau_b
-from p2.analysis import bootstrap_over_decisions
+from p2.analysis import bootstrap_over_decisions, ols_cluster, vif
 from p2.ranking import (fit_plackett_luce, joint_wald, h3_statistic,
                         h4_statistic, separation_diagnostic, normalized_beta,
                         bootstrap_normalized_beta)
@@ -60,6 +60,7 @@ def main():
     rng = np.random.default_rng(SEED)
     scm = chain_scm()
     causal_l, obs_l, ms_l, spans_l = [], [], [], []
+    n_suppressed = n_nodes_total = 0
 
     for d in range(N_DEC):
         crn = CRNStream(SEED + d)
@@ -69,7 +70,11 @@ def main():
         te = np.array([a.te_crn.estimate for a in attrs])
         de = np.array([a.de.estimate for a in attrs])
         me = np.array([a.me.estimate for a in attrs])
-        share = np.where(np.abs(te) > 1e-9, np.abs(me) / np.maximum(np.abs(te), 1e-9), 0.0)
+        # WS1.7: NaN wherever |ME|/|TE| is not a share (suppression), never a
+        # clamp. h4_statistic drops those and reports the rate.
+        share, suppressed = mediated_share(te, de)
+        n_suppressed += int(suppressed.sum())
+        n_nodes_total += int(suppressed.size)
 
         # Salience tracks the DIRECT effect. Duration and tokens share it but each
         # carries independent noise, so they are correlated without either being a
@@ -144,6 +149,90 @@ def main():
     print("    H1/H2 hold, because both predict beta_causal is near zero. See")
     print("    docs/DERIVATIONS.md Part V and ranking.normalized_beta().")
 
+    # ---------------------------------------------------------------------
+    # PREREG s6 LOCKS two further reports that this chain did not produce
+    # until 2026-08-25. Both estimators existed in analysis.py and were
+    # validated in validate_analysis.py, but neither was ever called here, so
+    # the locked specification was satisfied in the library and unsatisfied in
+    # the analysis. That is the same failure the project already caught once,
+    # when the prereg locked a primary contrast that had never been computed.
+    # ---------------------------------------------------------------------
+    print("\n    VIF  (PREREG s6: 'LOCKED: VIFs reported')")
+    print("    Recency, verbosity and causal rank are correlated by construction,")
+    print("    so a significant coefficient at a high VIF is not a finding.")
+    X_all = np.vstack([X for X, _ in dec])
+    vifs = vif(X_all)
+    for j, nm in enumerate(["causal", "recency", "verbosity"]):
+        flag = "  <- ABOVE the 6.11 level coverage was verified to" if vifs[j] > 6.11 else ""
+        print(f"      {nm:>14}  VIF {vifs[j]:>6.2f}{flag}")
+    print(f"      max pairwise |corr| among covariates: "
+          f"{np.abs(np.corrcoef(X_all.T) - np.eye(3)).max():.3f}")
+
+    print("\n    SECONDARY SPECIFICATION  (PREREG s6: 'LOCKED, secondary: CR1")
+    print("    cluster-robust OLS on the attributor score. Reported for")
+    print("    comparability. If primary and secondary disagree, that is stated")
+    print("    in the abstract.')")
+    # Outcome is the attributor's ranked score; the unit of clustering is the
+    # decision, matching the PL primary. Intercept included: unlike PL, OLS on a
+    # score is not invariant to a within-decision constant.
+    y_sec, X_sec, cl_sec = [], [], []
+    for d_i, (Xd, _) in enumerate(dec):
+        n = Xd.shape[0]
+        score = np.log(obs_l[d_i]["span_duration"])
+        y_sec.append((score - score.mean()) / (score.std() if score.std() > 0 else 1.0))
+        X_sec.append(np.column_stack([np.ones(n), Xd]))
+        cl_sec.append(np.full(n, d_i))
+    y_sec = np.concatenate(y_sec); X_sec = np.vstack(X_sec); cl_sec = np.concatenate(cl_sec)
+    b_ols, se_cl, se_naive = ols_cluster(X_sec, y_sec, cl_sec)
+    print(f"      {'term':>14} {'beta':>9} {'se_cluster':>11} {'se_naive':>10} {'|z|_cl':>8}")
+    for j, nm in enumerate(["intercept", "causal", "recency", "verbosity"]):
+        # y is standardised WITHIN each decision, so the intercept is
+        # structurally zero and its z is a ratio of two numerical zeros. Report
+        # it as not identified rather than printing a meaningless number.
+        if nm == "intercept" and abs(b_ols[j]) < 1e-10:
+            print(f"      {nm:>14} {b_ols[j]:>+9.3f} {se_cl[j]:>11.3f} {se_naive[j]:>10.3f} "
+                  f"{'n/i':>8}   (structurally 0: y centred within decision)")
+            continue
+        zj = abs(b_ols[j]) / se_cl[j] if se_cl[j] > 0 else float("nan")
+        print(f"      {nm:>14} {b_ols[j]:>+9.3f} {se_cl[j]:>11.3f} {se_naive[j]:>10.3f} {zj:>8.2f}")
+
+    ratio = float(np.median(se_cl[1:] / np.maximum(se_naive[1:], 1e-12)))
+    print(f"\n      median se_cluster / se_naive on the slopes: {ratio:.2f}")
+    if ratio < 1.15:
+        # Report what the number says, not what the argument for clustering
+        # would like it to say. An earlier draft of this block printed "this is
+        # why clustering is not optional" underneath a ratio of 0.99, which the
+        # number flatly contradicts.
+        print("      Close to 1, so clustering barely changes the standard errors")
+        print("      ON THIS SYNTHETIC GENERATOR. That is a property of the")
+        print("      generator, not evidence that clustering is unnecessary: this")
+        print("      chain draws each node's covariates independently and puts no")
+        print("      decision-level random intercept into the attributor score, so")
+        print("      there is little within-decision residual dependence to correct.")
+        print("      validate_analysis.py, whose generator DOES carry a")
+        print("      decision-level intercept, measures cluster coverage 0.95")
+        print("      against naive 0.35. Real traces resemble that case, not this")
+        print("      one, which is why PREREG s6 locks clustering in advance")
+        print("      rather than deciding it from a measured ratio.")
+    else:
+        print(f"      Naive se understates by {1/ratio:.2f}x on the slopes;")
+        print("      within-decision dependence is material here.")
+
+    # The pre-registered comparison: do primary and secondary agree on H2?
+    sec_rejects = any(abs(b_ols[j]) / max(se_cl[j], 1e-12) > 1.959963985 for j in (2, 3))
+    prim_rejects = (not sep) and (p < 0.05)
+    print(f"\n      primary (PL joint Wald)      : "
+          f"{'REJECT' if prim_rejects else ('INDETERMINATE' if sep else 'no rejection')}")
+    print(f"      secondary (CR1 OLS, either  ) : "
+          f"{'REJECT' if sec_rejects else 'no rejection'}")
+    if sep:
+        print("      AGREEMENT: not assessable, primary is INDETERMINATE.")
+    elif prim_rejects == sec_rejects:
+        print("      AGREEMENT: primary and secondary agree.")
+    else:
+        print("      *** DISAGREEMENT. PREREG s6 requires this be stated in the")
+        print("      *** abstract. Do not report only the one that agrees with H2.")
+
     print("\nH3  causally dominant but ranked negligible, (delta, tau) grid")
     obs_rank_l = [rank_desc(o["span_duration"]) for o in obs_l]
     print(f"    {'delta':>6} {'tau':>6} {'rate':>7} {'95% CI':>18}")
@@ -154,10 +243,18 @@ def main():
 
     print("\nH4  does the discrepancy concentrate in MEDIATED nodes")
     cau_rank_l = [rank_desc(np.abs(c)) for c in causal_l]
-    taus4 = h4_statistic(ms_l, obs_rank_l, cau_rank_l)
+    taus4, n_drop4, n_tot4 = h4_statistic(ms_l, obs_rank_l, cau_rank_l)
     m4, lo4, hi4 = bootstrap_over_decisions(taus4, seed=SEED)
     print(f"    tau_b(mediated share, obs_rank - causal_rank) = {m4:+.3f}  "
           f"[{lo4:+.3f}, {hi4:+.3f}]")
+    print(f"    nodes excluded from H4: {n_drop4}/{n_tot4} "
+          f"({100.0*n_drop4/max(n_tot4,1):.1f}%), of which suppression accounts for "
+          f"{n_suppressed}/{n_nodes_total} ({100.0*n_suppressed/max(n_nodes_total,1):.1f}%)")
+    print("    WS1.7: |ME|/|TE| is only a share where DE and TE share a sign and")
+    print("    |DE| <= |TE|. Elsewhere it is unbounded above and would rank a")
+    print("    suppressed node ABOVE a pure mediator, inverting H4's ordering, so")
+    print("    those nodes are excluded and the rate is reported rather than the")
+    print("    ratio repaired. Demonstrated in scripts/validate_suppression.py.")
 
     print(f"\nchain completed in {time.time()-t0:.0f}s.")
     print("NOT RESULTS: synthetic SCM, planted structure, no real system.")
@@ -169,7 +266,14 @@ def main():
                "h1": {k: list(v) for k, v in h1.items()},
                "h2": {"beta": beta.tolist(), "se": se.tolist(), "separated": bool(sep),
                       "g_normalized": g.tolist(), "g_delta_se": se_g.tolist(),
-                      "g_bootstrap_lo": lo_boot.tolist(), "g_bootstrap_hi": hi_boot.tolist()},
+                      "g_bootstrap_lo": lo_boot.tolist(), "g_bootstrap_hi": hi_boot.tolist(),
+                      "vif": vifs.tolist(),
+                      "secondary_ols_beta": b_ols.tolist(),
+                      "secondary_ols_se_cluster": se_cl.tolist(),
+                      "secondary_ols_se_naive": se_naive.tolist(),
+                      "primary_rejects": bool(prim_rejects),
+                      "secondary_rejects": bool(sec_rejects),
+                      "primary_secondary_agree": bool(sep or (prim_rejects == sec_rejects))},
                "h4": [m4, lo4, hi4]},
               open("results/dry_run.json", "w"), indent=2)
     print(f"env_hash {env['env_hash']} -> results/dry_run.json")

@@ -403,3 +403,125 @@ never defined in the Act.
 
 **Still not retrieved:** Articles 25, 72, 74, 79(1) and the Article 3
 definitions.
+
+## 2026-08-25
+
+**Blocked on two tool limits, so the day went to unblocked code.** Subagents hit
+a weekly limit resetting 29 August, which stopped the Article 25 retrieval before
+it produced anything usable. Nothing partial was kept. A direct fetch of the
+Cellar URL also failed: it needs specific Accept headers the fetch tool cannot
+send. Articles 25, 72, 74, 79(1) and the Article 3 definitions therefore remain
+outstanding, and reviewer objection 3 in REGULATORY-BASIS section 13 stays
+unanswered until then.
+
+**WS5.3 closed, and it was a pre-registration compliance gap of the same class
+as the CAUTION_K one.** PREREG s6 LOCKS two reports: the CR1 cluster-robust OLS
+secondary specification, and VIFs. Both estimators existed in `analysis.py` and
+were validated in `validate_analysis.py`. **Neither was ever called in
+`dry_run.py`.** The locked specification was satisfied in the library and
+unsatisfied in the analysis, which is exactly the failure this project already
+caught once when the prereg locked a primary contrast that had never been
+computed. Now wired into the H2 block: per-covariate VIFs flagged against the
+6.11 level coverage was verified to, the CR1 OLS secondary with cluster and naive
+standard errors side by side, and an explicit primary-versus-secondary agreement
+line implementing the "if they disagree, state it in the abstract" clause.
+
+**Two dishonest output lines caught in my own draft before shipping.** The first
+version printed "this is why clustering by decision is not optional here"
+directly underneath a measured `se_cluster / se_naive` ratio of **0.99**, a
+number that flatly contradicts the sentence. The second printed a |z| of 0.29 for
+an intercept that is structurally zero, because `y` is standardised within
+decision, making it a ratio of two numerical zeros.
+
+Both are now fixed to report what the numbers say. The clustering block reports
+the ratio, states plainly that on this synthetic generator clustering barely
+changes anything, and explains why that is a property of the generator rather
+than evidence against clustering: this chain draws node covariates independently
+and puts no decision-level random intercept into the attributor score, whereas
+`validate_analysis.py`, whose generator does carry one, measures cluster coverage
+0.95 against naive 0.35. Real traces resemble the second case. That is precisely
+why PREREG locks clustering in advance instead of deciding it from a measured
+ratio, and the block now says so. The intercept is reported as not identified.
+
+Worth recording as a pattern: both defects were narration asserting a conclusion
+the adjacent number did not support. Neither would have been caught by a test,
+because the code was correct. They were caught by reading the output.
+
+**Verified on the machine of record**, in an isolated temp directory so
+`results/` was untouched: compiles, runs to exit 0, VIFs 1.04/1.07/1.05 all well
+under 6.11, secondary rejects on verbosity at |z| = 16.68, primary and secondary
+agree. Six new keys added to the `h2` block of `results/dry_run.json`.
+
+**Tooling note.** The cloud sandbox's shell was unavailable for most of this
+session (safety-classifier timeouts), so the candidate was tested through the
+device bridge instead, in a scratch copy rather than the repo. The bridge cannot
+delete files, so the scratch script was moved to `_to_delete/`, now gitignored
+along with `_scratch_*`.
+
+**Unchanged and now nine days overdue.** BFSI pipeline access.
+
+## 2026-08-25, second entry
+
+**WS1.7 closed, and it found a real defect in a pre-registered statistic.**
+
+The task was "estimators correct where Y is not in {0,1}". The estimators are
+correct. What is not correct is the quantity H4 ranks on.
+
+**The defect.** `ME = TE_crn - DE` is an identity, not a split into non-negative
+parts. H4 is a rank correlation on `mediated_share = |ME| / |TE_crn|`, and that
+is a share only where `DE` and `TE_crn` point the same way. Where they oppose,
+`|ME| = |TE - DE| > |TE|` and the ratio exceeds 1. Every SCM in the repo before
+today had both paths pushing the same way, so the case had never been exercised.
+
+It is not exotic. It is suppression, and it has a plain reading in an agent
+pipeline: a retrieval that directly supports approval while causing a later
+verification step to raise a flag.
+
+**Derived by hand first, then measured.** On `y = w*a1 - (1-w)*a3` with w = 0.2,
+q = 0.9: `TE_crn(1) = +0.30`, `DE(1) = -0.10`, `ME(1) = +0.40`, share = 4/3
+exactly. Measured: `+0.3003`, `-0.1001`, `+0.4004`, share `1.3333`. All four
+steps within Monte Carlo error, decomposition identity residual `5.55e-17`. The
+estimators are right; the ratio on top of them is not.
+
+**Why it matters for H4 specifically.** A pure mediator has `DE = 0` and scores
+exactly 1.0, the maximum the quantity is meant to reach. A suppressed node scores
+1.33 and outranks it. The raw ratio is unbounded above and grows as `|DE|` grows
+in the opposing direction, so ranking on it puts suppression above pure mediation
+and mixes two opposite mechanisms into one score.
+
+**The fix, and why not a clamp.** `effects.mediated_share` forms a share only
+where `sign(DE) == sign(TE_crn)` and `|DE| <= |TE_crn|`, returning NaN and a
+suppressed flag otherwise. `ranking.h4_statistic` now returns
+`(taus, n_dropped, n_total)` so H4 cannot be reported without its exclusion rate.
+Clamping 1.33 to 1.0 would be the repair PREREG s4 forbids, and it would silently
+merge suppression into pure mediation, which is the confusion the rule exists to
+prevent. LOCKED in PREREG s2, derived in DERIVATIONS Part VI.
+
+**A previously reported number was wrong, and this is the part worth flagging.**
+The fix moved dry-run H4 from `tau_b = +0.698` to `+0.855`, with 80/240 nodes
+(33.3%) now excluded, all inert, none suppressed. The old code assigned inert
+nodes a share of **0.0**, which asserts their influence is entirely direct when
+they have no influence at all. **A third of the nodes entering the previously
+reported H4 carried a fabricated share.** Synthetic, so no live claim moves, but
+the statistic would have met real traces in that state, where inert nodes and
+opposing paths are both expected rather than exotic.
+
+**Caught a call-site break before it shipped.** Changing `h4_statistic`'s return
+to a tuple would have silently broken `validate_primary.py:122`, which unpacked a
+bare array. Fixed, and given an assertion that the planted H4 design has zero
+exclusions, so a future change to the generator or to `mediated_share` fails
+loudly instead of quietly altering H4's population.
+
+**Verified.** Eight edge cases on `mediated_share` (ordinary, pure mediator, pure
+direct, both suppression forms, inert, the `|DE| == |TE|` boundary, vectorised),
+`scripts/validate_suppression.py` added to `verify.sh`, full suite ALL GREEN with
+eight validators.
+
+**Pattern worth naming, third instance.** CAUTION_K claimed a pre-registration
+that did not exist. WS5.3 had two LOCKED reports the chain never produced. This
+one had a pre-registered statistic whose definition broke outside the regime
+every existing test happened to sit in. In all three the code was correct and the
+specification was not met. Tests do not catch this class; only reading the
+specification against the analysis does.
+
+**Unchanged and now eleven days overdue.** BFSI pipeline access.

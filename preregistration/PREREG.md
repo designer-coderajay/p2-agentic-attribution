@@ -48,6 +48,36 @@ labelled as such in every table.
 | Plackett-Luce, H3 | PL recovers its generative model, se/sd calibration 1.011/1.083/1.030 on disjoint seeds; H3 matches E[H3]=p(1-tau) at six planted cells | badc7184 / 61f8bcfd |
 
 **LOCKED:** `ME` is reported with per-step TV and coupling efficiency attached.
+
+**LOCKED, added 2026-08-25 (WS1.7, see `docs/DERIVATIONS.md` Part VI).** The
+mediated share `|ME| / |TE_crn|`, which H4 ranks on, is formed **only** where
+
+    sign(DE) == sign(TE_crn)   and   |DE| <= |TE_crn|
+
+and is otherwise NaN with the node flagged **suppressed**. `ME = TE_crn - DE` is
+an identity, not a split into non-negative parts, so where `DE` and `TE_crn`
+oppose, `|ME| > |TE_crn|` and the ratio exceeds 1. Demonstrated on a planted SCM
+with `y = w*a1 - (1-w)*a3`: `TE_crn = +0.300`, `DE = -0.100`, share exactly 4/3,
+every value matching a hand derivation. A pure mediator scores exactly 1.0, so
+the raw ratio ranks suppression **above** pure mediation and inverts H4's
+ordering.
+
+Nodes with `|TE_crn| <= SHARE_TE_FLOOR = 1e-9` are also NaN, since a share of no
+effect is undefined, but are **not** counted as suppression.
+`SHARE_TE_FLOOR` is fixed here and never tuned to a result.
+
+**LOCKED:** excluded nodes are discarded, never clamped or imputed, and both the
+exclusion rate and the suppression rate are reported wherever H4 is reported.
+Clamping 1.33 to 1.0 would be the repair section 4 forbids and would merge
+suppression into pure mediation. `ranking.h4_statistic` returns
+`(taus, n_dropped, n_total)` so H4 cannot be reported without its exclusion rate.
+
+**Deviation recorded.** This changed a previously reported dry-run number, H4
+from `tau_b = +0.698` to `+0.855`, because the prior code assigned inert nodes a
+share of 0.0 rather than excluding them, and inert nodes were 33.3% of the
+sample. Synthetic only; no live claim moves. Legitimate to lock now rather than
+retrospectively because Gate D is unsigned and no pooled result has been
+inspected, the condition section 9 sets.
 **LOCKED:** `DE` uses maximal coupling, not quantile coupling. Fixed vocabulary
 order in the sampler. `keyed_uniform` remains a pure function of its key.
 **LOCKED, corrected 2026-08-20 (Gate D deviation, see `docs/DERIVATIONS.md` Part

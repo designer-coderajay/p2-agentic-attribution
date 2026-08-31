@@ -189,3 +189,66 @@ def largest_effect_step(attrs: Sequence[StepAttribution], arm: str = "te_crn") -
     if not live:
         return None
     return max(live, key=lambda a: abs(getattr(a, arm).estimate)).step
+
+
+# ---------------------------------------------------------------------------
+# WS1.7. The mediated share, and the regime in which it is not a share.
+# ---------------------------------------------------------------------------
+
+# Numerical floor below which a total effect is treated as zero and no share is
+# formed. Pre-registered (PREREG s2) so it cannot be tuned to a result. Chosen as
+# the same 1e-9 the decomposition identity is checked at, not fitted to anything.
+SHARE_TE_FLOOR = 1e-9
+
+
+def mediated_share(te_crn, de):
+    """Per-node |ME| / |TE_crn|, returning NaN where that ratio is not a share.
+
+    THE PROBLEM. `ME = TE_crn - DE` is an IDENTITY, not a split into non-negative
+    parts. Where `DE` and `TE_crn` carry opposite signs, `|ME| = |TE - DE| > |TE|`
+    and the ratio exceeds 1. That is the classic SUPPRESSION case, and it has an
+    ordinary reading in an agent pipeline: a retrieval that directly supports
+    approval while causing a later verification step to raise a flag. Direct path
+    up, mediated path down.
+
+    Demonstrated, not hypothesised, in `scripts/validate_suppression.py`: on an
+    SCM with `y = w*a1 - (1-w)*a3`, w = 0.2, the estimators return
+    `TE_crn = +0.300`, `DE = -0.100`, `ME = +0.400`, and the naive share is
+    exactly 4/3. Every one of those matches a hand derivation to three decimals,
+    so the estimators are right and the ratio is what is wrong.
+
+    WHY IT MATTERS. H4 is a rank correlation on this quantity. Under suppression
+    the ratio is unbounded above and GROWS as `|DE|` grows in the opposing
+    direction, so a suppressed node scores 1.33 while a PURE mediator, the thing
+    H4 is actually about, scores exactly 1.0. Ranking on the raw ratio therefore
+    places suppression above pure mediation, inverting the intended ordering.
+
+    THE RULE. A share is formed only in the regime where the decomposition is a
+    genuine split of a common-signed effect:
+
+        sign(DE) == sign(TE_crn)   and   |DE| <= |TE_crn|
+
+    Outside it the node's share is NaN and the node is flagged suppressed. NaN
+    rather than a clamp or a repair: PREREG s4 already requires that items
+    failing a validity check are discarded and the rate reported, never repaired,
+    and clamping 1.33 to 1.0 would be exactly the repair that rule forbids.
+
+    Returns (share, suppressed) as float and bool arrays of the same length.
+    `share` is NaN at suppressed nodes and at nodes whose |TE_crn| is below
+    SHARE_TE_FLOOR, where no share is defined at all. `suppressed` marks ONLY the
+    sign or magnitude violation, so a caller can report the suppression rate
+    without inert nodes inflating it.
+    """
+    te = np.asarray(te_crn, dtype=float)
+    de = np.asarray(de, dtype=float)
+    me = te - de
+
+    live = np.abs(te) > SHARE_TE_FLOOR
+    opposed = live & ((np.sign(te) * np.sign(de)) < 0)
+    too_big = live & (np.abs(de) > np.abs(te) * (1.0 + 1e-12))
+    suppressed = opposed | too_big
+
+    share = np.full(te.shape, np.nan, dtype=float)
+    ok = live & ~suppressed
+    share[ok] = np.abs(me[ok]) / np.abs(te[ok])
+    return share, suppressed

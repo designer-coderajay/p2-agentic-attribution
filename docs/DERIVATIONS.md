@@ -317,6 +317,117 @@ stands; it is a property of our own sampler, not of the server.
 
 ---
 
+# Part VI: the mediated share is not always a share
+
+Added 25 August 2026 (WS1.7). Derived by hand before the code, and validated in
+`scripts/validate_suppression.py`, `env_hash 01e423d16ec0bcf1`.
+
+## 16. The defect
+
+`ME = TE_crn - DE` is an **identity**, not a split into non-negative parts. H4 is
+a rank correlation on `mediated_share = |ME| / |TE_crn|`, and that ratio is a
+share only when `DE` and `TE_crn` point the same way. Where they oppose,
+`|ME| = |TE - DE| > |TE|` and the "share" exceeds 1.
+
+Every SCM in `scm.py` before this had both paths pushing the same way
+(`y = w*a1 + (1-w)*a3`, both weights positive), so the case had never been
+exercised.
+
+## 17. An SCM where it happens, derived by hand
+
+Same four-step structure, one sign flipped:
+
+```
+a0 ~ Bern(1/2)                       inert
+a1 ~ Bern(1/2)                       retrieval
+a2 ~ Bern(1/2)                       inert
+a3 = a1      if u3 < q               executing tool call
+   = 1 - a1  otherwise
+y  = w*a1 - (1-w)*a3                 NOTE THE MINUS
+```
+
+`w = 0.2`, `q = 0.9`. Factual run at seed 20260813, replicate 0 is
+`a_fact = (0,1,1,1)`, `u3_fact = 0.7703699... < q`, so `a3 = a1 = 1` and
+
+    y_fact = w - (1-w) = 0.2 - 0.8 = -0.6
+
+**TE_crn(1).** Hold `u3` factual, so `a3 = a'_1` deterministically:
+
+    y = w a'_1 - (1-w) a'_1 = (2w-1) a'_1 = -0.6 a'_1
+    E[y] = -0.3        TE_crn(1) = -0.3 - (-0.6) = +0.30
+
+**DE(1).** Pin `a3 = 1`:
+
+    y = 0.2 a'_1 - 0.8,   E[y] = 0.1 - 0.8 = -0.7
+    DE(1) = -0.7 - (-0.6) = -0.10
+
+**ME(1)** = `TE_crn - DE` = `0.30 - (-0.10)` = **+0.40**, so
+
+    |ME| / |TE_crn| = 0.40 / 0.30 = 4/3 = 1.333...
+
+**Measured, all four steps within Monte Carlo error of the derivation:**
+
+| step | TE_crn | analytic | DE | analytic | ME | analytic | share |
+|---|---|---|---|---|---|---|---|
+| 0 inert | +0.0000 | 0 | +0.0000 | 0 | 0 | 0 | undefined |
+| 1 retrieval | **+0.3003** | +0.30 | **-0.1001** | -0.10 | **+0.4004** | +0.40 | **1.3333** |
+| 2 inert | +0.0000 | 0 | +0.0000 | 0 | 0 | 0 | undefined |
+| 3 executing | +0.0780 | +0.08 | +0.0780 | +0.08 | 0 | 0 | 0 |
+
+Decomposition identity residual `5.55e-17`. **The estimators are correct.** The
+ratio built on top of them is what fails.
+
+## 18. Why it inverts H4 specifically
+
+H4 says: the more of a node's influence travels through what it caused later
+steps to do, the more the trace under-ranks it. A **pure mediator** has `DE = 0`
+and therefore share exactly **1.0**, the maximum the quantity is supposed to
+reach. A **suppressed** node scores **1.33** and would rank above it. The raw
+ratio is unbounded above and grows as `|DE|` grows in the opposing direction, so
+ranking on it places suppression above pure mediation and mixes two opposite
+mechanisms into one score.
+
+## 19. The rule, and why not a clamp
+
+A share is formed only where the decomposition is a genuine split of a
+common-signed effect:
+
+    sign(DE) == sign(TE_crn)   and   |DE| <= |TE_crn|
+
+Outside it the share is **NaN** and the node is flagged suppressed.
+`ranking.h4_statistic` drops NaNs and now returns `(taus, n_dropped, n_total)`
+so a caller cannot report H4 without also being handed its exclusion rate.
+
+Not a clamp, and not a repair. PREREG s4 already requires that items failing a
+validity check are **discarded and the rate reported, never repaired**. Clamping
+1.33 to 1.0 would be precisely that forbidden repair, and it would silently merge
+suppression into pure mediation, which is the confusion the rule exists to
+prevent.
+
+Inert nodes (`|TE_crn|` below `SHARE_TE_FLOOR = 1e-9`) also yield NaN, since a
+share of no effect is undefined, but are **not** counted as suppression, so the
+suppression rate is not inflated by them.
+
+## 20. A consequence that changed a reported number
+
+Fixing this **moved H4 on the dry run from tau_b = +0.698 to +0.855**, with
+80/240 nodes (33.3%) now excluded, all of them inert and none suppressed. That
+33.3% is exactly the two inert nodes of the six in the `chain6` generator, so the
+exclusion is fully explained by the planted structure.
+
+The old code assigned inert nodes a share of **0.0** via
+`np.where(|te| > 1e-9, ..., 0.0)`. That says "this node's influence is entirely
+direct", which is false: the node has no influence at all. **A third of the nodes
+entering the previously reported H4 carried a fabricated share.** The number was
+wrong, and it was wrong in the optimistic direction for reporting purposes, which
+is the direction that matters.
+
+This is synthetic, so no claim about any real system moves. What moves is the
+credibility of the statistic when it meets live traces, where inert nodes and
+opposing paths are both expected rather than exotic.
+
+---
+
 # Part IV: separation in the primary contrast
 
 Added 17 August 2026 (D5), after the first end-to-end dry run.

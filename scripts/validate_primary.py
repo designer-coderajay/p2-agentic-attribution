@@ -119,7 +119,13 @@ def main():
             ms_l.append(share)
             obs_l.append(rank_desc(np.abs(basis) + 0.05*rr.normal(0, 1, N_STEPS)))
             cau_l.append(rank_desc(np.abs(te)))
-        taus = h4_statistic(ms_l, obs_l, cau_l)
+        # h4_statistic returns (taus, n_dropped, n_total) since WS1.7, so that a
+        # caller cannot report H4 without also being handed its exclusion rate.
+        taus, n_drop, n_tot = h4_statistic(ms_l, obs_l, cau_l)
+        assert n_drop == 0, (
+            f"planted H4 design should have no excluded nodes, got {n_drop}/{n_tot}. "
+            "Shares here are drawn in [0,1) by construction, so any exclusion means "
+            "the generator or mediated_share has changed.")
         bs = np.array([taus[rr.integers(0, taus.size, taus.size)].mean() for _ in range(2000)])
         lo, hi = np.quantile(bs, [0.025, 0.975]); res[frac] = (taus.mean(), lo, hi)
         print(f"   frac ranked by DE = {frac:.1f}   tau = {taus.mean():+.4f}  "

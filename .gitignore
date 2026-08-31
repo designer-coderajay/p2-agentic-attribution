@@ -9,6 +9,11 @@ __pycache__/
 # surface, so they stay local. If a permanent health check is wanted later,
 # promote a cleaned version deliberately rather than committing one by accident.
 *_session.sh
+# Scratch left by device-side testing. The Cowork device bridge cannot delete
+# files, only move them, so candidate scripts tested on the machine get parked
+# here instead of removed. Safe to `rm -rf _to_delete/` at any time.
+_to_delete/
+_scratch_*
 # results/ is committed for now: the validation JSONs are small and every
 # reported number must be traceable to a committed artifact. Revisit when
 # Stage 1 rollouts start producing large outputs.
