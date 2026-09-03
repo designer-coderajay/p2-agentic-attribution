@@ -1,8 +1,16 @@
 # P2 Work Breakdown
 
+> **SCOPE CHANGE 2026-09-03.** The pre-registered fallback is invoked (PREREG
+> header). Every item requiring live BFSI access is **CUT from this paper** and
+> carried to a follow-on study, not left open: WS2.2 to WS2.5, WS2.8, WS4.1 to
+> WS4.4, and the `N` and replay-floor RULE entries. They are not failures and
+> not abandoned; they are the pre-registered experiment the paper publishes and
+> does not run. Items reachable without access remain live and are the week's
+> work.
+
 Eight workstreams. Every item carries an **acceptance check**: the thing that must
 be true for the item to be closed. An item without a check is not a task, it is a
-wish. Status as of 13 August 2026, end of D1.
+wish. Status as of 13 August 2026, end of D1, with corrections dated 2026-08-25 and 2026-09-03.
 
 Epistemic discipline applies to every line: VERIFIED means searched or fetched with
 a URL, RECALLED means training only, INFERRED means reasoning. Nothing enters the
@@ -23,7 +31,7 @@ manuscript from the second or third category.
 | 0.7 | Pearl 2009 against a library record | Edition, publisher, year confirmed outside CAR's bibliography | **DONE 2026-08-21.** Stanford + CUP. Sections 4.5.4/4.5.5 located. Pearl 2001 UAI added as the primary citation, Robins & Greenland 1992 for priority |
 | 0.8 | Fetch Thinking Machines nondeterminism post | Load-bearing for the replay-floor gate; must be read not cited blind | **DONE 2026-08-21.** Changes what Gate C asks: batch invariance, not single-stream. DERIVATIONS s15. See ledger C4 |
 | 0.10 | Verify AttriGuard 2603.10749 and CausalArmor 2602.07918 | Ex ante or post hoc established from the text | **DONE 2026-08-21.** Both ex ante guardrails, both cleared, titles and authors exact. Pin AttriGuard v2 |
-| 0.11 | **Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text** | Provisions quoted from the Official Journal text, not from summaries | **OPEN. Now the highest-risk unverified item in the project.** All of WS6 rests on it |
+| 0.11 | **Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text** | Provisions quoted from the Official Journal text, not from summaries | **DONE 2026-08-25, this row was stale until 2026-09-03.** Articles 6(1), 6(2), 11, 12, 13, 18(1), 19, 26, 86, 113, Annex III pt 5 and Annex IV complete, all VERBATIM from the Publications Office repository, in `docs/REGULATORY-BASIS.md`. **Still open:** Arts 25, 72, 74, 79(1) and the Art 3 definitions |
 | 0.9 | Final ledger pass | Every bibliography entry VERIFIED with a checked date. RECALLED entries cut, not chased | D18. Remaining RECALLED set ranked by risk at the foot of the ledger |
 
 ## WS1. Estimator core
@@ -90,7 +98,7 @@ repo's actual state. Corrected below against `preregistration/PREREG.md`,
 
 | # | Item | Acceptance check | Status |
 |---|---|---|---|
-| 6.1 | Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text | Not summaries | open |
+| 6.1 | Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text | Not summaries | **DONE 2026-08-25.** See 0.11. Four load-bearing findings established in `REGULATORY-BASIS.md` s9 |
 | 6.2 | Scope against 2606.09692's non-identifiability result | Stated precisely, with what it forecloses | open, D2 |
 | 6.3 | Draft the specification | What a provider must log for post-hoc causal attribution to be possible at all | D12 to D15 |
 

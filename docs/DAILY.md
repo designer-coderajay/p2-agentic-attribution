@@ -205,3 +205,36 @@ continues in parallel on items that do not need pipeline access: WS0 remaining
 literature verification (Pearl 2009 library record, Shapley citations, AttriGuard,
 CausalArmor), WS6 Annex IV drafting against the primary EU AI Act text, WS1.7
 non-binary outcome estimators, WS1.9 pytest/CI.
+
+## Gap, 21 August to 2 September 2026
+
+**No entries. Thirteen days.** AUGUST-SPRINT s7 made this log binding at one
+entry per day and it was not kept. Recorded as a gap rather than backfilled from
+git, because a reconstructed entry is the thing the protocol exists to prevent
+and this log already contains one of those.
+
+What happened in the gap is in `RESEARCH_LOG.md` under 21, 23 and 25 August: the
+citation sweep, the regulatory retrieval, WS5.3 and WS1.7. What did not happen is
+any step of the sprint plan from D9 onward, all of which needed pipeline access.
+
+## D-restart, Thursday 3 September 2026
+
+1. **Hours.** Cowork session.
+2. **Shipped.** Programme audit against all four plan documents. Fallback
+   invoked and recorded with a date. Abstract rewritten for the delivered scope.
+   Two stale status docs corrected. Three convention directories created. Paper
+   outline written.
+3. **Slipped.** The sprint's arXiv date of 31 August, by three days at the point
+   it was noticed. No fallback was triggered because none was pre-decided for
+   the ship date itself, which is a defect in the sprint plan worth naming.
+4. **Gates.** A passed. D ready to lock, Ajay's call, unchanged. B, C and E are
+   now **CUT by the fallback**, not blocked: they gate a live arm this paper does
+   not have. That is a status change, and it means no gate is now waiting on
+   anything outside the repository.
+5. **Deviation from pre-registration.** None. The fallback is clause two of s7
+   and is invoked as written.
+6. **Tomorrow's blocks.** WS1.9 pytest and CI. Remaining reachable workstream
+   items. Manuscript sections 3 to 6, which are written from `DERIVATIONS.md`.
+7. **Needing a decision from Ajay.** Gate D sign-off, still open. P1 and P3
+   state, which this chat cannot see and which the 10 September and 19 September
+   dates make urgent.

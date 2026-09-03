@@ -525,3 +525,61 @@ specification was not met. Tests do not catch this class; only reading the
 specification against the analysis does.
 
 **Unchanged and now eleven days overdue.** BFSI pipeline access.
+
+## 2026-09-03
+
+**Programme audit, requested by Ajay, and it found drift that neither of us had
+named.** Today is 3 September. The August sprint's own arXiv date was 31 August
+and passed three days ago with no manuscript in existence: the repository had no
+`paper/`, no `configs/` and no `analysis/` directory. Two sessions ran past that
+date without raising it.
+
+**The shape of the drift.** Sprint days D1 to D4 and D8 executed close to plan.
+From D5, 17 August, every remaining day required BFSI pipeline access that never
+arrived. Work continued, and the work was real: estimator core, coupling theory,
+mediation layer, statistics, pre-registration, citation sweep, verified EU AI Act
+foundation, `verify.sh` green across eight validators. But all of it was the
+unblocked residue rather than the critical path. For fourteen days the work
+optimised what was reachable instead of confronting what was blocking. The brief
+had anticipated exactly this and said the fallback must be invoked on a date and
+not arrived at by drift. It was arrived at by drift.
+
+**Two protocols we agreed and dropped.** `docs/DAILY.md` was made binding by
+AUGUST-SPRINT s7, one entry per day; its last entry was D8 on 20 August, and the
+D5 to D8 entry is itself marked "reconstructed from git log", which is the
+failure the protocol existed to prevent. `RESEARCH_LOG.md` went nine days
+unlogged. Both are mine and I raised neither.
+
+**FALLBACK INVOKED, by Ajay, today.** Recorded in `preregistration/PREREG.md`
+under a dated heading. PREREG s7 clause two is in force.
+
+**The consequence is scope, not wording, and it is the part worth recording.**
+H1 to H4 are hypotheses about a real observability record against real causal
+effect. They are not testable without the live arm. Both abstracts drafted in
+PREREG s8 open "We run it on a live regulated credit underwriting system" and
+neither survives. So this is not a weaker version of the same paper; it is a
+different paper, methods and theory and specification, publishing a
+pre-registered experiment it does not run.
+
+**The dry run was not promoted to a result, and the temptation to do it was
+real.** `results/dry_run.json` carries `SYNTHETIC_NOT_RESULTS: true` and every
+generator behind it is planted, so `tau_b = +0.855` is known by construction.
+Reporting it as a finding would be circular and a reviewer would say so in one
+line. A gate in this session's script asserts the guard flag is still present.
+
+**What ships instead**, all built and validated already: the `TE_marg` versus
+`TE_crn` distinction, the direct effect and decomposition identity, the coupling
+construction and its measured degradation, the suppression result, the verified
+regulatory basis including the deferral, and the Annex IV specification. A third
+abstract was drafted and committed before any further writing, per rule 6.
+
+**Two stale status documents corrected.** `docs/TODO.md` 0.11 and 6.1, and the
+ledger row for Reg (EU) 2024/1689, all still read "not retrieved" for provisions
+that were retrieved verbatim on 25 August. Same failure class as a locked
+specification the analysis never satisfies, pointing the other way.
+
+**Three missing convention directories created**, with the reason `configs/` is
+empty written down rather than left to look like an omission.
+
+**Next.** WS1.9 pytest and CI, then the remaining reachable workstream items,
+then the manuscript. Target: P2 complete this week.

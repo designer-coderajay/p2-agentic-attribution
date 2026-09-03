@@ -3,6 +3,48 @@
 **Status: DRAFT. Becomes binding at the Gate D commit, target 20 August 2026.**
 Nothing pooled, inspected or analysed before that commit exists.
 
+---
+
+## FALLBACK INVOKED, 2026-09-03
+
+**PREREG s7 clause two is now in force.** Stage 0 cannot be run. Access to the
+BFSI underwriting pipeline was due 17 August and has not been provided. The
+clause reads: "If Stage 0 cannot be run, the paper reports the synthetic and
+sampler-level results only, states the absence of a live arm in the abstract,
+and no live claim is made."
+
+This is invoked on a date and by decision, not reached by drift. The decision is
+Ajay's, taken 3 September 2026. It is recorded here before any further writing.
+
+**What this changes, and it is scope, not wording.**
+
+H1, H2, H3 and H4 are hypotheses about how a real observability record compares
+to real causal effect on a live system. They are not testable without the live
+arm. They are therefore **published as a pre-registered experiment awaiting
+data**, not reported as results. The two abstracts in s8 both open "We run it on
+a live regulated credit underwriting system" and neither is usable. A third
+abstract for the delivered paper is added to s8 below.
+
+**The dry run is not promoted to a result.** `results/dry_run.json` carries
+`SYNTHETIC_NOT_RESULTS: true` and every generator behind it is planted, so its
+numbers are known by construction. Reporting the dry-run `tau_b` as a finding
+would be circular. It stays a pipeline smoke test. The validation scripts assert
+against closed forms and hand derivations; those establish that the estimators
+are correct, which is a methods claim, not an empirical one.
+
+**What the paper does deliver**, all of it already built and validated:
+the `TE_marg` versus `TE_crn` distinction and why the second is required, the
+natural direct effect under a pinned downstream and the decomposition identity,
+the coupling construction and its measured degradation, the finding that the
+mediated share is not a share under suppression and inverts the ranking it is
+meant to induce, the verified regulatory basis including the deferral, and the
+Annex IV traceability specification.
+
+**This document does not reopen.** Every LOCKED entry stands. The RULE entries
+keyed to a Stage 0 measurement (`N` in s3, the replay floor in s6) are recorded
+as unresolved, with their procedures intact, so that a later study resolves them
+mechanically rather than by judgment.
+
 **2026-08-20.** The one known defect blocking this document (the ratio-to-causal
 convention in s2, see `docs/DERIVATIONS.md` Part V) is fixed, implemented, and
 validated (`scripts/validate_primary.py` s6, `verify.sh` ALL GREEN). This is a
@@ -256,6 +298,36 @@ afforded, it is dropped entirely rather than run at `J = 1`.
 > the conditions under which the result should be expected to hold.
 
 Both are writeable. Neither is a null result.
+
+---
+
+**ADDED 2026-09-03, and this is the one the paper ships with.** Neither abstract
+above survives the fallback, because both assert a live run. Drafted before any
+further analysis, per rule 6.
+
+> A provider of a high-risk AI system must keep records that make a decision
+> traceable, and for agentic systems it has not been established what those
+> records must contain for post-hoc causal attribution to be possible at all. We
+> give the estimator framework. We separate the marginal total effect that prior
+> work measures from a common-random-numbers total effect that isolates a step's
+> own contribution, add the natural direct effect under a pinned downstream, and
+> show the decomposition identity holds to machine precision on planted
+> structure. We derive the coupling that keeps the direct effect estimable once
+> contexts diverge, together with a closed form for its degradation, and we show
+> that the mediated share on which a natural ranking is built is not a share
+> under suppression: where the direct and mediated paths oppose it exceeds one
+> and ranks a suppressed component above a pure mediator, inverting the ordering
+> it is meant to induce. We pre-register the discrepancy experiment in full and
+> publish the pre-registration rather than a result, because the live regulated
+> pipeline it requires was not available in the study window; we state that
+> absence here rather than substituting a synthetic proxy for it. We contribute
+> the traceability specification such a filing would need, grounded in the
+> verbatim text of Articles 11 to 13 and Annex IV, whose obligations Regulation
+> (EU) 2026/1744 deferred to 2 December 2027 on the Union's own record that the
+> apparatus for demonstrating conformity was not ready.
+
+**The limitation is the third sentence from the end, not a section 7 footnote**,
+per standing rule 8. The absent live arm is the first thing a reader learns.
 
 ## 9. Signature
 
