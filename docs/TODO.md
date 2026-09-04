@@ -99,7 +99,7 @@ repo's actual state. Corrected below against `preregistration/PREREG.md`,
 | # | Item | Acceptance check | Status |
 |---|---|---|---|
 | 6.1 | Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text | Not summaries | **DONE 2026-08-25.** See 0.11. Four load-bearing findings established in `REGULATORY-BASIS.md` s9 |
-| 6.2 | Scope against 2606.09692's non-identifiability result | Stated precisely, with what it forecloses | open, D2 |
+| 6.2 | Scope against 2606.09692's non-identifiability result | Stated precisely, with what it forecloses | **PARTIAL 2026-09-04.** Chapter III Section 2 placement now VERBATIM, Article 25 and the Art 3 definitions retrieved and reviewer objection 3 answered from their own text. **Arts 72, 74 and 79 now retrieved too**, see s19 to s22 |
 | 6.3 | Draft the specification | What a provider must log for post-hoc causal attribution to be possible at all | D12 to D15 |
 
 ## WS7. Paper and reproducibility

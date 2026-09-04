@@ -271,3 +271,18 @@ any step of the sprint plan from D9 onward, all of which needed pipeline access.
    provisions that block it. The OJ structural check that blocks section 1.
 7. **Needing a decision from Ajay.** The IASEAI'27 dates, which cannot be read
    from the page. Gate D sign-off. P1 and P3 state.
+
+## D-restart+2, Friday 4 September 2026, evening
+
+1. **Shipped.** Chapter III Section 2 placement promoted from STRUCTURAL to
+   VERBATIM. Article 25 and Article 3(1),(3),(4) retrieved verbatim. Reviewer
+   objection 3 answered from primary text. Retrieval routes and their failures
+   recorded.
+2. **Slipped.** Articles 72, 74(1), 79(1) not retrieved; every programmatic route
+   truncates before them.
+3. **Gates.** Unchanged.
+4. **Deviation from pre-registration.** None.
+5. **Tomorrow.** Section 8 as an appendix on what is retrieved. Section 7 from
+   the pre-registration.
+6. **Needing Ajay.** Articles 72, 74(1) and 79(1) from a browser. IASEAI'27
+   dates. Gate D sign-off. P1 and P3 state.

@@ -714,3 +714,55 @@ retrieved: the page is JavaScript-rendered and returns none.**
 
 **Next.** Section 8 as an appendix from `REGULATORY-BASIS.md`, section 7 from the
 pre-registration, then 1, 2, 9, 10, figures, and a red team.
+
+## 2026-09-04, third entry
+
+**The load-bearing legal link is no longer a reading.** `REGULATORY-BASIS.md` s7
+step 2, the claim that Articles 11 to 13 sit inside Chapter III Section 2, was
+marked STRUCTURAL and the whole deferral framing rested on it. Read off the
+primary text today: Section 1 is classification and covers Articles 6 and 7,
+**Section 2 is "Requirements for high-risk AI systems" and covers Articles 8 to
+15**, Section 3 is obligations of providers and deployers and covers 16 to 26.
+Articles 11, 12 and 13 are in Section 2. One weak inference remains and is marked
+as such: that the OJ original carries the same Section structure as the
+consolidated text, which follows from the scope of the amending act.
+
+**Article 25 retrieved, and it strengthens the paper rather than threatening
+it.** Reviewer objection 3 was that Article 25 is where the Act handles
+multi-component systems, so Article 12 is the wrong provision to build on. With
+the text in hand the objection answers itself. Article 25 allocates the legal
+role of provider between actors and imposes duties of cooperation, documentation
+"sufficient to assess compliance with the requirements laid down in Article 16",
+information about "known limitations and failure modes", and targeted technical
+access. Every obligation is about who is answerable and about enabling
+compliance. None is about evidence of which component caused an output. The two
+provisions do different work and the paper needs both.
+
+**Article 3 definitions retrieved**, and (1) "AI system" is singular and
+system-level throughout, so a pipeline of five tool-backed services and a model
+is one AI system with one provider and one deployer. The Act has no vocabulary
+for the internal components this paper measures, and that is now supported by
+the definition itself rather than by its absence elsewhere.
+
+**Still not retrieved: Articles 72, 74(1) and 79(1).** Every route tried today is
+recorded in the new s18 with its outcome, so the next attempt starts from the
+failures. The only route that returns article text truncates mid Article 26,
+which is why 25 came back and 72 did not. Until they are read, section 8 must not
+characterise what Article 12(2)'s cross-references require.
+
+**IASEAI'27 dates, provided by Ajay from the official programme page.** Main
+conference **9 to 10 February 2027**, workshop days 11 to 12 February, UNESCO
+House, Paris. Submission portal **opens 18 September 2026**; **paper, workshop and
+model-policy proposals close 2 October 2026**; reviews shared 2 November; optional
+author responses 4 November; decisions 6 November. Talk proposals and statements
+of interest remain open on a rolling basis to 9 and 15 January 2027.
+
+**That is 28 days, not seven.** The arXiv date next week is Ajay's own choice and
+stands, but the conference deadline is 2 October, which leaves roughly three weeks
+after the preprint for the anonymised, template-formatted, 10-page version. The
+plan should stop treating the two as one deadline.
+
+**A gate defect fixed rather than carried.** In the previous session GATE 5 ran
+pytest, printed nothing at all, and passed. A gate that reports success without
+producing evidence is worse than no gate. It now requires a summary line matching
+a test count and fails closed if there is none.

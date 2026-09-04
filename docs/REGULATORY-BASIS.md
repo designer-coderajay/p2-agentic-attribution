@@ -477,3 +477,333 @@ legal effect". For a paper turning on exact wording, cite **OJ L, 2024/1689,
 13, 19, 26, 86 and Annex IV, all unamended and therefore identical in the OJ
 original, and **OJ L, 2026/1744, 24.7.2026** for the replaced second subparagraph
 of Article 11(1) and for the Article 113 amendment.
+
+---
+
+# Part II: retrievals of 4 September 2026
+
+Added after the 2026-09-04 session. Same discipline: `VERBATIM` means the exact
+words were retrieved this session with a URL, `STRUCTURAL` a reading, `INFERRED`
+my reasoning.
+
+## 15. Section 7 step 2 is now VERBATIM, not STRUCTURAL
+
+The load-bearing link flagged in section 7 has been checked against the primary
+text and holds. Retrieved 2026-09-04 from
+`https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02024R1689-20260727`.
+
+CHAPTER III, "HIGH-RISK AI SYSTEMS", is divided as follows: `VERBATIM`
+
+| Section | Heading | Articles |
+|---|---|---|
+| SECTION 1 | Classification of AI systems as high-risk | 6, 7 |
+| **SECTION 2** | **Requirements for high-risk AI systems** | **8 to 15** |
+| SECTION 3 | Obligations of providers and deployers of high-risk AI systems and other parties | 16 to 26 |
+
+**Articles 11, 12 and 13 are inside Section 2.** The chain in section 7 is
+therefore complete and every step of it is now a quotation:
+
+1. Article 113(c) defers "Chapter III, Sections 1, 2, and 3" for Annex III systems. `VERBATIM`
+2. Articles 11, 12 and 13 sit inside Chapter III Section 2. `VERBATIM as of 2026-09-04`
+3. Annex IV is operative only through Article 11(1). `VERBATIM`
+4. Therefore Articles 11, 12, 13 and Annex IV are deferred to 2 December 2027.
+
+**Remaining caveat, and it is small.** This was read from the consolidated text,
+which carries the standard "no legal effect" disclaimer. The Section headings of
+Chapter III were not amended by Regulation (EU) 2026/1744, whose Article 1(40)
+amends Article 113 and whose only other relevant change is to the second
+subparagraph of Article 11(1), so the OJ original carries the same structure.
+That last step is `INFERRED` from the scope of the amending act rather than read
+off the OJ original, because the OJ HTML truncates in the recitals before
+reaching any article. It is a much weaker dependency than the one it replaces.
+
+## 16. Article 25, and why it does not answer the question this paper asks
+
+Reviewer objection 3 in section 13 was that Article 25 is where the Act handles
+multi-component systems, so Article 12 is the wrong provision to build on. The
+article has now been retrieved and the objection can be met from its own text.
+
+**Article 25, "Responsibilities along the AI value chain", paragraph 1:** `VERBATIM`
+
+> "Any distributor, importer, deployer or other third-party shall be considered
+> to be a provider of a high-risk AI system for the purposes of this Regulation
+> and shall be subject to the obligations of the provider under Article 16, in
+> any of the following circumstances: (a) they put their name or trademark on a
+> high-risk AI system already placed on the market or put into service ...
+> (b) they make a substantial modification ... (c) they modify the intended
+> purpose of an AI system ... in such a way that the AI system concerned becomes
+> a high-risk AI system in accordance with Article 6."
+
+**Paragraph 2, third subparagraph, the cooperation duty:** `VERBATIM`
+
+> "In particular, the obligation laid down in the second subparagraph shall
+> include, where relevant for the purposes specified therein, the following:
+> (a) making available of technical documentation sufficient to assess
+> compliance with the requirements laid down in Article 16; (b) informing the
+> new providers about known limitations and failure modes; and (c) providing the
+> new providers with targeted technical access, including for testing and
+> validation."
+
+**Paragraph 4, the written agreement:** `VERBATIM`
+
+> "The provider of a high-risk AI system and the third party that supplies an AI
+> system, AI model, tools, services, components, or processes that are used or
+> integrated in a high-risk AI system shall, by written agreement, specify the
+> necessary information, capabilities, technical access and other assistance
+> based on the generally acknowledged state of the art, in order to enable the
+> provider of the high-risk AI system to fully comply with the obligations set
+> out in this Regulation."
+
+**The objection is met, and the article helps us.** `INFERRED`, but from
+quotations rather than from recollection. Article 25 allocates the legal role of
+"provider" between actors and imposes duties of cooperation, documentation and
+technical access. Every one of its obligations is about **who is answerable** and
+about **enabling compliance**. None of them is about producing evidence of
+**which component caused a particular output**. Paragraph 2 requires technical
+documentation "sufficient to assess compliance with the requirements laid down
+in Article 16", and information about "known limitations and failure modes",
+which is a class-level statement about a system, not a decision-level statement
+about an instance. Paragraph 4 requires the parties to agree what information is
+needed "in order to enable the provider ... to fully comply", which presupposes
+that the content of compliance is fixed elsewhere. It is fixed in Section 2,
+which is where Article 12 sits.
+
+So the two provisions do different work and the paper needs both: Article 25
+determines who must answer, Article 12 determines what the record must contain,
+and neither tells a provider how to establish which step of an agentic
+trajectory determined a contested decision. That gap is what the specification in
+this paper addresses.
+
+## 17. Article 3 definitions, for the scope argument
+
+Retrieved 2026-09-04, same URL. `VERBATIM`
+
+> "(1) 'AI system' means a machine-based system that is designed to operate with
+> varying levels of autonomy and that may exhibit adaptiveness after deployment,
+> and that, for explicit or implicit objectives, infers, from the input it
+> receives, how to generate outputs such as predictions, content,
+> recommendations, or decisions that can influence physical or virtual
+> environments;"
+
+> "(3) 'provider' means a natural or legal person, public authority, agency or
+> other body that develops an AI system or a general-purpose AI model or that
+> has an AI system or a general-purpose AI model developed and places it on the
+> market or puts the AI system into service under its own name or trademark,
+> whether for payment or free of charge;"
+
+> "(4) 'deployer' means a natural or legal person, public authority, agency or
+> other body using an AI system under its authority except where the AI system
+> is used in the course of a personal non-professional activity;"
+
+**Why these matter to the argument.** `INFERRED`. The definition of "AI system"
+is singular and system-level throughout: one machine-based system that infers
+how to generate outputs. An agentic pipeline of five tool-backed services and a
+model is, on this definition, **one** AI system with one provider and one
+deployer. The Act therefore has no vocabulary at all for the internal components
+whose relative contribution this paper measures, which is the same finding
+recorded in section 9.3 and is now supported by the definition itself rather
+than by its absence elsewhere.
+
+## 18. Still outstanding after this session
+
+**Retrieved and verbatim:** Articles 3(1), 3(3), 3(4), 6(1), 6(2), 11, 12, 13,
+18(1), 19, **25**, 26, 86, 113; the Chapter III Section structure; Annex III
+point 5; Annex IV complete; recitals 71 and 171; Regulation (EU) 2026/1744
+Articles 1(40) and 4 and recital (40).
+
+**Still not retrieved: Articles 72, 74(1) and 79(1).** Article 12(2) refers to
+Articles 72 and 79(1), so they bound what "relevant events" means, and Article 74
+carries the argument that logs expire before a market-surveillance investigation
+reaches them.
+
+**Routes tried on 2026-09-04 and their outcomes**, recorded so the next attempt
+does not repeat them:
+
+| Route | Outcome |
+|---|---|
+| `publications.europa.eu/resource/celex/02024R1689-20260727` | HTTP 404 to a plain fetch; needs Accept-header content negotiation the tool cannot send |
+| `eur-lex.../TXT/HTML/?uri=CELEX:02024R1689-20260727` | **WORKS**, but truncates mid Article 26. Everything through Article 25 is reachable this way; nothing beyond it is |
+| `eur-lex.../TXT/HTML/?uri=CELEX:32024R1689` (OJ original) | Truncates in recital (60), before any article |
+| `eur-lex.../TXT/?uri=CELEX:02024R1689-20260727` | Returns metadata only |
+| `data.europa.eu/eli/reg/2024/1689/oj/eng/html` | robots.txt disallowed |
+| adding a query parameter to bust the fetch cache | robots.txt disallowed |
+
+The three outstanding articles sit in Chapter IX, well past the truncation point
+of the only route that returns article text. They must be obtained another way:
+from a browser session, or from the OJ PDF, before section 8 makes any claim that
+depends on them. Until then section 8 must not characterise Article 12(2)'s
+cross-references, and must say so.
+
+---
+
+# Part III: Articles 72, 74 and 79, retrieved 4 September 2026
+
+Provided by Ajay from the consolidated text on EUR-Lex and pasted into the
+session, rather than fetched by me: every programmatic route recorded in section
+18 truncates before Chapter IX. The text below is therefore `VERBATIM` as to
+wording but the retrieval is second-hand, and a final check against the OJ should
+be made before any of it is quoted in the manuscript.
+
+**One numbering caveat, recorded rather than glossed.** The pasted block
+beginning "Market surveillance and control of AI systems in the Union market"
+carried no article number. That title is Article 74 of Regulation (EU) 2024/1689,
+and the block's own cross-references to "the procedures referred to in Articles 79
+to 83" are consistent with it. The article number is therefore `INFERRED` from
+the title, not read. Confirm the number when a browser is next open, before the
+appendix cites it.
+
+## 19. Article 72, post-market monitoring
+
+**Article 72(2):** `VERBATIM`
+
+> "The post-market monitoring system shall actively and systematically collect,
+> document and analyse relevant data which may be provided by deployers or which
+> may be collected through other sources on the performance of high-risk AI
+> systems throughout their lifetime, and which allow the provider to evaluate the
+> continuous compliance of AI systems with the requirements set out in Chapter
+> III, Section 2. Where relevant, post-market monitoring shall include an
+> analysis of the interaction with other AI systems."
+
+**The last sentence is the one that matters, and it cuts our way.** `INFERRED`.
+The only interaction the Act asks a provider to analyse is the interaction
+**with other AI systems**, that is, between systems. It does not ask for analysis
+of the interaction between components inside one system, which is the object this
+paper measures. Taken with the Article 3(1) definition, under which an agentic
+pipeline is one AI system, the Act's monitoring obligation is silent on exactly
+the internal structure where an agentic failure is located.
+
+**Article 72(3), as amended (the consolidated text carries an M1 marker at this
+paragraph, indicating amendment by Regulation (EU) 2026/1744):** `VERBATIM`
+
+> "The post-market monitoring system shall be based on a post-market monitoring
+> plan. The post-market monitoring plan shall be part of the technical
+> documentation referred to in Annex IV. The Commission, taking utmost account of
+> the opinion of the Board, shall adopt guidance, including a template, on the
+> post-market monitoring plan by 2 September 2027."
+
+**A second live target for the deliverable.** `INFERRED`. Section 7 of the brief
+already identified the simplified Annex IV form for SMEs as an instrument that
+does not yet exist. This is a second one: a post-market monitoring plan template,
+due from the Commission by **2 September 2027**, which is part of the Annex IV
+technical documentation. A specification for what an agentic post-market
+monitoring plan must record in order to make causal attribution possible arrives
+before that template does.
+
+**Article 72(4), second subparagraph:** `VERBATIM`
+
+> "The first subparagraph of this paragraph shall also apply to high-risk AI
+> systems referred to in point 5 of Annex III placed on the market or put into
+> service by financial institutions that are subject to requirements under Union
+> financial services law regarding their internal governance, arrangements or
+> processes."
+
+Annex III point 5 is creditworthiness. This provision names the exact system
+class the paper's intended live arm belongs to.
+
+## 20. Article 74, market surveillance, and an escalation ladder that stops short
+
+**Article 74(12):** `VERBATIM`
+
+> "Without prejudice to the powers provided for under Regulation (EU) 2019/1020,
+> and where relevant and limited to what is necessary to fulfil their tasks, the
+> market surveillance authorities shall be granted full access by providers to
+> the documentation as well as the training, validation and testing data sets
+> used for the development of high-risk AI systems, including, where appropriate
+> and subject to security safeguards, through application programming interfaces
+> (API) or other relevant technical means and tools enabling remote access."
+
+**Article 74(13):** `VERBATIM`
+
+> "Market surveillance authorities shall be granted access to the source code of
+> the high-risk AI system upon a reasoned request and only when both of the
+> following conditions are fulfilled: (a) access to source code is necessary to
+> assess the conformity of a high-risk AI system with the requirements set out in
+> Chapter III, Section 2; and (b) testing or auditing procedures and
+> verifications based on the data and documentation provided by the provider have
+> been exhausted or proved insufficient."
+
+**This is the strongest regulatory finding of the session.** `INFERRED`, from
+quotation. Article 74 sets out an escalation ladder for an investigating
+authority: first the documentation and the data sets, then, only once those are
+"exhausted or proved insufficient", the source code. **Execution traces are on
+neither rung.** The ladder is built for a system whose behaviour can be
+interrogated from its artefacts and its training data, which is the right model
+for a classifier and the wrong one for an agent whose contested decision is a
+path through a trajectory that happened once. An authority following Article 74
+in order would reach source code without ever obtaining the one record that could
+establish which step determined the outcome.
+
+That is not a gap the Act acknowledges, and it is the gap the specification in
+this paper fills.
+
+## 21. Article 79, and what an authority is required to say
+
+**Article 79(2), second subparagraph, the correction window:** `VERBATIM`
+
+> "it shall without undue delay require the relevant operator to take all
+> appropriate corrective actions to bring the AI system into compliance, to
+> withdraw the AI system from the market, or to recall it within a period the
+> market surveillance authority may prescribe, and in any event within the
+> shorter of 15 working days, or as provided for in the relevant Union
+> harmonisation legislation."
+
+**Article 79(6):** `VERBATIM`
+
+> "the market surveillance authorities shall indicate whether the non-compliance
+> is due to one or more of the following: (a) non-compliance with the prohibition
+> of the AI practices referred to in Article 5; (b) **a failure of a high-risk AI
+> system to meet requirements set out in Chapter III, Section 2**; (c)
+> shortcomings in the harmonised standards or common specifications referred to
+> in Articles 40 and 41 conferring a presumption of conformity; (d)
+> non-compliance with Article 50."
+
+**The finest granularity the Act provides for attributing a failure is the whole
+system against a whole Section.** `INFERRED`. Article 79(6)(b) is the category
+into which every agentic failure of the kind this paper studies would fall, and
+it resolves to "this system failed Chapter III Section 2". There is no category,
+and no requirement, for saying which component of the system failed, or which
+step of a trajectory produced the contested output. An authority can be fully
+compliant with Article 79 while being unable to say anything about causation
+inside the system.
+
+**Article 79(1)** defines an AI system presenting a risk by reference to Article
+3, point 19 of Regulation (EU) 2019/1020, "in so far as they present risks to the
+health or safety, or to fundamental rights, of persons". `VERBATIM`
+
+## 22. What Article 12(2)'s cross-references actually require
+
+Section 8 was told not to characterise these until they were read. They have now
+been read, so it may. `INFERRED`, from the quotations above.
+
+Article 12(2) obliges logging that enables identifying situations that may
+present a risk within the meaning of Article 79(1), or lead to a substantial
+modification, and that facilitates post-market monitoring under Article 72. Both
+cross-references resolve to system-level obligations. Article 79(1) is about
+whether the system presents a risk; Article 72 is about the system's performance
+over its lifetime and its interaction with other systems. **Neither
+cross-reference imports any component-level or step-level requirement.** The
+logging duty in Article 12 is therefore bounded above by two system-level
+purposes, and a provider who logs enough to serve both can still be unable to
+answer which retrieval, tool call or model step determined a specific contested
+decision.
+
+That bound is the precise statement the specification needs, and it could not be
+made before these three articles were read.
+
+## 23. Retrieval status after this session
+
+**Retrieved and verbatim:** Articles 3(1), 3(3), 3(4), 6(1), 6(2), 11, 12, 13,
+18(1), 19, 25, 26, **72, 74, 79**, 86, 113; the Chapter III Section structure;
+Annex III point 5; Annex IV complete; recitals 71 and 171; Regulation (EU)
+2026/1744 Articles 1(40) and 4 and recital (40).
+
+**Outstanding checks, none of them blocking:**
+
+- Confirm that the block titled "Market surveillance and control of AI systems in
+  the Union market" is numbered Article 74.
+- Confirm the M1 amendment marker on Article 72(3) against Regulation (EU)
+  2026/1744 itself, since the paper will state that the monitoring-plan template
+  deadline of 2 September 2027 is an amended provision.
+- Article 73, serious incident reporting, was not retrieved and sits between 72
+  and 74. It is not currently load-bearing but should be checked before the
+  appendix claims the Act has no incident-level component reporting.
