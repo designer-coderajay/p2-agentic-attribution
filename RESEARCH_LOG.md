@@ -659,3 +659,58 @@ something was tested and where it runs, after the zsh `#` comment producing five
 junk files and `git log | grep -q` returning 141 under `pipefail` on the machine
 of record while passing in the sandbox. The tests were not at fault in any of
 the three. The harness around them was.
+
+## 2026-09-04, second entry
+
+**Manuscript started, and a novelty sweep found that its sharpest section was
+claiming a known result.**
+
+Sections 3 to 6 were written from `docs/DERIVATIONS.md`. Then the sweep that
+should have run first ran, and section 6 did not survive it intact.
+
+**The finding.** Section 6 presented as a result that `|ME|/|TE|` exceeds 1 when
+the direct and mediated paths oppose. In mediation analysis that ratio is the
+proportion mediated, the configuration is called **inconsistent mediation**, and
+its instability is established in MacKinnon, Warsi and Dwyer (1995),
+*Multivariate Behavioral Research* 30(1):41-62. Kenny's mediation resource states
+verbatim that the measure "can be greater than one or even negative". A reviewer
+who knows this literature rejects the claim in a line.
+
+Both primary references were verified against four independent records each
+before being written into the bibliography.
+
+**What survives, and it is a better paper for the correction.** The inequality is
+attributed. What stays ours is that a **pre-registered statistic in this project
+ranked on a quantity the literature says not to compute when the denominator is
+small**; that inconsistent mediation has a concrete reading in an agent pipeline,
+namely a retrieval that supports approval while causing a later verification step
+to flag; and that the response is exclusion with a mandatory reported rate rather
+than a clamp. The framing is now that agent-attribution work has been built
+without reference to fifty years of mediation methodology, and importing it
+correctly is the contribution.
+
+**Two further claims caught before they were written.** Common random numbers is
+standard variance reduction (Law and Kelton) and the maximal-coupling bound
+`1 - TV` is classical (Levin, Peres and Wilmer). Neither is claimed now; both are
+cited. arXiv 2605.04732 uses CRN for rollout-based planning and was checked and
+**cleared**: no coupling agreement probability, no quantile-versus-maximal
+comparison, no attribution or mediation. It is cited as adjacent work.
+
+The one thing left as ours in section 5 is the closed form for shared-`u`
+quantile-coupling agreement and the measured gap, and it is stated with "we have
+not found it stated for this purpose" rather than as a novelty claim, because a
+search returning nothing is not proof of absence.
+
+**Process failure worth recording.** The rule is "before any novelty claim,
+search". The draft existed for a day before the search ran. Search before
+drafting, not before submitting.
+
+**IASEAI'27 policy, verified from the '26 documents and NOT yet from the '27
+call:** double-anonymous review; preprints allowed before or during review but
+"must not be linked or mentioned in the submission", so an arXiv post does not
+conflict; 10 pages main text excluding references; mandatory template; archival
+track requires at least 50% new technical content. **The '27 dates could not be
+retrieved: the page is JavaScript-rendered and returns none.**
+
+**Next.** Section 8 as an appendix from `REGULATORY-BASIS.md`, section 7 from the
+pre-registration, then 1, 2, 9, 10, figures, and a red team.

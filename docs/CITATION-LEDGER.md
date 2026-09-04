@@ -297,3 +297,35 @@ already in force here: every claim in this sweep carries a URL and an exact quot
 so a contaminated intermediate could be caught and discarded rather than
 propagating into the bibliography.
 | **Fieller 1954** | **Some Problems in Interval Estimation** | **E. C. Fieller.** *Journal of the Royal Statistical Society: Series B (Methodological)* **16(2):175-185**, July 1954. **DOI 10.1111/j.2517-6161.1954.tb00159.x** | **VERIFIED** | **2026-08-23** | Upgraded from RECALLED. Confirmed against the Oxford Academic JRSS-B record, corroborated by the Wiley DOI landing page and the JSTOR volume listing for Vol. 16 No. 2 (1954). Cited in the `normalized_beta` docstring as the reason a ratio to a near-zero coefficient has heavy tails and a possibly unbounded interval. **Logged only because another session caught it: it was referenced in committed code without ever entering this ledger.** See correction C6. |
+
+---
+
+## Additions from the 2026-09-04 novelty sweep
+
+Searched because the draft made three novelty claims that had not been checked.
+One of them was wrong. Recorded per standing rule 3.
+
+| ref | Title | Authors / venue | Status | Checked | Note |
+|---|---|---|---|---|---|
+| **MacKinnon, Warsi & Dwyer 1995** | **A Simulation Study of Mediated Effect Measures** | **D. P. MacKinnon, G. Warsi, J. H. Dwyer.** *Multivariate Behavioral Research* **30(1):41-62**, 1995. **DOI 10.1207/s15327906mbr3001_3**, PMID 20157641 | **VERIFIED** | **2026-09-04** | Volume, issue and pages agree across Taylor & Francis, PubMed, ERIC and the Google Scholar record. **PRIOR ART for the section 6 proposition.** The instability of the proportion mediated when the total effect is small is theirs, not ours. |
+| **MacKinnon, Krull & Lockwood 2000** | **Equivalence of the Mediation, Confounding and Suppression Effect** | **D. P. MacKinnon, J. L. Krull, C. M. Lockwood.** *Prevention Science* **1:173-181**, 2000. **DOI 10.1023/A:1026595011371** | **VERIFIED** | **2026-09-04** | Confirmed against Springer, the ASU research record and Semantic Scholar. **Issue number NOT confirmed: do not state one.** Establishes suppression and mediation as the same algebra. |
+| **Kenny (mediation resource)** | **Mediation** (davidakenny.net/cm/mediate.htm) | **D. A. Kenny.** Web resource, not peer reviewed | **VERIFIED (fetched)** | **2026-09-04** | Source of the verbatim "inconsistent mediation" naming and "this measure can be greater than one or even negative". **Cite as a secondary/tertiary source only; the primary attribution is MacKinnon et al.** |
+| **Levin, Peres & Wilmer** | **Markov Chains and Mixing Times** | **D. A. Levin, Y. Peres, E. L. Wilmer.** American Mathematical Society. 1st ed. 2009, ISBN 9780821847398; **2nd ed. 2017, ISBN 9781470429621** | **VERIFIED (AMS + publisher records)** | **2026-09-04** | For the maximal coupling bound `1 - TV`. **NO chapter, section or proposition number has been verified. Do not add one without checking the text.** |
+| **Law & Kelton** | **Simulation Modeling and Analysis** | **A. M. Law, W. D. Kelton.** McGraw-Hill. 3rd ed. 2000 recorded by multiple citation records; earlier ed. ISBN 9780070366985 | **VERIFIED (edition ambiguous)** | **2026-09-04** | For common random numbers as a variance-reduction technique. **Pick one edition and check its CRN chapter before the bibliography is frozen.** |
+| 2605.04732 | Using Common Random Numbers for Simulation-based Planning with Rollouts | Sandarbh Yadav, Frederic J Maliakkal, Harshad Khadilkar, Shivaram Kalyanakrishnan. v1 6 May 2026 | **VERIFIED, abstract read** | **2026-09-04** | **CLEARED.** CRN for variance reduction in rollout-based planning. No coupling agreement probability, no quantile-versus-maximal comparison, no attribution, direct effects or mediation. Cite as adjacent work on CRN in rollouts. |
+
+### What the sweep changed
+
+**Section 6 was claiming a known result.** The proposition that `|ME|/|TE| > 1`
+under opposing signs is the proportion-mediated instability of MacKinnon et al.
+(1995), and the configuration is standardly called inconsistent mediation. The
+section is demoted to a restatement with attribution.
+
+**Sections 3 and 5 were at risk of the same error.** Common random numbers and
+maximal coupling are both classical. Neither is claimed as novel; both are cited.
+
+**What remains genuinely ours, and is now stated with "to our knowledge":** the
+closed form for shared-`u` quantile-coupling agreement in fixed index order and
+the measured gap against the maximal bound. A search for it returned nothing
+directly on point, but it is an elementary computation and the honest phrasing is
+that we have not found it stated for this purpose, not that it does not exist.

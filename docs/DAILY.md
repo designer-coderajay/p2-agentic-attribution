@@ -255,3 +255,19 @@ any step of the sprint plan from D9 onward, all of which needed pipeline access.
    Then section 8 from `REGULATORY-BASIS.md`.
 7. **Needing a decision from Ajay.** Gate D sign-off, still open. P1 and P3 state,
    still unknown to this chat, and the 10 and 19 September dates have not moved.
+
+## D-restart+1 (cont.), Friday 4 September 2026
+
+1. **Hours.** Cowork session, third block.
+2. **Shipped.** Manuscript sections 3 to 6, 8 pages, clean build. Novelty sweep
+   with six references verified and added to the ledger. Section 6 reframed from
+   a claim to a restatement with attribution.
+3. **Slipped.** Nothing, but a claim was caught one day late.
+4. **Gates.** Unchanged. A passed, D awaiting sign-off, B/C/E cut.
+5. **Deviation from pre-registration.** None. H4 still ranks on the mediated
+   share as locked; what changed is the paper's account of whose result the
+   instability is.
+6. **Tomorrow's blocks.** Section 8 as an appendix. The five outstanding AI Act
+   provisions that block it. The OJ structural check that blocks section 1.
+7. **Needing a decision from Ajay.** The IASEAI'27 dates, which cannot be read
+   from the page. Gate D sign-off. P1 and P3 state.

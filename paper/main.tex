@@ -1,0 +1,432 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage[numbers]{natbib}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\TEmarg}{\mathrm{TE}_{\mathrm{marg}}}
+\newcommand{\TEcrn}{\mathrm{TE}_{\mathrm{crn}}}
+\newcommand{\DE}{\mathrm{DE}}
+\newcommand{\ME}{\mathrm{ME}}
+\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\TV}{\mathrm{TV}}
+
+\title{Causal Attribution for Agentic Decisions:\\
+Estimators, Coupling, and a Traceability Specification}
+\author{Ajay Pravin Mahale}
+\date{Draft of \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A provider of a high-risk AI system must keep records that make a decision
+traceable, and for agentic systems it has not been established what those
+records must contain for post-hoc causal attribution to be possible at all. We
+give the estimator framework. We separate the marginal total effect that prior
+work measures from a common-random-numbers total effect that isolates a step's
+own contribution, add the natural direct effect under a pinned downstream, and
+show the decomposition identity holds to machine precision on planted structure.
+We derive the coupling that keeps the direct effect estimable once contexts
+diverge, together with a closed form for its degradation, and we show that the
+mediated share on which a natural ranking is built is not a share under
+suppression: where the direct and mediated paths oppose it exceeds one and ranks
+a suppressed component above a pure mediator, inverting the ordering it is meant
+to induce. We pre-register the discrepancy experiment in full and publish the
+pre-registration rather than a result, because the live regulated pipeline it
+requires was not available in the study window; we state that absence here
+rather than substituting a synthetic proxy for it. We contribute the
+traceability specification such a filing would need, grounded in the verbatim
+text of Articles 11 to 13 and Annex IV, whose obligations Regulation (EU)
+2026/1744 deferred to 2 December 2027 on the Union's own record that the
+apparatus for demonstrating conformity was not ready.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+\emph{To be written. Opens on the deferral and recital (40) of
+Regulation (EU) 2026/1744 \citep{omnibus2026}, then the absence of an agreed
+protocol for execution provenance \citep{survey2026}, then the contribution
+list, with the differentiation from \citet{car2026} in this section rather than
+in related work.}
+
+\section{Setting and estimands}
+\label{sec:setting}
+
+\emph{To be written. Trajectory, node types, outcome $Y$, and the five-operator
+intervention algebra adopted verbatim from \citet{car2026}.}
+
+A trajectory is a sequence of steps $\tau = (v_1,\dots,v_T)$ terminating in a
+decision $Y$. Step $k$ draws an action $a_k$ from a policy conditioned on the
+prefix, using exogenous noise $u_k$. We write $a^{\mathrm{fact}}$ and
+$u^{\mathrm{fact}}$ for the realised factual run, and every effect below is a
+contrast against that run, as it must be: an effect is a contrast against
+something that happened.
+
+\section{Two total effects, and why the distinction is the crux}
+\label{sec:two-te}
+
+Fix a step $k$ and resample its action under the unchanged policy. Two estimands
+follow, and they are not interchangeable.
+
+\begin{definition}[Marginal total effect]
+Intervene at $k$, then let every downstream step re-decide under \emph{fresh}
+noise:
+\[
+  \TEmarg(k) \;=\; \Ex_{a'_k,\,u_{>k}}\!\left[\,Y \mid do(a_k := a'_k)\,\right]
+              \;-\; y^{\mathrm{fact}} .
+\]
+\end{definition}
+
+\begin{definition}[Common-random-numbers total effect]
+Intervene at $k$, then let every downstream step re-decide under the
+\emph{factual} noise $u_{>k} = u^{\mathrm{fact}}_{>k}$:
+\[
+  \TEcrn(k) \;=\; \Ex_{a'_k}\!\left[\,Y \mid do(a_k := a'_k),\,
+                  U_{>k} = u^{\mathrm{fact}}_{>k}\,\right]
+             \;-\; y^{\mathrm{fact}} .
+\]
+\end{definition}
+
+The second is a counterfactual in Pearl's sense \citep{pearl2009}: same unit,
+same exogenous noise, one variable changed. The first marginalises the noise
+away and in doing so re-rolls every downstream decision. That is the confound
+\citet{car2026} identifies and resolves with a point-of-commitment rule. We
+resolve it by construction instead.
+
+The construction is common random numbers, a standard variance-reduction
+technique in simulation \citep{lawkelton2000}, and we claim no novelty in the
+technique. Its use for rollout-based planning is recent \citep{yadav2026}. What
+we claim is narrower and is the content of the next subsection: in this setting
+the choice between marginalising the downstream noise and holding it fixed is
+not a variance question at all. It decides whether a causally inert step is
+distinguishable from a decisive one.
+
+\subsection{A planted structure that separates them}
+
+Consider a four-step chain with fidelity parameter $q$ and direct weight $w$:
+\begin{align}
+  a_0 &\sim \mathrm{Bern}(1/2) && \text{inert, no path to } y \nonumber\\
+  a_1 &\sim \mathrm{Bern}(1/2) && \text{retrieval} \nonumber\\
+  a_2 &\sim \mathrm{Bern}(1/2) && \text{inert, no path to } y \label{eq:scm}\\
+  a_3 &= \begin{cases} a_1 & u_3 < q\\ 1-a_1 & \text{otherwise}\end{cases}
+      && \text{executing tool call} \nonumber\\
+  y   &= w\,a_1 + (1-w)\,a_3 . \nonumber
+\end{align}
+With $q = 0.9$, $w = 0.5$, and a factual run
+$a^{\mathrm{fact}} = (0,1,1,1)$, $u_3^{\mathrm{fact}} = 0.770 < q$, so
+$y^{\mathrm{fact}} = 1$. Table~\ref{tab:two-te} gives the closed forms, all
+derived by hand before any estimator was run.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{llrrrr}
+\toprule
+step & planted role & $\TEmarg$ & $\TEcrn$ & $\DE$ & $\ME$ \\
+\midrule
+0 & inert, no path to $y$ & $-0.50$ & $0$      & $0$      & $0$ \\
+1 & decisive retrieval    & $-0.50$ & $-0.50$  & $-0.25$  & $-0.25$ \\
+2 & inert, no path to $y$ & $-0.05$ & $0$      & $0$      & $0$ \\
+3 & executing step        & $-0.05$ & $-0.05$  & $-0.05$  & $0$ \\
+\bottomrule
+\end{tabular}
+\caption{Analytic values on the planted chain \eqref{eq:scm}, $q=0.9$, $w=0.5$.
+Under the marginal estimand the inert step 0 is numerically indistinguishable
+from the decisive step 1, and the inert step 2 from the executing step 3.
+Under CRN both inert steps are exactly zero.}
+\label{tab:two-te}
+\end{table}
+
+The point of Table~\ref{tab:two-te} is the first column. Under marginal
+run-forward, magnitude alone cannot separate a causally inert step from a
+decisive one, which is precisely why a locus rule is needed on top of it. Under
+CRN the inert steps return exactly zero and the planted structure is recovered
+with no heuristic.
+
+\begin{remark}
+This is a statement about estimators on a known structure. It is not a statement
+about any deployed system, and we do not write it as one.
+\end{remark}
+
+\section{The direct effect and the decomposition}
+\label{sec:de}
+
+\begin{definition}[Natural direct effect, pinned downstream]
+Intervene at $k$ and pin every $j > k$ to the action it took in the factual run:
+\[
+  \DE(k) \;=\; \Ex_{a'_k}\!\left[\,Y \mid do(a_k := a'_k),\,
+               a_{>k} := a^{\mathrm{fact}}_{>k}\,\right]
+          \;-\; y^{\mathrm{fact}} .
+\]
+\end{definition}
+
+This is the natural direct effect of \citet{pearl2001}, with the textbook
+treatment in \citet[\S4.5.4--4.5.5]{pearl2009}; the concept predates the
+counterfactual formalisation and priority belongs to \citet{robins1992}.
+
+The mediated effect is the residual,
+\begin{equation}
+  \ME(k) \;=\; \TEcrn(k) - \DE(k),
+  \label{eq:identity}
+\end{equation}
+which is an identity rather than an approximation. On the planted chain the
+mediated share of step 1 is $|\ME|/|\TEcrn| = 0.25/0.5 = 0.5$, which equals
+$1-w$ as it must, since the mediated path carries exactly weight $1-w$. That
+identity is the closed-form check on the whole decomposition. Measured against
+the derivation, the estimators agree within Monte Carlo error at every step and
+the residual of \eqref{eq:identity} is $5.55 \times 10^{-17}$.
+
+\subsection{Pin plausibility, reported rather than assumed away}
+
+The direct-effect arm at step 1 pins $a_3 = 1$ while $a_1$ has been resampled.
+When $a'_1 = 1$ the pin agrees with the policy with probability $q$; when
+$a'_1 = 0$ it agrees with probability $1-q$. Averaging over
+$a'_1 \sim \mathrm{Bern}(1/2)$ gives a pin plausibility of $(q + 1 - q)/2 = 0.5$
+at $q = 0.9$. Where this quantity is small the direct-effect estimate rests on a
+pinned continuation the policy would rarely have produced, and $\ME$ must be
+read as bounded rather than as a point estimate. We report it alongside every
+$\ME$.
+
+\section{Coupling across divergent contexts}
+\label{sec:coupling}
+
+\citet[\S7]{car2026} states that a direct-effect arm needs common random numbers
+across branches, calls this hard once contexts diverge, and leaves it as a
+refinement. We give the closed form for what "hard" costs.
+
+Token sampling is inverse-transform sampling from a categorical distribution. If
+the uniform draw is a pure function of $(\text{run id}, \text{step},
+\text{replicate})$ and never of the context, factual and counterfactual branches
+consume identical draws. The noise is shared exactly. What is not shared exactly
+is the benefit.
+
+\subsection{Shared-\texorpdfstring{$u$}{u} coupling does not attain the bound}
+
+A first implementation asserted that shared-$u$ inverse-transform sampling in
+fixed index order attains the maximal-coupling bound $1 - \TV(p,q)$. That is
+false, and the validation script rejected it at up to 215 Monte Carlo standard
+errors before any of it reached this manuscript. Two branches agree at token $i$
+exactly when $u$ lands in the intersection of the CDF intervals
+$[P_{i-1},P_i)$ and $[Q_{i-1},Q_i)$, so
+\begin{equation}
+  A_{\mathrm{quant}}(p,q) \;=\;
+    \sum_i \max\!\bigl(0,\; \min(P_i,Q_i) - \max(P_{i-1},Q_{i-1})\bigr)
+  \;\le\; \sum_i \min(p_i,q_i) \;=\; 1 - \TV(p,q),
+  \label{eq:quant}
+\end{equation}
+with equality only in degenerate cases. The mechanism behind the loss is that
+mass moved between two tokens shifts every subsequent CDF boundary, so a
+perturbation early in the index order decouples the entire tail.
+
+Maximal coupling attains $1 - \TV(p,q)$, and that this is optimal is classical
+\citep{levin2017}; we cite it rather than claim it. What we have not found
+stated for this purpose, though it is an elementary computation, is the closed
+form \eqref{eq:quant} for the shared-$u$ alternative and the size of the gap
+between them at realistic divergence. Maximal coupling requires both $p$
+and $q$ at draw time, so the factual branch's distribution must be carried
+alongside the counterfactual one. That is one extra forward pass per step, and
+it is available here because the factual run is being replayed anyway.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+logit shift & $\TV(p,q)$ & quant.\ bound & quant.\ emp. & max.\ bound &
+max.\ emp. & prob-sorted \\
+\midrule
+0.00 & 0.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+0.25 & 0.0856 & 0.7851 & 0.7839 & 0.9144 & 0.9142 & 0.5298 \\
+0.50 & 0.1788 & 0.4121 & 0.4087 & 0.8212 & 0.8221 & 0.0858 \\
+1.00 & 0.3969 & 0.2777 & 0.2740 & 0.6031 & 0.6075 & 0.0447 \\
+2.00 & 0.4245 & 0.3057 & 0.3054 & 0.5755 & 0.5801 & 0.0446 \\
+4.00 & 0.9369 & 0.0167 & 0.0177 & 0.0631 & 0.0654 & 0.0252 \\
+\bottomrule
+\end{tabular}
+\caption{Vocabulary 32, 40{,}000 draws per point, $q$ formed by perturbing the
+logits of $p$ with Gaussian noise of the stated scale. Every empirical value is
+within 1.9 Monte Carlo standard errors of its closed form. The last column is
+what a sampler that sorts the vocabulary by probability delivers, because
+sorting breaks the fixed index order \eqref{eq:quant} depends on.}
+\label{tab:coupling}
+\end{table}
+
+Table~\ref{tab:coupling} makes three design requirements binding. Use maximal
+coupling, not quantile coupling: at $\TV = 0.179$ the gap is $0.821$ against
+$0.412$. Fix the vocabulary order in the sampler: sorting by probability is the
+default in common implementations and it collapses agreement to $0.086$ at that
+same divergence, a factor of nine below what is achievable. And keep the uniform
+draw a pure function of its key, since an advancing generator makes the draw
+depend on call order, and call order differs between branches.
+
+\subsection{What replay actually requires}
+
+The construction above assumes the underlying forward pass is reproducible. It
+is not reproducible by default. \citet{he2025} establish that the forward pass
+is already run-to-run deterministic and that the usual explanation, concurrency
+racing with floating-point non-associativity, is not the cause; the cause is
+lack of batch invariance under varying server load. Their measurement is that
+1000 completions at temperature zero from one prompt gave 80 unique
+completions, identical for the first 102 tokens and diverging at the 103rd,
+collapsing to one completion under batch-invariant kernels.
+
+Three consequences bind on any replay harness. Temperature zero with a fixed
+seed is not sufficient, and a harness that assumes otherwise will silently
+mis-measure its own replay floor. The remedy is batch-invariant kernels rather
+than serialisation. And determinism does not survive a change of GPU or
+framework version, so a replay is valid only within one pinned inference stack,
+which is the same discipline we apply to the analysis environment.
+
+Where batch invariance cannot be obtained, $\ME$ inherits a noise floor that is
+a property of the serving infrastructure rather than of the system under study,
+and no effect smaller than the measured null-replay floor may be reported as an
+effect.
+
+\begin{remark}
+This is a result about samplers, established on synthetic categorical
+distributions. It has not been run against a language model.
+\end{remark}
+
+\section{Inconsistent mediation, and a pre-registered statistic built on it}
+\label{sec:suppression}
+
+A natural way to operationalise "how much of this step's influence travelled
+through what it caused later steps to do" is the ratio $|\ME| / |\TEcrn|$. We
+pre-registered a rank statistic on exactly that quantity. It is the wrong
+quantity, and the mediation literature has said so for thirty years.
+
+\subsection{The result is not ours}
+
+In mediation analysis the ratio of the indirect effect to the total effect is
+the \emph{proportion mediated}, and the configuration in which the direct and
+indirect effects carry opposite signs is called \emph{inconsistent mediation},
+with the mediator acting as a suppressor \citep{mackinnon2000,kenny_mediation}.
+That the proportion mediated is unstable when the total effect is small, and can
+exceed one or turn negative, is established in \citet{mackinnon1995}. We record
+plainly that we did not derive this independently: we pre-registered a statistic
+on the quantity, found the pathology on a constructed example, and located the
+prior result on checking.
+
+Restated in the notation of this paper, with no claim of novelty:
+
+\begin{proposition}[Restatement of the proportion-mediated instability]
+\label{prop:supp}
+Let $\ME = \TEcrn - \DE$. If $\operatorname{sign}(\DE) \neq
+\operatorname{sign}(\TEcrn)$, then
+\[
+  \frac{|\ME|}{|\TEcrn|} \;=\; \frac{|\TEcrn - \DE|}{|\TEcrn|}
+  \;=\; 1 + \frac{|\DE|}{|\TEcrn|} \;>\; 1 ,
+\]
+unbounded above as $|\DE|$ grows in the opposing direction. A pure mediator has
+$\DE = 0$ and attains exactly $1$, so a suppressed step outranks it.
+\end{proposition}
+
+\begin{proof}
+$\ME$ is a difference, not a non-negative part, so opposite signs give
+$|\TEcrn - \DE| = |\TEcrn| + |\DE|$. Divide by $|\TEcrn|$.
+\end{proof}
+
+\subsection{What is ours: the instrument, not the inequality}
+
+Three things follow that the mediation literature had no occasion to state.
+
+\paragraph{A pre-registered statistic ranked on a quantity that should not be
+computed.} Our hypothesis H4 is a rank correlation on the mediated share.
+Proposition~\ref{prop:supp} says that ranking places suppression above pure
+mediation and mixes two opposite mechanisms into one score. The defect was in a
+locked specification and was caught before any live data. We report it here
+rather than in a footnote because the same construction is available to anyone
+building attribution on a mediation decomposition, and the agent-attribution
+literature has so far been built without reference to this methodology.
+
+\paragraph{Inconsistent mediation has a concrete operational reading here.} In
+an agent pipeline it is a retrieval that directly supports approval while
+causing a later verification step to raise a flag. That is not a pathological
+corner: it is a description of a component doing two opposing things, which is
+common in a pipeline with a checking stage. Every structural model we used
+before constructing the case had both paths pushing the same way, which is why
+it had never been exercised.
+
+\paragraph{The response is exclusion with a reported rate, not repair.} A share
+is formed only where the decomposition splits a common-signed effect,
+\[
+  \operatorname{sign}(\DE) = \operatorname{sign}(\TEcrn)
+  \quad\text{and}\quad
+  |\DE| \le |\TEcrn| ,
+\]
+and is otherwise undefined and flagged. The rank statistic returns its exclusion
+count alongside its value, so it cannot be reported without its exclusion rate.
+Clamping $4/3$ to $1$ would repair an item that failed a validity check, which
+our pre-registration forbids, and would merge suppression into pure mediation.
+Steps with $|\TEcrn|$ below a pre-registered floor are undefined too, since a
+share of no effect is undefined, but are not counted as suppression, so the
+suppression rate is not inflated by inert steps.
+
+\subsection{A worked instance}
+
+Take the chain \eqref{eq:scm} with one sign flipped, $y = w\,a_1 - (1-w)\,a_3$,
+at $w = 0.2$, $q = 0.9$. The same factual run gives
+$y^{\mathrm{fact}} = -0.6$. Holding $u_3$ factual makes $a_3 = a'_1$, so
+$y = (2w-1)a'_1$ and $\TEcrn(1) = +0.30$. Pinning $a_3 = 1$ gives
+$\Ex[y] = -0.7$, so $\DE(1) = -0.10$, $\ME(1) = +0.40$ and the ratio is exactly
+$4/3$. Measured over rollouts: $+0.3003$, $-0.1001$, $+0.4004$, ratio $1.3333$,
+decomposition residual $5.55 \times 10^{-17}$. The estimators are correct; the
+quantity built on them is not.
+
+\begin{remark}[A previously computed value moved]
+Applying the rule changed a rank correlation computed during pipeline
+development from $\tau_b = +0.698$ to $+0.855$, with $80$ of $240$ steps
+excluded, all inert and none suppressed. The earlier code assigned inert steps a
+share of $0.0$, asserting their influence is entirely direct when they have no
+influence at all. Those runs are synthetic smoke tests on planted generators
+rather than results, and we report no rank correlation as a finding in this
+paper.
+\end{remark}
+
+\section{The pre-registered experiment, published and not run}
+\label{sec:prereg}
+
+\emph{To be written from the pre-registration: H1 to H4, the joint
+2-degree-of-freedom Wald primary contrast, the Plackett-Luce specification with
+a decision-level cluster-robust sandwich, the reporting convention
+$g = \beta/\lVert\beta\rVert_2$ and why a ratio to the causal coefficient is a
+ratio-of-normals problem \citep{fieller1954}, the corpus rule, and the exclusion
+rules. Stated plainly as not run here, and why.}
+
+\section{An Annex IV traceability specification}
+\label{sec:annexiv}
+
+\emph{To be written from the verified regulatory basis.}
+
+\section{Limitations}
+\label{sec:limitations}
+
+\emph{Short, because the principal limitation is in the abstract. Remaining: a
+single planted generator family for validation, no live arm, no interaction
+arm via the Shapley value, which is prior art \citep{car2026,castro2009}, and
+coupling measured on synthetic categorical distributions rather than against a
+language model.}
+
+\section{Related work}
+\label{sec:related}
+
+\emph{To be written:
+\citet{car2026,causalflow2026,agentracer2025,whoandwhen2025,ma2025,liao2026,survey2026,delegated2026,attriguard2026,causalarmor2026,civex2026,ebte2026}.}
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}

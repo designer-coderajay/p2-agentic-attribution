@@ -50,3 +50,41 @@ jobs:
           else
             echo "results/ byte-identical after a full re-run"
           fi
+
+  paper:
+    runs-on: ubuntu-latest
+    # Added 2026-09-04. The manuscript was previously built only on a developer
+    # machine, and `latexmk` is not installed on the machine of record, so an
+    # unresolved citation or a broken build could have reached arXiv unnoticed.
+    # `make check` fails on any undefined reference or citation, which render as
+    # bracketed question marks and are easy to miss in a long PDF.
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install a minimal TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-fonts-recommended \
+            texlive-science lmodern latexmk
+          pdflatex --version | head -1
+
+      - name: Build the manuscript
+        working-directory: paper
+        run: make
+
+      - name: Fail on any unresolved reference or citation
+        working-directory: paper
+        run: make check
+
+      - name: Report page count and overfull boxes
+        working-directory: paper
+        run: |
+          sudo apt-get install -y --no-install-recommends poppler-utils
+          echo "pages: $(pdfinfo main.pdf | awk '/^Pages/{print $2}')"
+          echo "overfull boxes: $(grep -c Overfull main.log || true)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-pdf
+          path: paper/main.pdf

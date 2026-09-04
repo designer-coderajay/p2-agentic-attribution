@@ -1,0 +1,12 @@
+# LaTeX build artifacts. main.pdf is regenerable from main.tex plus refs.bib
+# with `make`, so it is not committed: a stale PDF in git is worse than none.
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+main.pdf
