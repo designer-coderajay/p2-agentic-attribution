@@ -1,0 +1,6 @@
+# Test-only dependencies. PINNED for the same reason as requirements.txt: a
+# floor here would let a future pytest change what "green from a clean checkout"
+# means, and that phrase is an acceptance check (WS1.9) and a claim the paper's
+# reproducibility section makes.
+-r requirements.txt
+pytest==8.3.4

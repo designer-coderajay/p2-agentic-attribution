@@ -238,3 +238,20 @@ any step of the sprint plan from D9 onward, all of which needed pipeline access.
 7. **Needing a decision from Ajay.** Gate D sign-off, still open. P1 and P3
    state, which this chat cannot see and which the 10 September and 19 September
    dates make urgent.
+
+## D-restart+1, Friday 4 September 2026
+
+1. **Hours.** Cowork session.
+2. **Shipped.** WS1.9: 85 tests, `tests/test_contracts.py` for specification
+   compliance, `pytest.ini`, pinned `requirements-dev.txt`, GitHub Actions
+   workflow, pytest wired into `verify.sh`. Two defects found and fixed while
+   writing it (bare `pytest` interpreter resolution; `validate_mediation.py`
+   omitting `seed` against its own stated principle).
+3. **Slipped.** Nothing today.
+4. **Gates.** Unchanged. A passed, D awaiting sign-off, B/C/E cut by the fallback.
+5. **Deviation from pre-registration.** None. One `env_hash` moved by design and
+   is gated; no scientific number moved.
+6. **Tomorrow's blocks.** Manuscript sections 3, 4, 5 and 6 from `DERIVATIONS.md`.
+   Then section 8 from `REGULATORY-BASIS.md`.
+7. **Needing a decision from Ajay.** Gate D sign-off, still open. P1 and P3 state,
+   still unknown to this chat, and the 10 and 19 September dates have not moved.

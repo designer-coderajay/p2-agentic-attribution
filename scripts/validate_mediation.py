@@ -140,8 +140,15 @@ def main():
     # applicable". Recording it uniformly is what makes results/ auditable under
     # standing rule 10. Added 2026-08-21 after the audit surfaced this file as
     # `numpy=?`.
+    # `seed` is recorded as None for the same reason `numpy` is recorded at all,
+    # stated in the comment just above: uniform fields, so a provenance audit can
+    # read "same environment?" off every file. An ABSENT seed reads as
+    # unrecorded; an explicit None reads as "this module draws no randomness",
+    # which is the true statement. Added 2026-09-04 after tests/test_contracts.py
+    # found this file arguing the principle and then not applying it to seed.
+    # This moves THIS FILE'S env_hash and no scientific number.
     env = {"python": platform.python_version(), "numpy": np.__version__,
-           "module": "mediation"}
+           "module": "mediation", "seed": None}
     env["env_hash"] = hashlib.sha256(json.dumps(env, sort_keys=True).encode()).hexdigest()[:16]
     os.makedirs("results", exist_ok=True)
     json.dump({"env": env, "unsafe_executions": 0},

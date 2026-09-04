@@ -47,4 +47,26 @@ g1,_,_ = normalized_beta(b, V); g2,_,_ = normalized_beta(7.5*b, 56.25*V)
 assert np.allclose(g1, g2, atol=1e-12), "normalized_beta lost scale invariance"
 print("PASS  3 attributors; chi2/Wald exact; CAUTION_K=2.0; g scale-invariant")
 PY
+printf '%-24s' "unit + contract tests"
+# Added 2026-09-04 (WS1.9). The validators above assert numerics against closed
+# forms. These assert the OTHER thing: that what the pre-registration LOCKS is
+# actually reached by the analysis, that every validator is wired into this file,
+# and that the guards keeping numbers honest are present. Four times now a defect
+# in this project was a correct implementation of an unmet specification, and no
+# numeric validator can catch that class.
+#
+# `python3 -m pytest`, never bare `pytest`: a bare console script resolves to
+# whichever interpreter installed it, which need not be the python3 running the
+# validators above. That exact mismatch produced "No module named numpy" from a
+# suite that passes under python3 -m pytest.
+if python3 -c "import pytest" >/dev/null 2>&1; then
+  if out=$(python3 -m pytest 2>&1); then
+    echo "PASS  $(echo "$out" | tail -1)"
+  else
+    echo "FAIL"; echo "$out" | tail -20; fail=1
+  fi
+else
+  echo "SKIP  pytest not installed (pip install -r requirements-dev.txt)"
+fi
+
 [ $fail -eq 0 ] && echo "ALL GREEN" || { echo "NOT GREEN"; exit 1; }

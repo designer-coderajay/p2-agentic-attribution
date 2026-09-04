@@ -47,7 +47,7 @@ manuscript from the second or third category.
 | 1.10 | Maximal-coupling sampler wired into the estimators | `DE` arm uses maximal coupling; per-step TV and coupling efficiency reported alongside ME | open |
 | 1.7 | Non-binary and continuous outcome functions | Estimators correct where `Y` is not in {0,1} | **DONE 2026-08-25.** Estimators confirmed correct on a continuous `Y` with OPPOSING direct and mediated paths (`y = w*a1 - (1-w)*a3`), all four steps within MC error of a hand derivation, identity residual 5.6e-17. **Found a real defect in the reporting layer, not the estimators:** `|ME|/|TE|` exceeds 1 under suppression and would rank a suppressed node above a pure mediator, inverting H4. Fixed by `effects.mediated_share`, LOCKED in PREREG s2, derived in DERIVATIONS Part VI, guarded by `scripts/validate_suppression.py` in `verify.sh`. Changed the dry-run H4 from +0.698 to +0.855 |
 | 1.8 | Replay-nondeterminism arm | Factual side resampled too; effect intervals widen correctly | open |
-| 1.9 | Unit tests, pinned seeds, CI | `pytest` green from a clean checkout | open |
+| 1.9 | Unit tests, pinned seeds, CI | `pytest` green from a clean checkout | **DONE 2026-09-04.** 85 tests, green from a clean tree and from a subdirectory. `tests/test_contracts.py` checks that LOCKED reports are actually reached by `dry_run.py`, that every validator is wired into `verify.sh`, and that the provenance guards hold. Wired into `verify.sh` and into GitHub Actions |
 
 ## WS2. Replay harness for the live system
 

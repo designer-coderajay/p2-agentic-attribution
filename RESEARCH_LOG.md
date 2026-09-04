@@ -583,3 +583,79 @@ empty written down rather than left to look like an omission.
 
 **Next.** WS1.9 pytest and CI, then the remaining reachable workstream items,
 then the manuscript. Target: P2 complete this week.
+
+## 2026-09-04
+
+**WS1.9 closed. `pytest` green from a clean checkout, 85 tests, wired into
+`verify.sh` and into CI.** This was the last unblocked code item in the
+repository.
+
+**The part that is not coverage.** `tests/test_contracts.py` tests the direction
+a unit test cannot. Four times this project has caught a defect in which the code
+was correct and the specification was not met: CAUTION_K claiming a
+pre-registration that did not exist; PREREG s6 locking two reports that lived in
+`analysis.py`, were validated, and were never called by `dry_run.py`; a
+pre-registered statistic that broke outside the regime its tests occupied; and
+status documents asserting provisions were unretrieved nine days after they were
+retrieved. No numeric validator catches that class, because nothing is wrong with
+the numbers. The contract tests parse `dry_run.py` with `ast` and assert that
+every LOCKED estimator is actually called, that every `validate_*.py` on disk is
+wired into `verify.sh`, that the citation gate is present, that every results
+file carries an env block, and that the fallback invocation is in the
+pre-registration with its date.
+
+**Two real defects the suite found while it was being written.**
+
+First, `verify.sh` would have called bare `pytest`. A bare console script
+resolves to whichever interpreter installed it, which need not be the `python3`
+running the validators. It produced "No module named numpy" from a suite that
+passes under `python3 -m pytest`. Now pinned to the same interpreter as
+everything else in the file.
+
+Second, and this is the better one: `validate_mediation.py` contains a comment
+arguing that env fields must be recorded uniformly, because a fingerprint that
+omits a field on some files cannot answer "same environment?", since an audit
+reads an absent field as a third environment rather than as "not applicable".
+The file then omits `seed`. It argued the principle and did not apply it to
+itself. Now records `seed: None`, which is the true statement for a module that
+draws no randomness. This moves that file's `env_hash` and no scientific number;
+a gate in this session asserts exactly that, checking that `unsafe_executions`
+is still 0 and that no other results file moved.
+
+**One precondition pinned rather than left latent.** `analysis.vif` regresses
+column j on the others without an intercept while scaling by a mean-centred total
+sum of squares, so the ratio is a standard VIF only when the input columns are
+already centred. `dry_run.py` satisfies this by z-scoring within decision. On
+uncentred orthogonal indicators the same call returns 0.75, which is not a
+variance inflation factor and would read as reassuring. The function is unchanged,
+because on the data it is actually given it is correct and changing it would move
+a committed number for no gain. The precondition is now a test, and a second test
+asserts the analysis still standardises.
+
+**Verified green three ways:** in place, from a clean `git archive` tree, and
+from a subdirectory. `verify.sh` now prints ten lines.
+
+**Next.** The manuscript. Sections 3 to 6 are written from `DERIVATIONS.md` and
+are the parts that already exist in full.
+
+**A defect in the shipping script, recorded because it is the same class.** The first
+run of `ws19_session.sh` aborted, and its gates were wrong while the tests were
+right. GATE 4 ran `pytest` immediately after patching `validate_mediation.py`
+but BEFORE re-running it, so `results/validation_mediation.json` still held the
+pre-patch env block with no `seed` key. The contract test reported that a
+results file lacked a seed, which was true. GATE 6 then ran `verify.sh`, which
+re-ran the validator, regenerated the artifact, and passed 85/85 in the same
+transcript: `env_hash f0e8cb10e8d82826` at GATE 4, `f407d037b90aefde` at GATE 6.
+
+The correct order is patch, then regenerate the artifacts the patch affects,
+then test. The script tested first. A second flaw was found while fixing it: the
+clean-checkout gate built its tree from `git archive HEAD`, which is the old
+commit plus the new files, so it would have failed on the stale artifact even
+after a correct regeneration. A clean-checkout check has to be built from what
+is about to be committed, and it now archives the staged tree.
+
+Worth naming because it is the third defect this week from the gap between where
+something was tested and where it runs, after the zsh `#` comment producing five
+junk files and `git log | grep -q` returning 141 under `pipefail` on the machine
+of record while passing in the sandbox. The tests were not at fault in any of
+the three. The harness around them was.
