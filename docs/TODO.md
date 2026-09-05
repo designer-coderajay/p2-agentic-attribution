@@ -100,14 +100,14 @@ repo's actual state. Corrected below against `preregistration/PREREG.md`,
 |---|---|---|---|
 | 6.1 | Read Reg (EU) 2024/1689 Arts. 11, 12, 13, 86 and Annex IV in the primary text | Not summaries | **DONE 2026-08-25.** See 0.11. Four load-bearing findings established in `REGULATORY-BASIS.md` s9 |
 | 6.2 | Scope against 2606.09692's non-identifiability result | Stated precisely, with what it forecloses | **PARTIAL 2026-09-04.** Chapter III Section 2 placement now VERBATIM, Article 25 and the Art 3 definitions retrieved and reviewer objection 3 answered from their own text. **Arts 72, 74 and 79 now retrieved too**, see s19 to s22 |
-| 6.3 | Draft the specification | What a provider must log for post-hoc causal attribution to be possible at all | D12 to D15 |
+| 6.3 | Draft the specification | What a provider must log for post-hoc causal attribution to be possible at all | **DONE 2026-09-04.** Appendix A, twelve requirements over four conformance levels, each derived from an estimand in the paper rather than proposed. Unevaluated against a deployment, stated as such |
 
 ## WS7. Paper and reproducibility
 
 | # | Item | Acceptance check | Status |
 |---|---|---|---|
-| 7.1 | Positioning paragraph one, against CAR | Differentiation in the abstract, not in related work | open |
-| 7.2 | Limitations in the abstract | Single organisation's systems, no Shapley arm, CRN degradation | open |
+| 7.1 | Positioning paragraph one, against CAR | Differentiation in the abstract, not in related work | **DONE 2026-09-04.** Section 1 paragraph three, built on CAR's own concessions |
+| 7.2 | Limitations in the abstract | Single organisation's systems, no Shapley arm, CRN degradation | **DONE 2026-09-04.** The absent live arm is the third sentence from the end of the abstract; section 9 carries the rest |
 | 7.3 | Red-team session, fresh context | An independent attempt to make the result an artifact, and the response | D16 |
 | 7.4 | Every figure traceable | Config, seed, environment hash per figure | continuous |
 | 7.5 | Public repo, pinned environment | Clean-checkout reproduction of every number | D18 |

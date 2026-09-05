@@ -56,24 +56,110 @@ apparatus for demonstrating conformity was not ready.
 \section{Introduction}
 \label{sec:intro}
 
-\emph{To be written. Opens on the deferral and recital (40) of
-Regulation (EU) 2026/1744 \citep{omnibus2026}, then the absence of an agreed
-protocol for execution provenance \citep{survey2026}, then the contribution
-list, with the differentiation from \citet{car2026} in this section rather than
-in related work.}
+On 8 July 2026 the Union deferred the obligations this paper is about. Regulation
+(EU) 2026/1744 \citep{omnibus2026} moved the application of Chapter III Sections 1
+to 3 of the AI Act \citep{aiact2024},
+which contain the technical documentation duty in Article 11, the record-keeping
+duty in Article 12 and the transparency duty in Article 13, from 2 August 2026 to
+2 December 2027 for Annex III high-risk systems. Recital (40) gives the
+legislature's reason, and it is worth quoting because it is a statement about
+evidence rather than about scheduling: the deferral responds to "the delayed
+availability of standards, common specifications, and alternative guidance and
+the delayed establishment of national competent authorities", which together
+"lead to challenges that jeopardise the effective entry into application of those
+obligations".\footnote{Recital (40) is explanatory and non-binding. We cite it as
+a recital and never as operative law.} The apparatus for demonstrating conformity
+was not ready, on the Union's own record.
+
+This paper is about one part of that apparatus. For an agentic system, a
+sequence of model calls, retrievals and tool invocations that together produce a
+regulated decision, what would a provider have to record for anyone to establish
+afterwards which part of the system caused the outcome? The question is not
+rhetorical. A survey of evidence tracing and execution provenance in LLM agents
+grades the field's execution-provenance metrics as merely proposed, with no
+agreed definitions and no adopted evaluation protocols \citep{survey2026}.
+
+\paragraph{Where this sits relative to the closest work, in paragraph one rather
+than in related work.} Causal attribution over agent trajectories already exists.
+\citet{car2026} gives a five-operator intervention algebra and a Monte Carlo
+Shapley estimator over agent steps, and we adopt its operators verbatim rather
+than improving on them, since modifying an instrument one is testing hands a
+reviewer a free rejection. Two things that work states about itself define the
+space this paper occupies. It measures a total effect under which every
+downstream step re-decides under fresh randomness, and it leaves the direct
+effect as a refinement, naming common random numbers across divergent contexts as
+the obstacle. And it operates on mocked tools, with real tools and their side
+effects out of scope.
+
+We take up both. Section~\ref{sec:two-te} shows the choice between the two total
+effects is not a variance question: under the marginal estimand a causally inert
+step is numerically indistinguishable from the decisive one, and under common
+random numbers the inert steps return exactly zero.
+Section~\ref{sec:coupling} turns "hard across divergent contexts" into a closed
+form, an optimal construction, a measured cost, and three implementation
+requirements, one of which is that the replay floor is set by batch invariance in
+the serving stack rather than by seed control \citep{he2025}.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A separation result between two total effects on agent trajectories, with
+  closed forms and the demonstration that only one of them recovers planted
+  structure without a heuristic (Section~\ref{sec:two-te}).
+\item The natural direct effect under a pinned downstream, its decomposition
+  identity, and pin plausibility reported rather than assumed
+  (Section~\ref{sec:de}).
+\item A closed form for shared-randomness coupling agreement, its gap against the
+  optimal coupling, and the measured collapse of both under a sampler that sorts
+  its vocabulary by probability (Section~\ref{sec:coupling}).
+\item The observation that agent attribution has been built without reference to
+  mediation methodology, worked through a pre-registered statistic of ours that
+  ranked on a quantity that literature says not to compute
+  (Section~\ref{sec:suppression}).
+\item A pre-registered discrepancy experiment, published in full and not run,
+  with its guards and one guard that was removed for being wrong
+  (Section~\ref{sec:prereg}).
+\item A traceability specification derived from what those estimators require,
+  mapped onto the filed documents and onto two Commission instruments that do not
+  yet exist (Section~\ref{sec:annexiv} and Appendix~\ref{app:spec}).
+\end{enumerate}
+
+\paragraph{What we do not claim.} The empirical question, whether deployed
+observability tracks causal effect, is specified and not answered. It needed a
+live regulated pipeline that was not available in the study window. We say so
+here, in the abstract, and in Section~\ref{sec:prereg}, and we report no rank
+correlation in this paper as a finding.
 
 \section{Setting and estimands}
 \label{sec:setting}
 
-\emph{To be written. Trajectory, node types, outcome $Y$, and the five-operator
-intervention algebra adopted verbatim from \citet{car2026}.}
-
 A trajectory is a sequence of steps $\tau = (v_1,\dots,v_T)$ terminating in a
-decision $Y$. Step $k$ draws an action $a_k$ from a policy conditioned on the
-prefix, using exogenous noise $u_k$. We write $a^{\mathrm{fact}}$ and
-$u^{\mathrm{fact}}$ for the realised factual run, and every effect below is a
-contrast against that run, as it must be: an effect is a contrast against
-something that happened.
+decision $Y$. Each step is typed: a model call, a tool call, a retrieval, a memory
+read or write, or a branch. Step $k$ draws an action $a_k$ from a policy
+conditioned on the prefix $a_{<k}$, using exogenous noise $u_k$. We write
+$a^{\mathrm{fact}}$ and $u^{\mathrm{fact}}$ for the realised factual run.
+
+Every effect below is a contrast against that run, as it must be: an effect is a
+contrast against something that happened. This is what distinguishes the setting
+from ordinary sensitivity analysis, and it is why the record a provider keeps
+determines what can be estimated at all, which is the subject of
+Section~\ref{sec:annexiv}.
+
+\paragraph{Intervention operators.} We adopt the five operators of
+\citet{car2026} verbatim: resampling a step's action under the unchanged policy,
+forcing an action, forcing an observation, altering the context, and altering the
+policy. Resampling is primary throughout. Removal is not used: taking a step out
+puts the system off-distribution in the same unprincipled way that mean ablation
+does for circuits in single-forward-pass interpretability, and the argument
+against it there transfers directly.
+
+\paragraph{The quantity that does not exist upstream.} In a single forward pass
+there is no distinction between what a component contributed directly and what it
+contributed by changing what a later component did, because there is no later
+component that re-decides. In an agentic system there is. A step can have
+near-zero direct effect and large total effect purely because it changed what a
+subsequent step chose to do. That quantity is the object of
+Sections~\ref{sec:de} and \ref{sec:suppression}, and no observability tool we are
+aware of records what would be needed to compute it.
 
 \section{Two total effects, and why the distinction is the crux}
 \label{sec:two-te}
@@ -399,34 +485,458 @@ paper.
 \section{The pre-registered experiment, published and not run}
 \label{sec:prereg}
 
-\emph{To be written from the pre-registration: H1 to H4, the joint
-2-degree-of-freedom Wald primary contrast, the Plackett-Luce specification with
-a decision-level cluster-robust sandwich, the reporting convention
-$g = \beta/\lVert\beta\rVert_2$ and why a ratio to the causal coefficient is a
-ratio-of-normals problem \citep{fieller1954}, the corpus rule, and the exclusion
-rules. Stated plainly as not run here, and why.}
+The estimators above were built to answer one question: does the observability
+record a provider would file recover the components that causally determined a
+decision? That experiment is specified in full, committed with a timestamp, and
+not run here. The live regulated pipeline it requires was not available in the
+study window. We publish the specification rather than substitute a synthetic
+proxy for the answer.
 
-\section{An Annex IV traceability specification}
+\subsection{Hypotheses}
+
+Let $\tau_b$ denote Kendall's rank correlation with tie correction, computed per
+decision and bootstrapped over decisions.
+
+\begin{description}
+\item[H1.] For each observability attributor, $\tau_b$ between its ranking and
+  the causal ranking by $\TEcrn$ is low. Directional prediction: the bootstrap
+  interval over decisions excludes $0.5$ from below.
+\item[H2.] After conditioning on causal rank, attributor rankings retain
+  systematic dependence on recency and verbosity. Directional prediction: the
+  joint test of $(\beta_{\mathrm{rec}}, \beta_{\mathrm{verb}}) = (0,0)$ rejects.
+\item[H3.] A non-trivial fraction of decisions contain a causally dominant step
+  that the trace ranks negligible. Directional prediction: the fraction is
+  positive with a Wilson interval excluding zero.
+\item[H4.] The discrepancy concentrates in steps with high mediated and low
+  direct effect. Directional prediction: the rank correlation between per-step
+  mediated share and the observed-minus-causal rank gap is positive.
+\end{description}
+
+\paragraph{One primary contrast, and it is H2.} The pre-registered primary is the
+joint two-degree-of-freedom Wald test of
+$(\beta_{\mathrm{rec}}, \beta_{\mathrm{verb}}) = (0,0)$ in a Plackett-Luce model
+conditioning on causal rank, pooled across attributors with the decision as the
+clustering unit. Joint rather than two marginal tests, so it carries no
+multiplicity correction. \textbf{H1, H3, H4 and every per-attributor breakdown
+are exploratory} and are labelled as such wherever they appear.
+
+\subsection{Specification}
+
+\paragraph{Primary model.} Plackett-Luce rank-ordered, decision as the unit, with
+a cluster-robust sandwich. Rank-ordered rather than ordinary least squares on
+ranks because the latter is not a model of the ranking process, and because a
+judge attributor yields only an ordering. The calibration ratio, mean standard
+error over empirical standard deviation, is reported alongside.
+
+\paragraph{Secondary, pre-specified.} CR1 cluster-robust least squares on the
+attributor score, reported for comparability. If primary and secondary disagree,
+that disagreement is stated in the abstract rather than in a robustness section.
+
+\paragraph{Reporting convention.} Coefficients are reported as
+$g = \beta / \lVert \beta \rVert_2$. Plackett-Luce is a random-utility model whose
+noise scale is a normalisation rather than a measured fact, so a fit recovers
+$c\beta$ for an unidentified $c > 0$ and levels are not reportable. Any ratio of
+two coefficients cancels $c$ exactly, which is the right instinct, but anchoring
+on the causal coefficient is not: H1 and H2 both predict that coefficient is
+small, so the convention would become a ratio-of-normals problem
+\citep{fieller1954} precisely when the finding is true. Dividing by the vector's
+own norm is invariant to the same $c$, bounded in $[-1,1]$, and undefined only
+if no attributor carries any signal, which is reported as itself. The interval
+reported is the decision-level bootstrap percentile interval, not the delta-method
+standard error, because the delta method under-covers near $|g_j| = 1$ where the
+linear term vanishes.
+
+\paragraph{Separation guard.} Quasi-complete separation is detected on the
+unpenalised fit by two structural signals, neither of which scales with sample
+size: $\max_j |\beta_j| > 25$, or a Hessian condition number above $10^{10}$. A
+rule based on $|z| > 40$ was written and then removed, because $z$ grows like
+$\sqrt{N}$ and a fixed cut fires on strong, well-identified effects: on a
+reference design where the model recovers its own generative process and no
+separation exists, $z$ reaches $19.5, 28.0, 40.8, 59.5$ and $86.0$ at $100, 200,
+400, 800$ and $1600$ decisions. With a corpus in the hundreds it would have
+flagged a genuine rejection as separation, and more readily the stronger the
+result. \textbf{If separation is detected the primary contrast is reported as
+indeterminate}, not refitted and reported as significant; a ridge-penalised fit
+is shown as a bounded descriptive estimate with no $p$-value claimed, since on a
+separated design the penalised fit still returns $p = 0$. The penalty is fixed in
+advance and never tuned to a result.
+
+\paragraph{Pre-fit disclosure.} Before fitting, the maximum absolute correlation
+between each ranked attributor score and each covariate is reported. That
+correlation is what produces separation, so reporting it lets a reader see the
+risk before seeing the test.
+
+\paragraph{Grids, not cells.} H3 is reported across the full grid of its two
+thresholds rather than at one setting, because a single cell is a tuned number.
+
+\subsection{Corpus and exclusion, as rules rather than numbers}
+
+Two quantities are specified as decision procedures whose outputs are fixed
+mechanically by a measurement that has not been taken, rather than as numbers we
+would otherwise be choosing after the fact.
+
+The corpus size is the smallest $n$ satisfying a minimum-detectable-effect
+condition on the standardised scale, keyed to the within-decision residual
+standard deviation measured in a null replay. The exclusion rule is that
+decisions whose null-replay action-match rate falls below the measured replay
+floor are excluded and the exclusion rate reported; and no effect smaller than
+that floor is reported as an effect at all.
+
+Both rules remain unresolved. That is the intended state: a rule removes the
+researcher degree of freedom without pretending to a number nobody has measured,
+and a later study resolves them by applying the rule rather than by judgment.
+
+\subsection{Attributors, and one that was cut}
+
+The observability attributors are span duration, output token count, and a
+terminal-action indicator. Each is deterministic code traced to a documented
+practice in a shipping tool. A recency attributor was specified in the original
+design and \textbf{cut}: no shipping tool was found that ranks trace steps by
+recency, so retaining it would have been the strawman the provenance audit
+existed to prevent. Recency survives only as a covariate in the H2 regression,
+where it is a property of presentation rather than a claimed practice.
+
+\subsection{Why this is published rather than held}
+
+A pre-registration that is never followed by data is usually a failure. We think
+publishing this one is not, for three reasons. It states in advance what would
+count as the discrepancy existing and what would count as it not existing, at a
+level of detail that lets someone else run it. It records two guards that were
+built, tested and in one case removed for being wrong, which is information a
+later investigator would otherwise have to rediscover. And the estimators it
+depends on are validated here against closed forms, so what remains unproven is
+the empirical claim alone and not the machinery underneath it.
+
+The claim we do not make is the one the experiment was designed to test. It is
+stated as untested in the abstract, and nothing in this paper should be read as
+evidence for or against it.
+
+\section{What the Act requires, and the record it does not ask for}
 \label{sec:annexiv}
 
-\emph{To be written from the verified regulatory basis.}
+Regulation (EU) 2024/1689 obliges a provider of a high-risk system to keep
+technical documentation (Article 11 and Annex IV) and to design the system for
+automatic logging over its lifetime (Article 12). We read both against the
+question this paper asks, and the result is a clean separation.
+
+\paragraph{Description versus record, and general versus per-instance.} The most
+component-aware sentence in the entire high-risk documentation package is Annex
+IV point 2(c), which requires "the description of the system architecture
+explaining how software components build on or feed into each other and integrate
+into the overall processing". That is a design-time duty, discharged before
+placing on the market: it yields a diagram of the pipeline in general. Article 12
+yields events over the system's lifetime. Neither yields a record of how the
+components related on one particular occasion. The distinction between a
+\emph{description} and a \emph{record}, and between the \emph{general} and the
+\emph{per-instance}, is what separates what is filed from what an attribution
+would need.
+
+\paragraph{The logging duty is bounded above by system-level purposes.} Article
+12(2) fixes granularity by reference to three functions: identifying situations
+that may present a risk within the meaning of Article 79(1), post-market
+monitoring under Article 72, and deployer monitoring under Article 26(5). Having
+read all three, none imports a component-level requirement. Article 79(1) asks
+whether the system presents a risk. Article 72(2) asks for data on the system's
+performance over its lifetime and, where relevant, "an analysis of the
+interaction with other AI systems", which is interaction between systems rather
+than between components inside one. A provider who logs enough to serve both
+purposes can still be unable to say which retrieval, tool call or model step
+determined a contested decision.
+
+\paragraph{For credit scoring there is no minimum log content at all.} Article
+12(3) is the only enumerated minimum in the Article and it binds only systems
+under Annex III point 1(a), remote biometric identification. Creditworthiness is
+Annex III point 5(b) and falls outside it. For that class, and every Annex III
+class except biometric identification, the Regulation prescribes no minimum log
+content whatsoever.
+
+\paragraph{The record expires twenty times sooner than the description.} Article
+18(1) keeps the technical documentation at the disposal of competent authorities
+for ten years. Article 19(1) and Article 26(6) keep the logs for "at least six
+months", and both are limited to logs "to the extent such logs are under their
+control". The static architectural description outlives the dynamic execution
+record by a factor of twenty, and in a pipeline spanning several external
+services no single actor need hold the whole trace. For a financial institution
+the log duty is absorbed into existing financial-services record-keeping
+(Article 19(2)), whose granularity was not designed for causal attribution.
+
+\paragraph{The investigative escalation ladder does not reach a trace.} Article
+74 grants a market surveillance authority access to documentation and to the
+training, validation and testing data sets, and access to source code only on a
+reasoned request and only once procedures "based on the data and documentation
+provided by the provider have been exhausted or proved insufficient". Execution
+traces appear on neither rung. Article 79(6)(b) then offers the finest
+granularity in the Act for attributing a failure, "a failure of a high-risk AI
+system to meet requirements set out in Chapter III, Section 2": one whole system
+against one whole Section.
+
+\paragraph{The Act has no vocabulary for this system class.} Across the six units
+that constitute the high-risk documentation and record-keeping package, the words
+\emph{agent}, \emph{agentic}, \emph{multi-agent}, \emph{orchestration} and
+\emph{reasoning} do not occur. \emph{Traceability} occurs once, in the Article
+12(2) chapeau, and is nowhere defined. The single occurrence of \emph{step} means
+a step in the development process, not a step in an execution trace. Article 3(1)
+defines an AI system in the singular throughout, so a pipeline of several
+tool-backed services and a model is one AI system with one provider and one
+deployer.
+
+We do not read any of this as prohibition. The Regulation mandates logging
+capability sufficient for system-level risk and monitoring functions and leaves
+granularity to the provider against the intended purpose. It simply nowhere sets
+attribution of an output to an internal cause as the specification. Appendix~\ref{app:spec}
+states what that specification would have to contain.
+
+\paragraph{Two instruments that do not yet exist.} Article 11(1) as amended
+obliges the Commission to produce a simplified Annex IV form for SMEs and small
+mid-caps. Article 72(3) as amended obliges it to adopt guidance including a
+template for the post-market monitoring plan, which is itself part of the Annex
+IV documentation, by 2 September 2027. The obligations in Chapter III Section 2
+apply from 2 December 2027. A specification published now arrives while both
+instruments are still being drafted, which is the window in which it can be
+adopted rather than merely cited.
 
 \section{Limitations}
 \label{sec:limitations}
 
-\emph{Short, because the principal limitation is in the abstract. Remaining: a
-single planted generator family for validation, no live arm, no interaction
-arm via the Shapley value, which is prior art \citep{car2026,castro2009}, and
-coupling measured on synthetic categorical distributions rather than against a
-language model.}
+The principal limitation is in the abstract: the discrepancy experiment is
+specified and not run, because the live regulated pipeline it requires was not
+available in the study window. Everything below is secondary to that.
+
+\paragraph{Validation rests on one family of planted generators.} The estimators
+are checked against hand derivations on structural models we constructed. That
+establishes correctness on known structure and nothing about behaviour on real
+trajectories, where the step count is larger, the outcome is noisier, and the
+policy is not a Bernoulli draw.
+
+\paragraph{The coupling results have not met a language model.} Section~\ref{sec:coupling}
+is established on synthetic categorical distributions. The closed forms are exact
+and the measurements agree with them, but a real sampler brings a vocabulary four
+orders of magnitude larger, a context that diverges progressively rather than at
+one step, and a serving stack whose batch invariance we could not test.
+
+\paragraph{No interaction arm.} Single-step interventions miss interactions
+between steps. The Shapley value over agent steps is the principled treatment and
+it is prior art \citep{car2026,castro2009}, so we cut it rather than reproduce it.
+Where two steps interact, our per-step effects will not sum to the joint effect
+and we do not report them as if they did.
+
+\paragraph{Two cleared references are absent from the bibliography.} Two papers we
+consider relevant were verified to exist but our citation ledger records no author
+list for either, and our own rule is that nothing enters the bibliography below
+verified. They are omitted rather than cited from recollection.
+
+\paragraph{The specification is unevaluated.} Appendix~\ref{app:spec} is derived
+from what the estimators require, not from experience of filing it. No provider
+has attempted conformance, and the cost estimates in it are reasoned rather than
+measured. Requirement R6 in particular trades storage against interval width in a
+way that only a deployment can settle.
 
 \section{Related work}
 \label{sec:related}
 
-\emph{To be written:
-\citet{car2026,causalflow2026,agentracer2025,whoandwhen2025,ma2025,liao2026,survey2026,delegated2026,attriguard2026,causalarmor2026,civex2026,ebte2026}.}
+\paragraph{Post-hoc attribution over agent trajectories.} \citet{car2026} is the
+closest work and is discussed in Section~\ref{sec:intro}. \citet{causalflow2026}
+attributes failures and proposes repairs, but substitutes an oracle rather than
+resampling under the same policy, and its causal responsibility score is a binary
+indicator; its purpose is repair and training supervision.
+\citet{agentracer2025} confirms oracle substitution for failed trajectories while
+using programmed fault injection for successful ones, so its counterfactual is
+approximated by an analyser conditioned on a ground-truth solution rather than by
+a stored known-good output. \citet{ma2025} applies the Shapley value over
+\emph{agents} rather than steps, on static logs, with no re-execution.
+\citet{liao2026} audits provenance sensitivity by static ablation of context
+factors, again without trajectory re-execution. \citet{whoandwhen2025} supplies
+the benchmark the area evaluates against, framing attribution as identifying
+which agent failed and at which step; we take the framing and not its headline
+accuracy figure, which its own text shows to be an average over four evaluation
+cells reported only in the abstract. None of these has a direct-effect
+arm, and none compares an observability-derived ranking against a
+causally-measured one.
+
+\paragraph{Ex ante verification, a different object.} \citet{civex2026},
+\citet{ebte2026}, \citet{attriguard2026} and \citet{causalarmor2026} all decide
+whether a proposed action should execute, before it does. That is gatekeeping. This
+paper is post-hoc attribution over a trajectory that has already run, and the two
+do not substitute for one another: a guardrail that prevented nothing still leaves
+a contested decision to explain.
+
+\paragraph{Provenance and observability.} \citet{survey2026} surveys evidence
+tracing and execution provenance and grades the field's metrics as proposed, with
+no agreed definitions and no adopted protocols, which is the gap this paper's
+specification addresses from the regulatory side. \citet{delegated2026} gives
+semantic requirements and a schema for observability under delegated execution;
+its non-identifiability result concerns the authorization relation and is a
+scoping result rather than an impossibility barrier, and it contains no EU AI Act
+content, so the regulatory bridge is built here rather than borrowed.
+
+\paragraph{Mediation methodology.} The decomposition this paper uses is the
+natural direct effect of \citet{pearl2001}, with the textbook treatment in
+\citet{pearl2009} and priority for the estimand belonging to \citet{robins1992}.
+The instability of the proportion mediated, and the naming of the opposite-signed
+case as inconsistent mediation, are established in \citet{mackinnon1995} and
+\citet{mackinnon2000}. That this literature is absent from the agent-attribution
+work above is, we think, the more useful observation: the field has been
+rebuilding mediation analysis without consulting it.
+
+\paragraph{Determinism and replay.} \citet{he2025} establishes that the forward
+pass is run-to-run deterministic and that inference nondeterminism arises from a
+lack of batch invariance under varying load, which changes what a replay harness
+must control. \citet{lawkelton2000} is the standard reference for common random
+numbers; \citet{yadav2026} applies them to rollout-based planning, a different
+problem with no coupling-agreement or attribution component. The optimality of
+maximal coupling is classical \citep{levin2017}.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
 
+\appendix
+
+\section{A traceability specification for agentic high-risk systems}
+\label{app:spec}
+
+This appendix states what a provider must record for post-hoc causal attribution
+over an agent trajectory to be possible at all. It is not a wish list. Every
+requirement is a precondition for one of the estimands in
+Sections~\ref{sec:two-te} to \ref{sec:suppression} to be computable from a filed
+record, and where a requirement is not needed for that purpose it is not here.
+Requirements are stated so that conformance is checkable by an auditor who has
+the record and not the system.
+
+\subsection{Conformance levels}
+
+\begin{description}
+\item[L0, filed today.] Annex IV technical documentation plus Article 12 logging
+  at the granularity a provider chooses. Sufficient for system-level risk and
+  monitoring. Insufficient for any of L1 to L3.
+\item[L1, trajectory reconstructable.] The sequence of steps that produced a
+  given decision can be recovered and ordered. Requirements R1 to R4.
+\item[L2, counterfactually replayable.] A named step can be re-executed under a
+  changed action while the rest of the trajectory is held at its factual
+  randomness. Requirements R5 to R9. This is the level at which $\TEcrn$ and
+  $\DE$ become estimable, and therefore the level at which "which component
+  caused this" becomes a question with an answer.
+\item[L3, attributable and contestable.] The record supports attribution that
+  survives an adversarial reading, including its own uncertainty. Requirements
+  R10 to R12.
+\end{description}
+
+The levels are cumulative and the jump that matters is L1 to L2. L1 is what most
+observability stacks already deliver. L2 is what causal attribution requires and
+what no provision of the Regulation currently asks for.
+
+\subsection{Requirements}
+
+\paragraph{R1, trajectory identity and order.} Every step carries a stable
+trajectory identifier, a step index, and the identifier of the step whose output
+it consumed. A decision is bound to exactly one trajectory identifier.
+\emph{Why:} without a recoverable order there is no prefix to hold fixed, and
+every estimand in this paper conditions on a prefix.
+
+\paragraph{R2, step typing.} Each step is typed as model call, tool call,
+retrieval, memory read, memory write, or branch. \emph{Why:} the intervention
+operator that is valid at a step depends on its type, and a tool call with
+external effect is not resampleable in the way a model call is.
+
+\paragraph{R3, content commitment.} Inputs and outputs of every step are recorded,
+or committed by cryptographic hash with the content retrievable for the retention
+period. \emph{Why:} an intervention substitutes an alternative output at one step;
+without the factual output there is nothing to substitute against, and without a
+commitment an after-the-fact reconstruction is unfalsifiable.
+
+\paragraph{R4, outcome function.} The decision $Y$ is produced by a rule that is
+recorded, versioned and hashed, and that rule contains no model call.
+\emph{Why:} if the outcome is itself produced by a model, its variance enters
+every effect estimate and cannot be separated from the effect being measured.
+
+\paragraph{R5, exogenous randomness as a keyed function.} Every sampling decision
+records the key from which its randomness derived, and that key is a pure
+function of (trajectory identifier, step index, replicate index) and of nothing
+else, in particular not of the context. \emph{Why:} this is the whole of
+Section~\ref{sec:coupling}. If the draw depends on call order, factual and
+counterfactual branches consume different randomness, $\TEcrn$ silently becomes
+$\TEmarg$, and by Table~\ref{tab:two-te} a causally inert step becomes
+indistinguishable from the decisive one.
+
+\paragraph{R6, sampling distribution at draw time.} For model steps, the
+distribution over the sampled unit, or sufficient statistics for it, is retained.
+\emph{Why:} maximal coupling requires both branches' distributions at draw time.
+Without R6 only shared-$u$ quantile coupling is available, whose agreement is
+bounded by \eqref{eq:quant} and, at the divergences measured in
+Table~\ref{tab:coupling}, can fall to half the achievable value. This is the most
+expensive requirement here and the one most likely to be negotiated down; the
+honest statement of the cost is that dropping it does not make attribution
+impossible, it widens every mediated-effect interval by a measurable and
+reportable amount.
+
+\paragraph{R7, serving-stack fingerprint.} Model identifier and version,
+quantisation, framework and kernel versions, accelerator model, and whether the
+serving path is batch-invariant. \emph{Why:} determinism is not hardware or
+version invariant \citep{he2025}, and temperature zero with a fixed seed is not
+sufficient. Without R7 a replay divergence cannot be separated into a property of
+the system under study and a property of the infrastructure it ran on.
+
+\paragraph{R8, declared purity class per tool.} Each tool declares whether it is
+pure, idempotent, effectful-reversible or effectful-unsafe, and the declaration is
+part of the filed documentation. \emph{Why:} counterfactual re-execution must
+refuse to run an effectful-unsafe tool, and a refusal must be recorded rather
+than silently substituted, or the effect estimate is conditioned on an unrecorded
+exclusion.
+
+\paragraph{R9, environment binding.} External state that a tool read is captured
+with the step, together with the time of reading. \emph{Why:} a counterfactual
+evaluated against a different external state is not a counterfactual about the
+system; it is a comparison of two different worlds.
+
+\paragraph{R10, retention parity.} The execution record is retained for the same
+period as the technical documentation it accompanies. \emph{Why:} Article 18(1)
+sets ten years for the description and Article 19(1) six months for the record. If
+attribution requires the record, the mandated evidence expires roughly twenty
+times sooner than the accountability processes that would seek it, including
+market surveillance under Article 74.
+
+\paragraph{R11, cross-actor completeness.} Either one actor is accountable for the
+whole trajectory, or every participating actor records a common join key and the
+filed documentation names who holds which segment. \emph{Why:} Articles 19(1) and
+26(6) both limit retention to logs "to the extent such logs are under their
+control", which writes accountability diffusion into the retention duty itself. A
+trajectory nobody is obliged to hold whole is a trajectory that cannot be
+reassembled.
+
+\paragraph{R12, signed effects and mandatory exclusion rates.} Where a derived
+quantity is a ratio of effects, the underlying effects are recorded with sign, and
+the derived quantity is reported with the count and rate of cases in which it was
+undefined. \emph{Why:} Section~\ref{sec:suppression}. Under inconsistent mediation
+the proportion mediated exceeds one, and a filing that reports the ratio without
+its exclusion rate cannot be distinguished by a reader from one where the
+exclusion never arose.
+
+\subsection{What each requirement costs}
+
+R1, R2, R4, R7, R8 and R12 are metadata and schema discipline: they change what is
+written, not how much. R3 and R9 scale with trajectory volume and are the usual
+subject of retention policy. R5 is free at design time and impossible to add
+afterwards, which makes it the single most important requirement to adopt early.
+R6 is the expensive one. R10 and R11 are policy rather than engineering, and R11
+in particular cannot be satisfied by a provider acting alone.
+
+\subsection{Relation to the filed documents}
+
+R1 to R4 and R8 are naturally at home in Annex IV point 2(c), which already asks
+for a description of how software components feed into each other; what they add
+is the per-instance record corresponding to that description. R5 to R7 and R9
+belong with the post-market monitoring plan, which Article 72(3) makes part of the
+Annex IV documentation and for which the Commission owes a template by 2 September
+2027. R10 and R11 cannot be met by a provider's own documentation and would
+require the retention periods in Articles 19 and 26 to be revisited for systems
+whose accountability depends on the record rather than on the description.
+
+\subsection{What this specification does not claim}
+
+It does not claim that a conforming record makes attribution accurate; it makes
+attribution \emph{possible}, and the accuracy is then an empirical question of the
+kind Section~\ref{sec:prereg} pre-registers. It does not claim the Regulation
+forbids any of this. And it has not been evaluated against a live deployment, for
+the reason stated in the abstract.
+
 \end{document}
+

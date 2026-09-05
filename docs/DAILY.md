@@ -286,3 +286,14 @@ any step of the sprint plan from D9 onward, all of which needed pipeline access.
    the pre-registration.
 6. **Needing Ajay.** Articles 72, 74(1) and 79(1) from a browser. IASEAI'27
    dates. Gate D sign-off. P1 and P3 state.
+
+## D-restart+2 (cont.), Friday 4 September 2026, late
+
+1. **Shipped.** Complete draft, all ten sections plus Appendix A. Zero stubs.
+2. **Slipped.** Nothing.
+3. **Gates.** Unchanged.
+4. **Deviation from pre-registration.** None. Section 7 publishes it as written.
+5. **Tomorrow.** Figures. Then the red team, which needs a fresh session with no
+   context, per rule 7.
+6. **Needing Ajay.** P1 six-line status and P3 kill-gate status, both into the
+   programme log. Gate D sign-off.

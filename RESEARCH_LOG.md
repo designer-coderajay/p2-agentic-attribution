@@ -766,3 +766,42 @@ plan should stop treating the two as one deadline.
 pytest, printed nothing at all, and passed. A gate that reports success without
 producing evidence is worse than no gate. It now requires a summary line matching
 a test count and fails closed if there is none.
+
+## 2026-09-04, fourth entry
+
+**The draft is complete.** Sections 1, 2, 7, 8, 9 and 10 written, plus Appendix A,
+the traceability specification. Zero stubs. 17 pages: 11 main text, 2 references,
+4 appendix. Every citation resolves in both directions and every arXiv id in the
+bibliography is ledger-backed.
+
+**The appendix is derived, not proposed, and that is the design decision worth
+recording.** Twelve requirements, each of which is a precondition for one of this
+paper's own estimands to be computable from a filed record. Nothing is in it
+because it sounded prudent. Four conformance levels, and the one that matters is
+L1 to L2: L1, a reconstructable trajectory, is what observability stacks already
+deliver; L2, counterfactual replayability, is what causal attribution requires,
+and no provision of the Regulation asks for it. R5, the keyed-randomness
+requirement, is singled out as free at design time and impossible to add
+afterwards.
+
+**Section 8 makes the argument the retrievals earned.** Description versus record
+and general versus per-instance; the logging duty bounded above by two
+system-level purposes now that Articles 72 and 79(1) have been read; no minimum
+log content at all for Annex III point 5; the factor-of-twenty retention
+asymmetry with neither actor obliged to hold the whole trace; Article 74's
+escalation ladder reaching source code without ever reaching an execution trace;
+and Article 79(6)(b) offering one whole system against one whole Section as the
+finest granularity available. Then the two Commission instruments that do not yet
+exist, one of which has a deadline of 2 September 2027.
+
+**The introduction positions against CAR in paragraph one**, as the brief
+required, and uses the concessions in that work's own text: a marginal total
+effect, the direct effect left as a refinement, and mocked tools.
+
+**Page budget, stated now rather than discovered later.** Main text is 11 pages
+against IASEAI's 10-page limit. arXiv has no limit, so this binds only the
+conference version, and the trim is a bounded named task.
+
+**Still to do before arXiv:** figures, of which the paper currently has none; a
+red team in a fresh session per standing rule 7; the final ledger pass; and the
+anonymised, template-formatted variant for 2 October.
