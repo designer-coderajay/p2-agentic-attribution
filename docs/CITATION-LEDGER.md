@@ -329,3 +329,96 @@ closed form for shared-`u` quantile-coupling agreement in fixed index order and
 the measured gap against the maximal bound. A search for it returned nothing
 directly on point, but it is an elementary computation and the honest phrasing is
 that we have not found it stated for this purpose, not that it does not exist.
+
+---
+
+## Full pre-arXiv verification sweep, 5 September 2026
+
+Run under the `citation-verify` standard: **VERIFIED means fetched this session
+and every field confirmed against the fetched record.** A prior verified row does
+not carry over. Thirteen arXiv identifiers in `paper/refs.bib` were re-fetched;
+`2608.13754` was fetched earlier the same session.
+
+**Result: 12 confirmed, 4 discrepancies found and corrected, 2 not re-verifiable.**
+
+| ID | State | Verified on | Notes |
+|---|---|---|---|
+| 2606.08275 | **VERIFIED** | 2026-09-05 | Title, sole author Jaineet Shah, 6 Jun 2026, v1, cs.LG all match |
+| 2605.25338 | **VERIFIED** | 2026-09-05 | All five authors and order match; 25 May 2026, v1, cs.LG |
+| 2606.04990 | **VERIFIED, CORRECTED** | 2026-09-05 | **AUTHOR ORDER WAS WRONG.** See D1 |
+| 2505.00212 | **VERIFIED (record), DISPUTED (venue)** | 2026-09-05 | Title and all 11 authors match. **Venue unconfirmed.** See D2 |
+| 2509.03312 | **VERIFIED** | 2026-09-05 | Six authors and order match; v2 4 Sep 2025, cs.CL |
+| 2509.08682 | **VERIFIED** | 2026-09-05 | Seven authors and order match; 10 Sep 2025, v1, cs.AI |
+| 2607.20827 | **VERIFIED** | 2026-09-05 | Sole author Junchi Liao; 23 Jul 2026, v1, cs.AI |
+| 2603.10749 | **VERIFIED, ENRICHED** | 2026-09-05 | **Venue found that we never had.** See D3 |
+| 2602.07918 | **VERIFIED** | 2026-09-05 | All eight authors match, including the "Krishnamurthy Dj Dvijotham" spelling the August row flagged for checking. Now checked |
+| 2607.25364 | **VERIFIED** | 2026-09-05 | Both authors; v2 29 Jul 2026; Comments "25 pages, 1 figure, 15 tables" |
+| 2605.04732 | **VERIFIED, ENRICHED** | 2026-09-05 | **Journal reference found.** See D4 |
+| 2608.13754 | **VERIFIED** | 2026-09-05 | P1. Ajay Pravin Mahale (Hochschule Trier), 13 Aug 2026, v1, cs.AI |
+| **2606.09692** | **NOT RE-VERIFIED** | attempted 2026-09-05 | See N1 |
+| **2605.09168** | **NOT RE-VERIFIED** | attempted 2026-09-05 | See N1 |
+
+### D1. 2606.04990, author order was wrong in the bibliography and in this ledger
+
+Recorded here on 2026-08-15 and written into `refs.bib` as: Yiqi Wang, Jiaqi
+Zhang, **Zhangkai Wu**, Taotao Cai, Zirui Liu, Qingqiang Sun, Zequn Sun, ...
+
+The arXiv listing gives: Yiqi Wang, Jiaqi Zhang, Taotao Cai, Zirui Liu,
+Qingqiang Sun, Zequn Sun, **Zhangkai Wu**, Manqing Dong, Mingkai Zheng, Xuefei
+Yin, Yanming Zhu.
+
+**Zhangkai Wu was in position 3 and belongs in position 7.** Corrected in
+`refs.bib` on 2026-09-05. Order is not cosmetic: it determines et-al truncation
+and it misstates a co-author's contribution. Submission date also corrected: the
+paper was submitted 3 June 2026, with v4 on 28 June; the ledger recorded only the
+v4 date.
+
+### D2. 2505.00212, the venue claim could not be re-confirmed
+
+The August row states "ICML 2025, PMLR v267, pp. 76583-76599", said to have been
+confirmed against PMLR directly.
+
+Today: PMLR volume 267 **is** confirmed to be ICML 2025, the 42nd International
+Conference on Machine Learning, Vancouver, 13-19 July 2025. But the paper could
+not be located in the volume index in the retrieved portion, and the arXiv
+Comments field reads only "camera-ready" with no venue named.
+
+**State: DISPUTED on the venue, VERIFIED on the record.** The page range is now
+marked in `refs.bib` as pending re-confirmation. Per the skill's rule on numbers
+that cannot be located, confirm the page range directly or fall back to the
+arXiv form before submission anywhere.
+
+### D3. 2603.10749, a venue we did not have
+
+The arXiv Comments field reads **"Accepted by USENIX Security 2026"**. Neither
+this ledger nor the bibliography recorded it, and the paper was being cited as a
+bare preprint. Added.
+
+### D4. 2605.04732, a journal reference we did not have
+
+The arXiv listing carries the journal reference **"Reinforcement Learning
+Journal 2026"**. Not previously recorded. Added, along with the primaryClass
+field, which was missing from the entry entirely.
+
+### N1. Two entries could not be re-verified, and are named rather than assumed
+
+`2606.09692` (Observability for Delegated Execution in Agentic AI Systems) and
+`2605.09168` (CIVeX) both return no machine-readable text to the fetch tool; each
+was attempted twice. This is a tool limitation, not evidence of a problem: both
+carry VERIFIED, FULL TEXT READ rows from 2026-08-13 and 2026-08-21 with URLs.
+
+Per the skill's failure rule, a blocked fetch is **not** routed around and the
+state is **not** upgraded. Both are cited in the manuscript.
+
+**Therefore this bibliography must not be described as fully checked.** It is 12
+of 14 re-verified today, with 2 resting on an August verification that could not
+be refreshed. Resolving it takes two minutes in a browser: open both abstract
+pages and confirm title and author list against `refs.bib`.
+
+### Process note
+
+Two of the four discrepancies were things we did not have rather than things we
+had wrong, and both make the citations stronger. The author-order error is the
+one that mattered: it had survived three weeks and two prior sweeps, because
+every earlier check confirmed that the paper existed rather than that our
+transcription of it was right.

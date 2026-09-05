@@ -297,3 +297,13 @@ any step of the sprint plan from D9 onward, all of which needed pipeline access.
    context, per rule 7.
 6. **Needing Ajay.** P1 six-line status and P3 kill-gate status, both into the
    programme log. Gate D sign-off.
+
+## D-restart+3, Saturday 5 September 2026
+
+1. **Shipped.** Full pre-arXiv citation sweep, four corrections. P1 cross-citation.
+2. **Slipped.** Nothing. Two entries pending a browser check.
+3. **Gates.** Unchanged.
+4. **Deviation from pre-registration.** None.
+5. **Tomorrow.** Figures. Then the red team in a fresh session.
+6. **Needing Ajay.** Open arxiv.org/abs/2606.09692 and arxiv.org/abs/2605.09168
+   and confirm title and authors against refs.bib. Gate D sign-off.

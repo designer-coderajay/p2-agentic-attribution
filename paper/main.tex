@@ -123,6 +123,15 @@ the serving stack rather than by seed control \citep{he2025}.
   yet exist (Section~\ref{sec:annexiv} and Appendix~\ref{app:spec}).
 \end{enumerate}
 
+\paragraph{One argument at two levels.} A companion study asks the same
+question of circuit-level evidence and finds that the claim a provider would file
+is not stable across defensible analytic choices
+\citep{mahale2026multiplicity}. That result is about whether the evidence is
+reproducible by a second analyst. This paper is about whether the evidence tracks
+causation at all, one level of abstraction up, where the object is a trajectory
+rather than a forward pass. The two failures are independent: evidence could be
+perfectly stable and still track the wrong thing.
+
 \paragraph{What we do not claim.} The empirical question, whether deployed
 observability tracks causal effect, is specified and not answered. It needed a
 live regulated pipeline that was not available in the study window. We say so
@@ -150,7 +159,11 @@ forcing an action, forcing an observation, altering the context, and altering th
 policy. Resampling is primary throughout. Removal is not used: taking a step out
 puts the system off-distribution in the same unprincipled way that mean ablation
 does for circuits in single-forward-pass interpretability, and the argument
-against it there transfers directly.
+against it there transfers directly. That instability is not incidental. At the
+circuit level, the choice of ablation operator is one of seven analytic axes
+across which a filed interpretability claim flips for 73.2\% of specification
+pairs \citep{mahale2026multiplicity}; the operator choice we are making here is
+the same class of choice, one level up.
 
 \paragraph{The quantity that does not exist upstream.} In a single forward pass
 there is no distinction between what a component contributed directly and what it

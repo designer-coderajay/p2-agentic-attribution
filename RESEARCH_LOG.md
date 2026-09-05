@@ -805,3 +805,67 @@ conference version, and the trim is a bounded named task.
 **Still to do before arXiv:** figures, of which the paper currently has none; a
 red team in a fresh session per standing rule 7; the final ledger pass; and the
 anonymised, template-formatted variant for 2 October.
+
+## 2026-09-05
+
+**P1 is on arXiv and has been since 13 August.** Verified against the listing:
+arXiv 2608.13754, *Explanation Multiplicity*, Ajay Pravin Mahale, Hochschule
+Trier, v1, cs.AI. It shipped 28 days ahead of its own 10 September target. The
+audit of 3 September recorded P1 as unknown and the decisions of 4 September
+slipped it to 20 September. Both were wrong, and wrong because this chat asked a
+question instead of opening a folder that sat one level above one already
+connected. Recorded because it is the same failure this project has been
+cataloguing all week, committed by me.
+
+**P2 now cites P1 twice**, which is the cross-citation the brief said makes these
+a programme rather than two unrelated papers: at the ablation-operator argument,
+where the circuit-level finding that a filed claim flips across 73.2% of
+specification pairs is the same class of analytic choice one level down; and in
+the introduction, framing them as one argument at two levels of abstraction, with
+the note that the two failures are independent because evidence could be
+perfectly stable and still track the wrong thing.
+
+**Full pre-arXiv citation sweep under the citation-verify standard**, which holds
+that a prior verified row does not carry over and VERIFIED means fetched this
+session with every field confirmed. Fourteen arXiv identifiers, twelve confirmed,
+**four discrepancies, two not re-verifiable**.
+
+The one that mattered: **2606.04990's author order was wrong**, in the
+bibliography and in this ledger. Zhangkai Wu sat in position 3 and belongs in
+position 7, after Zequn Sun. It had survived three weeks and two earlier sweeps,
+because every earlier check confirmed that the paper existed rather than that our
+transcription of it was right. That is a different question and only the second
+one protects a bibliography.
+
+Two discrepancies were things we did not have rather than things we had wrong,
+and both strengthen the citations: AttriGuard is **"Accepted by USENIX Security
+2026"** and Yadav et al. carries a **Reinforcement Learning Journal** reference.
+Both were being cited as bare preprints.
+
+One is now **DISPUTED**: Who&When's "PMLR v267, pp. 76583-76599". PMLR v267 is
+confirmed to be ICML 2025, but the paper was not locatable in the index this
+session and arXiv's Comments field says only "camera-ready". The page range is
+marked pending re-confirmation in `refs.bib`.
+
+**Two entries could not be re-verified and are named rather than assumed.**
+2606.09692 and 2605.09168 both return no machine-readable text to the fetch tool,
+attempted twice each. Both carry August VERIFIED rows with URLs. Per the rule, a
+blocked fetch is not routed around and the state is not upgraded, so **this
+bibliography must not be described as fully checked** until someone opens those
+two abstract pages in a browser. Two minutes.
+
+**A humanizer pass found nothing, and nothing was invented to look busy.** Zero
+hits across AI vocabulary, copula avoidance, superficial participial phrases,
+negative parallelism, filler, hedging stacks, em dashes and curly quotes. All
+eleven three-item lists are real enumerations: step types, hypothesis labels, a
+verbatim quote from Article 74. The prose was written under the standing rules
+that already ban em-dashes and hedging, so those patterns were never introduced.
+
+**A Unicode audit found the sources are pure ASCII**, with no invisible or
+provenance-marking characters in `main.tex`, `refs.bib` or the `Makefile`.
+
+**A BibTeX lesson worth keeping.** The first attempt at these corrections put
+explanatory `%` comments inside the entries. BibTeX has no in-entry comment
+syntax and skipped every entry that followed one, silently dropping 46 citations.
+Comments belong between entries, where BibTeX ignores them. A gate now fails on
+any `%` inside an entry.
