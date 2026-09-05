@@ -914,3 +914,87 @@ series against each other and missed the background comparison, which is what
 told me the lightest ink needed darkening from `#B0B0B0` to `#949494`. Every
 series also carries a distinct linestyle and marker, so identity never rests on
 tone alone.
+
+---
+
+## 2026-09-05  Red team, and what it cost
+
+Two adversarial reviews of `paper/main.tex`, run in fresh sessions with no
+context about authorship or effort, one on methods and one on the regulatory
+analysis. **Both returned "Reject."** Both named a single fatal objection. Both
+objections were verified before anything was changed, and both are upheld.
+
+### What was verified before acting
+
+**Methods, objection 1c.** Claim: under eq:scm with `q = 0.9`, `w = 0.5`, on the
+factual draws where `u_3 >= q`, the DECISIVE retrieval's `TE_crn` is exactly
+zero, so an exact zero cannot mean inertness. Checked against the committed SCM
+and the committed estimator in `scripts/validate_crn_degeneracy.py`:
+
+- `P(u_3 >= q)` over 20000 factual draws: **0.0974**, nominal 0.10.
+- On the 300 seeds the estimator was run on the event occurred 18 times
+  (rate 0.060, two-sided binomial p = 0.020 against 0.10, an unlucky seed set;
+  reported, not reseeded). On **all 18**, `|TE_crn(1)| < 1e-12`, while
+  `|DE(1)| = 0.254 +/- 0.014`. The step acts and reads zero.
+- Sweeping `w`: exact-zero rate 0.133 at `w = 1/2` and **exactly 0** at 0.2,
+  0.3, 0.4, 0.6, 0.8. The cancellation needs `w = 1 - w`.
+
+Objection UPHELD.
+
+**A second result found while checking the first**, which goes the other way:
+`TE_marg(0) = TE_marg(1)` and `TE_marg(2) = TE_marg(3)` **identically on every
+factual draw** (max difference 0.000e+00 over 30 draws), with closed forms that
+match to within 4 standard errors. The marginal estimand's inability to separate
+an inert step from a decisive one is an algebraic identity on this chain, not a
+coincidence at the run we reported. That STRENGTHENS the paper.
+
+**A third, also from the same reviewer.** The pin plausibility the paper
+reported is `(q + 1 - q)/2 = 1/2` for EVERY `q`, so it carried no information.
+Measured: pooled 0.483 at `q = 0.9` against 0.899 on the unchanged arm and 0.097
+on the changed arm; at `q = 0.99`, 0.482 against 0.990 and 0.010. The changed arm
+is the number that matters. Objection UPHELD.
+
+**Regulatory.** Claim: Article 86 confers a per-instance right, sits in Chapter
+IX so is not deferred, is recorded VERBATIM in our own `docs/REGULATORY-BASIS.md`
+section 11, and appears ZERO times in `main.tex`. Confirmed by grep: zero
+occurrences. Objection UPHELD. Article 21(2) and Article 73(6) retrieved; the
+manuscript's sentence "Execution traces appear on neither rung" is WRONG and is
+retracted in the paper's own words.
+
+### What was decided
+
+**`W_DIRECT` is not changed.** Moving `w` off 1/2 removes the degeneracy and it
+would be the repair PREREG s4 forbids. `w = 1/2` is kept BECAUSE it is the worst
+case for our own estimand. The degeneracy is now in the abstract, in
+Proposition 2, and in Limitations.
+
+**The claim is narrowed to one direction.** An inert step returns exactly zero
+under CRN on every run. A step returning exactly zero under CRN is not thereby
+inert. Requirement R5 is now motivated by this: the record must carry the
+factual noise so the two cases behind a zero can be told apart.
+
+### What this says about the process
+
+The red team was run because standing rule 7 requires it, and it returned work
+rather than clearance. Three things are worth writing down.
+
+1. **The regulatory objection was a filing failure, not a research failure.**
+   Article 86 was retrieved, analysed correctly, and called "the sharpest point
+   in the whole regulatory analysis" in our own notes three weeks ago. It then
+   did not reach the manuscript. Nothing in the process checks that the
+   strongest thing in the notes is in the paper.
+2. **The methods objection was reachable by anyone who ran the estimator on more
+   than one seed.** We reported one factual run because the closed forms were
+   derived for one factual run. Standing rule 5 says report variance, not point
+   estimates, and it was not applied to the choice of factual draw itself.
+3. Both were found by a reader with no investment in the result. That is the
+   argument for running the red team before the celebration, not after it.
+
+### Still open
+
+- Two arXiv abstract pages, `2606.09692` and `2605.09168`. Two minutes. The
+  bibliography must not be described as fully checked until then.
+- Articles 86 and 73(6) against the OJ PDF; currently `VERIFIED-SECONDARY`.
+- Gate D sign-off, open since 20 August.
+- Main text is 20 pages including bibliography and appendix; IASEAI wants 10 of
+  main text. Trim not started.

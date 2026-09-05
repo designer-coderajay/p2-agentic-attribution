@@ -807,3 +807,126 @@ Annex III point 5; Annex IV complete; recitals 71 and 171; Regulation (EU)
 - Article 73, serious incident reporting, was not retrieved and sits between 72
   and 74. It is not currently load-bearing but should be checked before the
   appendix claims the Act has no incident-level component reporting.
+
+---
+
+# PART IV. Retrieved 2026-09-05, in response to an adversarial regulatory review
+
+A reviewer given only `paper/main.tex`, with no context about who wrote it or
+why, returned one fatal objection: **Article 86 is recorded VERBATIM in section
+11 of this very document and appears ZERO times in the manuscript.** That is
+upheld. It is the strongest provision in the whole regulatory analysis and it
+never reached the paper. Three provisions are retrieved or re-read below; the
+"still outstanding" list in section 14 had already flagged two of them.
+
+## 17. Article 21, and the log-access rung section 8 said did not exist
+
+`VERBATIM`, Article 21 "Cooperation with competent authorities", Chapter III
+Section 3. Re-read 2026-09-05 from the EUR-Lex consolidated text
+`CELEX:02024R1689-20260727`. This is a **primary** retrieval.
+
+> 1. Providers of high-risk AI systems shall, upon a reasoned request by a competent authority, provide that authority all the information and documentation necessary to demonstrate the conformity of the high-risk AI system with the requirements set out in Section 2, in a language which can be easily understood by the authority in one of the official languages of the institutions of the Union as indicated by the Member State concerned.
+>
+> 2. Upon a reasoned request by a competent authority, providers shall also give the requesting competent authority, as applicable, access to the automatically generated logs of the high-risk AI system referred to in Article 12(1), to the extent such logs are under their control.
+>
+> 3. Any information obtained by a competent authority pursuant to this Article shall be treated in accordance with the confidentiality obligations set out in Article 78.
+
+`CORRECTION`. The manuscript said "Execution traces appear on neither rung" of
+the Article 74 escalation ladder. **That was wrong.** Article 21(2) is the rung.
+The sentence is retracted in the paper in its own words rather than quietly
+deleted, because a paper about evidentiary discipline that silently drops a
+false statement has failed its own test.
+
+`INFERRED`, and this is what makes the correction strengthen the argument rather
+than weaken it. Two things bound the rung.
+
+- Article 21 sits in **Chapter III Section 3**, which Article 113(c) as amended
+  by Regulation (EU) 2026/1744 defers to **2 December 2027** for Annex III
+  systems. The access right and the logging duty it reaches are deferred
+  together.
+- Article 12(3), the only enumerated minimum log content anywhere in the
+  Article, binds **Annex III point 1(a)** alone. For point 5(b) creditworthiness
+  there is none.
+
+So the corrected claim is: a competent authority will have, from December 2027,
+a right of access to a record whose granularity the provider sets. That is a
+sharper problem than "no access at all", and it is true.
+
+## 18. Article 73(6), the causal-investigation duty we flagged and never fetched
+
+Section 14 of this document listed Article 73 as "not retrieved and sits between
+72 and 74. It is not currently load-bearing but should be checked before the
+appendix claims the Act has no incident-level component reporting." It is
+load-bearing. It was not checked. It is checked now.
+
+`VERBATIM`, Article 73(6), "Reporting of serious incidents", Chapter IX
+Section 2. Retrieved 2026-09-05. **`VERIFIED-SECONDARY`, see section 19.**
+
+> Following the reporting of a serious incident pursuant to paragraph 1, the provider shall, without delay, perform the necessary investigations in relation to the serious incident and the AI system concerned. This shall include a risk assessment of the incident, and corrective action.
+>
+> The provider shall cooperate with the competent authorities, and where relevant with the notified body concerned, during the investigations referred to in the first subparagraph, and shall not perform any investigation which involves altering the AI system concerned in a way which may affect any subsequent evaluation of the causes of the incident, prior to informing the competent authorities of such action.
+
+`INFERRED`. This is a **causal-investigation duty with an evidence-preservation
+clause attached**, and it is the closest the Regulation comes to naming the
+question the paper asks. Two observations.
+
+- "the causes of the incident" is the Act's own phrase. The obligation not to
+  alter the system in a way that may affect a subsequent evaluation of those
+  causes is a spoliation rule in substance.
+- It names **no record**. The provider must investigate causes and must preserve
+  the ability of others to evaluate them, on whatever record happens to exist.
+  The duty and the evidentiary substrate are decoupled.
+
+Chapter IX is not in any Article 113 exception, so this has applied since
+**2 August 2026**. Unlike the Article 12 logging duty, it is in force now.
+
+## 19. The calendar, and the sixteen-month gap it opens
+
+Assembling sections 2, 11, 17 and 18 into one timeline. All dates are from the
+consolidated Article 113 quoted verbatim in section 2.
+
+| Provision | Chapter | Applies from | What it does |
+|---|---|---|---|
+| Article 86, right to explanation | IX, Section 4 | **2 August 2026** | per-instance right against the **deployer** to explanations of the AI system's role in the procedure |
+| Article 73(6), investigate causes | IX, Section 2 | **2 August 2026** | duty on the **provider** to investigate causes and preserve the ability to evaluate them |
+| Article 11, 12, Annex IV | III, Section 2 | **2 December 2027** | technical documentation and automatic logging |
+| Article 21(2), log access | III, Section 3 | **2 December 2027** | authority access to the Article 12(1) logs |
+
+`INFERRED`. For roughly sixteen months, from 2 August 2026 to 2 December 2027,
+the Union has:
+
+1. a live individual right to an explanation of the role of an AI system in an
+   agentic credit decision,
+2. a live duty on providers to investigate the causes of serious incidents and
+   not to destroy the means of evaluating them, and
+3. **no in-force obligation on anyone to have kept a record from which either
+   could be discharged.**
+
+This is not an argument that Article 86 requires component-level attribution. On
+its own terms it does not: its two limbs are the system's *role in the
+procedure* and the *main elements of the decision*, and neither is the system's
+processing. It is an argument that the gap between what those provisions ask for
+and what any record will contain is currently unobservable, because the record
+is not yet owed. That is the framing the paper now carries.
+
+## 20. Epistemic state of Part IV, stated because the rules require it
+
+- **Article 21, all three paragraphs.** `VERIFIED` **primary**. Read 2026-09-05
+  from the EUR-Lex consolidated HTML at
+  `https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02024R1689-20260727`.
+- **Article 86, paragraphs 1 to 3.** `VERIFIED-SECONDARY`. The EUR-Lex
+  consolidated HTML truncates inside Article 26 and the OJ PDF truncates inside
+  the recitals, so neither primary source could be read through to Article 86
+  this session. The text was read from a consolidation site and **agrees
+  character for character with what section 11 of this document recorded in
+  August from a separate retrieval.** Two independent reads agreeing is good
+  evidence and it is not a primary citation.
+- **Article 73(6).** `VERIFIED-SECONDARY`, single retrieval, same truncation
+  problem. This is the weakest link in Part IV.
+- **Article 113 dates.** `VERIFIED` primary, unchanged from section 2.
+
+**Before submission**, Articles 86 and 73(6) must be read against
+**OJ L, 2024/1689, 12.7.2024** and the state upgraded to `VERIFIED` or the
+quotations corrected. Both articles are unamended, so the OJ original is the
+right source and the consolidation adds nothing. This sits on the same
+pre-submission list as the two arXiv abstract pages.

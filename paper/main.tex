@@ -35,23 +35,31 @@ Estimators, Coupling, and a Traceability Specification}
 A provider of a high-risk AI system must keep records that make a decision
 traceable, and for agentic systems it has not been established what those
 records must contain for post-hoc causal attribution to be possible at all. We
-give the estimator framework. We separate the marginal total effect that prior
-work measures from a common-random-numbers total effect that isolates a step's
-own contribution, add the natural direct effect under a pinned downstream, and
-show the decomposition identity holds to machine precision on planted structure.
-We derive the coupling that keeps the direct effect estimable once contexts
-diverge, together with a closed form for its degradation, and we show that the
-mediated share on which a natural ranking is built is not a share under
-suppression: where the direct and mediated paths oppose it exceeds one and ranks
-a suppressed component above a pure mediator, inverting the ordering it is meant
-to induce. We pre-register the discrepancy experiment in full and publish the
-pre-registration rather than a result, because the live regulated pipeline it
-requires was not available in the study window; we state that absence here
-rather than substituting a synthetic proxy for it. We contribute the
-traceability specification such a filing would need, grounded in the verbatim
-text of Articles 11 to 13 and Annex IV, whose obligations Regulation (EU)
-2026/1744 deferred to 2 December 2027 on the Union's own record that the
-apparatus for demonstrating conformity was not ready.
+give the estimator framework and then the conditions under which it fails. We
+separate the marginal total effect that prior work measures from a
+common-random-numbers total effect that isolates a step's own contribution, add
+the natural direct effect under a pinned downstream, and check the estimators
+against hand derivations rather than against each other. Both estimands then
+fail, in different ways and in the same direction. Under the marginal estimand a
+causally inert step has, on our planted chain, the identical total effect to the
+decisive one on every run, which is an algebraic identity rather than a
+coincidence at one draw. Under common random numbers the decisive step returns
+exactly zero on the runs where the executing step flips, about one in ten, while
+its direct effect there is $0.25$ and it demonstrably acts. An exact zero
+therefore does not certify that a step did nothing, and we put that here rather
+than in the limitations. We derive the coupling that keeps the direct effect
+estimable once contexts diverge, together with a closed form for its
+degradation, and we show that the mediated share on which a natural ranking is
+built is not a share under suppression: where the direct and mediated paths
+oppose it exceeds one and ranks a suppressed component above a pure mediator. We
+pre-register the discrepancy experiment in full and publish the pre-registration
+rather than a result, because the live regulated pipeline it requires was not
+available in the study window. We contribute the traceability specification such
+a filing would need, and set it against a gap the Act's own calendar opens:
+Article 86's individual right to an explanation of the role of an AI system in a
+decision has applied since 2 August 2026, while the Article 12 logging and Annex
+IV documentation that could evidence one were deferred by Regulation (EU)
+2026/1744 to 2 December 2027.
 \end{abstract}
 
 \section{Introduction}
@@ -93,9 +101,12 @@ the obstacle. And it operates on mocked tools, with real tools and their side
 effects out of scope.
 
 We take up both. Section~\ref{sec:two-te} shows the choice between the two total
-effects is not a variance question: under the marginal estimand a causally inert
-step is numerically indistinguishable from the decisive one, and under common
-random numbers the inert steps return exactly zero.
+effects is not a variance question. Under the marginal estimand a causally inert
+step is numerically indistinguishable from the decisive one, and on our planted
+chain that indistinguishability is an identity rather than a near miss. Under
+common random numbers the inert steps return exactly zero, but the implication
+runs one way only, and Proposition~\ref{prop:crn-degeneracy} gives the
+conditions under which a decisive step returns exactly zero as well.
 Section~\ref{sec:coupling} turns "hard across divergent contexts" into a closed
 form, an optimal construction, a measured cost, and three implementation
 requirements, one of which is that the replay floor is set by batch invariance in
@@ -104,10 +115,14 @@ the serving stack rather than by seed control \citep{he2025}.
 \paragraph{Contributions.}
 \begin{enumerate}
 \item A separation result between two total effects on agent trajectories, with
-  closed forms and the demonstration that only one of them recovers planted
-  structure without a heuristic (Section~\ref{sec:two-te}).
+  closed forms, a proof that the marginal estimand assigns an inert step and a
+  decisive one the identical effect on every run of the planted chain, and a
+  proof that the common-random-numbers estimand, which does separate them, still
+  returns exactly zero for a decisive step on a measurable set of runs, so a zero
+  is evidence of nothing on its own (Section~\ref{sec:two-te}).
 \item The natural direct effect under a pinned downstream, its decomposition
-  identity, and pin plausibility reported rather than assumed
+  identity, and pin plausibility reported per arm rather than pooled, the pooled
+  figure being $1/2$ for every fidelity parameter and therefore uninformative
   (Section~\ref{sec:de}).
 \item A closed form for shared-randomness coupling agreement, its gap against the
   optimal coupling, and the measured collapse of both under a sampler that sorts
@@ -233,14 +248,18 @@ derived by hand before any estimator was run.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig1_two_total_effects}
-\caption{The same four steps under the two estimands, at $q=0.9$, $w=0.5$.
-Hatched bars are steps with no path to the outcome. Under the marginal estimand
-(left) the inert step 0 is numerically identical to the decisive retrieval, and
-the inert step 2 to the executing step, so magnitude alone cannot separate them
-and a locus rule is required on top. Under common random numbers (right) both
-inert steps are exactly zero, not small, and the planted structure is recovered
-without a heuristic. Values are the closed forms derived by hand before any
-estimator was run.}
+\caption{The same four steps under the two estimands, at $q=0.9$, $w=0.5$,
+\emph{conditional on the factual run stated in the text}
+($a^{\mathrm{fact}} = (0,1,1,1)$, $u_3^{\mathrm{fact}} = 0.770 < q$). Hatched
+bars are steps with no path to the outcome. Under the marginal estimand (left)
+the inert step 0 is numerically identical to the decisive retrieval, and the
+inert step 2 to the executing step; Proposition~\ref{prop:marg-identity} shows
+both equalities hold on every run, not only this one. Under common random
+numbers (right) both inert steps are exactly zero, not small. The converse does
+not hold, and this figure cannot show that it does not:
+Proposition~\ref{prop:crn-degeneracy} gives the runs, of probability $1-q$, on
+which the decisive step 1 also returns exactly zero. Values are the closed forms
+derived by hand before any estimator was run.}
 \label{fig:two-te}
 \end{figure}
 
@@ -256,18 +275,103 @@ step & planted role & $\TEmarg$ & $\TEcrn$ & $\DE$ & $\ME$ \\
 3 & executing step        & $-0.05$ & $-0.05$  & $-0.05$  & $0$ \\
 \bottomrule
 \end{tabular}
-\caption{Analytic values on the planted chain \eqref{eq:scm}, $q=0.9$, $w=0.5$.
-Under the marginal estimand the inert step 0 is numerically indistinguishable
-from the decisive step 1, and the inert step 2 from the executing step 3.
-Under CRN both inert steps are exactly zero.}
+\caption{Analytic values on the planted chain \eqref{eq:scm}, $q=0.9$, $w=0.5$,
+conditional on the factual run $a^{\mathrm{fact}} = (0,1,1,1)$ with
+$u_3^{\mathrm{fact}} = 0.770 < q$. Under the marginal estimand the inert step 0
+is numerically indistinguishable from the decisive step 1, and the inert step 2
+from the executing step 3. Under CRN both inert steps are exactly zero. The
+$\TEcrn$ column is the one that depends on which factual run was drawn: had
+$u_3^{\mathrm{fact}}$ landed above $q$, step 1 would read $0$ in this column
+too (Proposition~\ref{prop:crn-degeneracy}).}
 \label{tab:two-te}
 \end{table}
 
-The point of Figure~\ref{fig:two-te} is the left panel. Under marginal
-run-forward, magnitude alone cannot separate a causally inert step from a
-decisive one, which is precisely why a locus rule is needed on top of it. Under
-CRN the inert steps return exactly zero and the planted structure is recovered
-with no heuristic.
+The point of Figure~\ref{fig:two-te} is the left panel, and the reason is
+stronger than one factual run. Both of its collisions are forced.
+
+\begin{proposition}[Marginal indistinguishability is an identity]
+\label{prop:marg-identity}
+On the chain \eqref{eq:scm}, for every factual draw,
+\[
+  \TEmarg(0) \;=\; \TEmarg(1) \;=\; \tfrac{1}{2} - y^{\mathrm{fact}},
+\]
+\[
+  \TEmarg(2) \;=\; \TEmarg(3) \;=\;
+    w\,a^{\mathrm{fact}}_1 + (1-w)\bigl(q\,a^{\mathrm{fact}}_1
+    + (1-q)(1-a^{\mathrm{fact}}_1)\bigr) - y^{\mathrm{fact}} .
+\]
+\end{proposition}
+
+\begin{proof}
+Forcing the inert $a_0$ leaves $a_1$ to redraw, so $\Ex[a_1] = \tfrac{1}{2}$ and
+$\Ex[a_3] = q\Ex[a_1] + (1-q)(1-\Ex[a_1]) = \tfrac{1}{2}$, giving
+$\Ex[Y] = \tfrac{1}{2}$. Forcing $a_1 := a'_1 \sim \mathrm{Bern}(1/2)$ with $a_0$
+held gives $\Ex[Y] = w\Ex[a'_1] + (1-w)\Ex[a_3] = \tfrac{1}{2}$ by the same
+computation, for any $w$. For the second pair, $a_1$ is held at
+$a^{\mathrm{fact}}_1$; forcing the inert $a_2$ and letting $a_3$ redraw, and
+forcing $a_3$ to a fresh policy draw at the same prefix, both leave
+$\Ex[a_3] = q\,a^{\mathrm{fact}}_1 + (1-q)(1-a^{\mathrm{fact}}_1)$.
+\end{proof}
+
+So the left panel is not an artifact of the run we happened to draw. A causally
+inert step and the decisive retrieval carry the \emph{same} marginal total effect
+on every run of this chain, and no threshold on magnitude can separate them.
+That is the case for a locus rule, and it is why \citet{car2026} needs one.
+
+The right panel needs to be stated more carefully than we first stated it. Zero
+under CRN is exactly zero and the inert steps do return it. The converse fails.
+
+\begin{proposition}[An exact zero does not certify inertness]
+\label{prop:crn-degeneracy}
+On the chain \eqref{eq:scm} with $w = 1/2$, condition on the factual noise
+$u_3^{\mathrm{fact}} \ge q$, an event of probability $1-q$. Then
+$\TEcrn(1) = 0$ exactly, while
+$\DE(1) = w\bigl(\tfrac{1}{2} - a^{\mathrm{fact}}_1\bigr) \ne 0$. For
+$w \ne 1/2$ the conditional effect is nonzero whatever $u_3^{\mathrm{fact}}$ is.
+\end{proposition}
+
+\begin{proof}
+Under CRN the executing step reuses $u_3^{\mathrm{fact}}$, so
+$u_3^{\mathrm{fact}} \ge q$ forces $a_3 = 1 - a'_1$ for every forced $a'_1$, and
+$y = w a'_1 + (1-w)(1-a'_1) = (1-w) + (2w-1)a'_1$, constant in $a'_1$ exactly
+when $w = 1/2$. The factual run is one such branch, so $y^{\mathrm{fact}} = 1/2$
+as well and the difference vanishes identically. The direct-effect arm instead
+pins $a_3$ at $a^{\mathrm{fact}}_3$, leaving $y = w a'_1 + (1-w)a^{\mathrm{fact}}_3$,
+which is not constant in $a'_1$ for any $w > 0$.
+\end{proof}
+
+Read plainly: on this chain the decisive retrieval returns a CRN total effect of
+exactly zero on about one run in ten, and on those runs it is numerically
+indistinguishable from the two steps with no path to the outcome at all, even
+though its direct effect there is $0.25$ and it demonstrably acts. On those same
+runs $y^{\mathrm{fact}} = 1/2$ sits at the interventional mean, so the marginal
+effect is zero too and neither estimand in this paper separates the step. The
+failure is not sampling noise that more rollouts would remove. It is exact
+cancellation between a direct path of weight $w$ and a mediated path of weight
+$1-w$ that the factual noise has inverted.
+
+\texttt{scripts/validate\_crn\_degeneracy.py} measures this against the committed
+estimator rather than against the derivation. Over $20\,000$ factual draws the
+event $u_3^{\mathrm{fact}} \ge q$ occurs at rate $0.0974$ against a nominal
+$0.10$; on the $300$-seed subset the estimator is run on it occurs $18$ times
+(two-sided binomial $p = 0.02$ against $0.10$, a property of that seed set that
+we report rather than reseed away), and on every one of those $18$ runs
+$|\TEcrn(1)| < 10^{-12}$ while $|\DE(1)| = 0.254 \pm 0.014$. Sweeping $w$ over
+$\{0.2, 0.3, 0.4, 0.5, 0.6, 0.8\}$ at $60$ draws each, the exact-zero rate is
+$0.133$ at $w = 1/2$ and exactly $0$ at every other value.
+
+We keep $w = 1/2$ as the reported configuration \emph{because} it is the worst
+case for our own estimand, not despite it. Moving $w$ to a value at which the
+cancellation cannot occur would be the repair our pre-registration forbids
+elsewhere, and it would conceal the one condition under which a CRN zero must
+not be read as inertness: a step whose direct and mediated paths carry equal
+weight and oppose. The claim the rest of this paper rests on is therefore
+one-directional. A causally inert step returns exactly zero under CRN on every
+run. A step that returns exactly zero under CRN is not thereby inert, and a
+provider reading a zero off a single trajectory has no warrant to conclude that
+it is. Requirement R5 in Appendix~\ref{app:spec} exists for this reason: the
+record has to carry the factual noise, so that the reader of an attribution can
+tell which of the two cases produced the zero.
 
 \begin{remark}
 This is a statement about estimators on a known structure. It is not a statement
@@ -295,23 +399,42 @@ The mediated effect is the residual,
   \ME(k) \;=\; \TEcrn(k) - \DE(k),
   \label{eq:identity}
 \end{equation}
-which is an identity rather than an approximation. On the planted chain the
-mediated share of step 1 is $|\ME|/|\TEcrn| = 0.25/0.5 = 0.5$, which equals
-$1-w$ as it must, since the mediated path carries exactly weight $1-w$. That
-identity is the closed-form check on the whole decomposition. Measured against
-the derivation, the estimators agree within Monte Carlo error at every step and
-the residual of \eqref{eq:identity} is $5.55 \times 10^{-17}$.
+which is an identity rather than an approximation, and we say so because it is
+worth being clear about what an identity can and cannot be evidence for. The
+implementation computes $\ME$ as $\TEcrn - \DE$. Checking that
+$\ME - (\TEcrn - \DE)$ is $5.55 \times 10^{-17}$, as an earlier version of
+this paper reported, therefore measures the associativity of IEEE 754
+subtraction and nothing about the estimators. We have removed that number. The
+check that carries content is against the hand derivation, not against the code:
+on the planted chain the mediated share of step 1 is
+$|\ME|/|\TEcrn| = 0.25/0.5 = 0.5$, which must equal $1-w$ because the mediated
+path carries exactly weight $1-w$, and it does; and each of $\TEmarg$,
+$\TEcrn$ and $\DE$ separately matches its closed form at every step to within
+Monte Carlo error, which is the comparison that could have failed.
 
 \subsection{Pin plausibility, reported rather than assumed away}
 
 The direct-effect arm at step 1 pins $a_3 = 1$ while $a_1$ has been resampled.
 When $a'_1 = 1$ the pin agrees with the policy with probability $q$; when
 $a'_1 = 0$ it agrees with probability $1-q$. Averaging over
-$a'_1 \sim \mathrm{Bern}(1/2)$ gives a pin plausibility of $(q + 1 - q)/2 = 0.5$
-at $q = 0.9$. Where this quantity is small the direct-effect estimate rests on a
-pinned continuation the policy would rarely have produced, and $\ME$ must be
-read as bounded rather than as a point estimate. We report it alongside every
-$\ME$.
+$a'_1 \sim \mathrm{Bern}(1/2)$ gives $(q + 1 - q)/2 = 1/2$.
+
+That average is $1/2$ for \emph{every} $q$, which is the whole objection to
+reporting it. A quantity whose value does not move when the fidelity parameter
+moves from $0.6$ to $0.99$ is not measuring the pin. An earlier version of this
+paper reported the pooled figure as though it were informative; it is not, and
+the conditional figures are. Measured on the committed estimator, the pooled
+value is $0.483$ at $q = 0.9$, against $0.899$ on the arm where the intervention
+left the action unchanged and $0.097$ on the arm where it changed it; at
+$q = 0.99$ the same three numbers are $0.482$, $0.990$ and $0.010$.
+
+The changed arm is the one the direct effect depends on, because it is the arm
+in which the pin is doing work, and there the pinned continuation is one the
+policy would have produced with probability $1-q$. At $q = 0.9$ that is one time
+in ten. We therefore report pin plausibility per arm, and where the changed-arm
+figure is small the direct-effect estimate rests on a continuation the policy
+would rarely have produced, so $\ME$ must be read as bounded rather than as a
+point estimate. Both arms are reported alongside every $\ME$.
 
 \section{Coupling across divergent contexts}
 \label{sec:coupling}
@@ -485,8 +608,8 @@ $y^{\mathrm{fact}} = -0.6$. Holding $u_3$ factual makes $a_3 = a'_1$, so
 $y = (2w-1)a'_1$ and $\TEcrn(1) = +0.30$. Pinning $a_3 = 1$ gives
 $\Ex[y] = -0.7$, so $\DE(1) = -0.10$, $\ME(1) = +0.40$ and the ratio is exactly
 $4/3$. Measured over rollouts: $+0.3003$, $-0.1001$, $+0.4004$, ratio $1.3333$,
-decomposition residual $5.55 \times 10^{-17}$. The estimators are correct; the
-quantity built on them is not.
+each within Monte Carlo error of the hand-derived value beside it. The
+estimators are correct; the quantity built on them is not.
 
 \begin{remark}[A previously computed value moved]
 Applying the rule changed a rank correlation computed during pipeline
@@ -495,8 +618,24 @@ excluded, all inert and none suppressed. The earlier code assigned inert steps a
 share of $0.0$, asserting their influence is entirely direct when they have no
 influence at all. Those runs are synthetic smoke tests on planted generators
 rather than results, and we report no rank correlation as a finding in this
-paper.
+paper. The rule follows from Proposition~\ref{prop:supp} and was not selected by
+its effect on this number. We report the effect because a rule whose consequence
+is withheld is worse than one whose consequence is awkward.
 \end{remark}
+
+\paragraph{H4 as pre-registered does not carry this guard, and we are not
+repairing it silently.} The locked specification in
+Section~\ref{sec:prereg} states H4 as a rank correlation on the per-step
+mediated share with no exclusion rule attached, because it was written before
+Proposition~\ref{prop:supp} was noticed. H4 has to be read with the rule above:
+the share is undefined at suppressed and at inert steps, those steps are
+dropped, and the drop rate is reported with the statistic. That is an
+\emph{amendment to a locked pre-registration}. It is dated in
+\texttt{RESEARCH\_LOG.md}, it was made before any live data exists rather than
+after seeing a result, and it is recorded as an amendment rather than by editing
+the pre-registration in place, because a pre-registration that can be edited is
+not one. H4 was and remains exploratory. The primary contrast is H2 and it is
+untouched.
 
 \section{The pre-registered experiment, published and not run}
 \label{sec:prereg}
@@ -633,7 +772,41 @@ evidence for or against it.
 Regulation (EU) 2024/1689 obliges a provider of a high-risk system to keep
 technical documentation (Article 11 and Annex IV) and to design the system for
 automatic logging over its lifetime (Article 12). We read both against the
-question this paper asks, and the result is a clean separation.
+question this paper asks, and the result is a clean separation. First, though,
+the provision that makes the question urgent, and that we had left out.
+
+\paragraph{The right that would need an attribution is in force; the record that
+could support one is not.} Article~86 sits in Chapter IX, outside every deferral
+in Article~113, and has applied since 2 August 2026. It gives "any affected
+person" subject to a decision taken by the deployer on the basis of the output
+of an Annex III high-risk system, point 2 excepted, the right to obtain from the
+deployer "clear and meaningful explanations of the role of the AI system in the
+decision-making procedure and the main elements of the decision taken".
+Creditworthiness assessment is Annex III point 5(b) and is squarely inside that
+scope. Three features of the text decide what could ever discharge it. The
+duty-holder is the \emph{deployer}, not the provider who built the pipeline, so
+the actor with the best access to the internals owes nothing under this Article.
+The entitlement has two limbs joined by "and", and neither is the system's
+processing: the \emph{role of the system in the procedure}, a procedural fact
+about where the output entered and how much it decided, and the \emph{main
+elements of the decision}, the substance of the human decision. There is no
+third limb reaching how the output was produced. And the trigger is
+per-instance and subjective, "in a way that they consider to have an adverse
+impact", which is unusually claimant-friendly. The right therefore terminates at
+exactly the layer at which causal attribution would have to begin.
+
+Set that against the calendar. Article 11, Article 12 and Annex IV sit in
+Chapter III Section 2 and, as amended by Regulation (EU) 2026/1744, apply to
+Annex III systems only from 2 December 2027. Article~21(2), which lets a
+competent authority demand access to the Article 12(1) logs, is Chapter III
+Section 3 and was deferred to the same date. For roughly sixteen months the
+Union has a live individual right to an explanation of an agentic credit
+decision, an in-force duty on providers to investigate the causes of serious
+incidents (Article~73(6), below), and no in-force obligation on anyone to have
+kept a record from which either could be constructed. We do not argue that
+Article~86 requires component-level attribution; on its own terms it does not.
+We argue that the gap between what it asks for and what any record will contain
+is not currently observable by anyone, because the record is not yet owed.
 
 \paragraph{Description versus record, and general versus per-instance.} The most
 component-aware sentence in the entire high-risk documentation package is Annex
@@ -676,15 +849,37 @@ services no single actor need hold the whole trace. For a financial institution
 the log duty is absorbed into existing financial-services record-keeping
 (Article 19(2)), whose granularity was not designed for causal attribution.
 
-\paragraph{The investigative escalation ladder does not reach a trace.} Article
-74 grants a market surveillance authority access to documentation and to the
-training, validation and testing data sets, and access to source code only on a
-reasoned request and only once procedures "based on the data and documentation
-provided by the provider have been exhausted or proved insufficient". Execution
-traces appear on neither rung. Article 79(6)(b) then offers the finest
-granularity in the Act for attributing a failure, "a failure of a high-risk AI
-system to meet requirements set out in Chapter III, Section 2": one whole system
-against one whole Section.
+\paragraph{The investigative ladder reaches the logs and stops at their content.}
+Article~74 grants a market surveillance authority access to documentation and to
+the training, validation and testing data sets, and access to source code only
+on a reasoned request and only once procedures "based on the data and
+documentation provided by the provider have been exhausted or proved
+insufficient". Between those rungs sits Article~21(2), under which providers
+shall, on a reasoned request by a competent authority, "give the requesting
+competent authority, as applicable, access to the automatically generated logs
+of the high-risk AI system referred to in Article 12(1), to the extent such logs
+are under their control". An earlier draft of this section said execution traces
+appear on neither rung. That was wrong, and correcting it sharpens the argument
+rather than weakening it: the access right exists, and what does not exist, for
+every Annex III class except remote biometric identification, is any prescribed
+minimum of what those logs must contain. It is a right of access to a record
+whose granularity the provider sets. Article~21 is itself in Chapter III
+Section 3 and so was deferred to 2 December 2027 along with the logging duty it
+reaches. Article 79(6)(b) then offers the finest granularity in the Act for
+attributing a failure, "a failure of a high-risk AI system to meet requirements
+set out in Chapter III, Section 2": one whole system against one whole Section.
+
+\paragraph{There is an express duty to investigate causes, and it is in force
+now.} Article~73(6) requires a provider, once a serious incident has been
+reported, to "perform the necessary investigations in relation to the serious
+incident and the AI system concerned", including a risk assessment and
+corrective action, and forbids any investigation "which involves altering the AI
+system concerned in a way which may affect any subsequent evaluation of the
+causes of the incident" before the authorities have been informed. That is a
+causal-investigation duty with an evidence-preservation clause attached. It sits
+in Chapter IX and has applied since 2 August 2026. It is the closest the
+Regulation comes to naming the question this paper asks, and it names no record
+on which the investigation is to be conducted.
 
 \paragraph{The Act has no vocabulary for this system class.} Across the six units
 that constitute the high-risk documentation and record-keeping package, the words
@@ -694,7 +889,13 @@ that constitute the high-risk documentation and record-keeping package, the word
 a step in the development process, not a step in an execution trace. Article 3(1)
 defines an AI system in the singular throughout, so a pipeline of several
 tool-backed services and a model is one AI system with one provider and one
-deployer.
+deployer. Article~25 qualifies the actors but not the record: a distributor,
+importer, deployer or third party is treated as a provider where it puts its
+name on the system, makes a substantial modification, or modifies the intended
+purpose so that the system becomes high-risk. That reallocates obligations along
+the value chain. It does not create a per-component account of one execution,
+and allocating responsibility between actors is a different thing from producing
+evidence of which component caused an output.
 
 We do not read any of this as prohibition. The Regulation mandates logging
 capability sufficient for system-level risk and monitoring functions and leaves
@@ -717,6 +918,19 @@ adopted rather than merely cited.
 The principal limitation is in the abstract: the discrepancy experiment is
 specified and not run, because the live regulated pipeline it requires was not
 available in the study window. Everything below is secondary to that.
+
+\paragraph{Our own estimand returns an uninformative zero on a measurable set of
+runs.} Proposition~\ref{prop:crn-degeneracy} is a limitation of the
+common-random-numbers total effect and not only of the chain it is proved on.
+Wherever a step's direct and mediated paths carry equal weight and the factual
+noise inverts the mediator, the CRN effect is exactly zero for a step that acts.
+On the planted chain that is one run in ten. We do not know the rate on a real
+pipeline and have no way to estimate it from a single trajectory, which is the
+setting the Regulation actually creates. The mitigation is in the specification
+rather than in the estimator: R5 requires the factual noise to be recorded, so
+that the two cases behind a zero can be told apart after the fact. Whether a
+provider would in practice record it is exactly the question the unrun
+experiment was meant to answer.
 
 \paragraph{Validation rests on one family of planted generators.} The estimators
 are checked against hand derivations on structural models we constructed. That

@@ -6,7 +6,13 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 fail=0
-for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation validate_primary validate_suppression; do
+# validate_crn_degeneracy was added 2026-09-05 in response to an adversarial
+# review. It is slower than the others, about a minute, because the degeneracy
+# rate has to be measured over enough factual draws to be worth reporting. It
+# belongs in this loop rather than in a separate command, and
+# tests/test_contracts.py enforces that: a check that is not part of ALL GREEN
+# is a check that stops being run.
+for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation validate_primary validate_suppression validate_crn_degeneracy; do
   printf '%-24s' "$s"
   if out=$(python3 "scripts/$s.py" 2>&1); then
     echo "PASS  $(echo "$out" | grep -o 'env_hash [0-9a-f]*' | head -1)"

@@ -1,0 +1,90 @@
+Answer: not always, and the paper said otherwise until this script was written.
+
+This validator was written in response to an adversarial review of the
+manuscript, which observed that on the planted chain of section 3 the decisive
+retrieval's CRN total effect is exactly zero whenever the executing step flips.
+The review was right. What follows checks the claim against the COMMITTED SCM
+and the COMMITTED estimator, derives the closed form by hand, and reports the
+rate with variance across independent seed blocks rather than at one draw.
+
+Three results, in order of how much they cost the paper.
+
+  P1  TE_marg(0) = TE_marg(1) and TE_marg(2) = TE_marg(3) IDENTICALLY, on every
+      factual draw. The marginal estimand's failure to separate an inert step
+      from a decisive one is an algebraic identity on this chain, not a
+      coincidence at the one factual run the paper reported. This STRENGTHENS
+      the paper's claim.
+
+  P2  Conditional on u_3 >= q, which has probability 1 - q, TE_crn(1) = 0
+      EXACTLY, while DE(1) != 0. The decisive retrieval is then numerically
+      indistinguishable from the two inert steps under the very estimand the
+      paper proposes as the fix. This WEAKENS the paper's claim and must be
+      stated in the abstract, not in section 7.
+
+  P3  P2 requires w = 1 - w. It is a knife-edge at w = 1/2 and the exact-zero
+      rate is 0 at every other w tested. So the degeneracy is a worst case, and
+      the paper keeps w = 1/2 BECAUSE it is the worst case, not despite it.
+
+Nothing here is repaired. w is not retuned to make the degeneracy go away; that
+would be exactly the repair PREREG s4 forbids. It is measured and reported.
+
+q = 0.9, w = 0.5, rollouts/node = 200, 5 blocks x 60 factual draws
+
+0. The parameterised chain reproduces the committed SCM at w = W_DIRECT
+  [PASS] outcome_fn agrees on all 16 action tuples
+  [PASS] kinds agree
+
+1. P1  TE_marg(0) == TE_marg(1) and TE_marg(2) == TE_marg(3), every draw
+   Closed form:  TE_marg(0) = TE_marg(1) = 1/2 - y_fact
+                 TE_marg(2) = TE_marg(3) = w*a1 + (1-w)(q*a1 + (1-q)(1-a1)) - y_fact
+   max |TE_marg(0) - TE_marg(1)| over 30 draws = 0.000e+00
+   max |TE_marg(2) - TE_marg(3)| over 30 draws = 0.000e+00
+   max deviation from the closed form, steps 0/1 = 8.750e-02
+   max deviation from the closed form, steps 2/3 = 2.750e-02
+  [PASS] steps 0 and 1 are marginally identical to within 1e-12
+  [PASS] steps 2 and 3 are marginally identical to within 1e-12
+  [PASS] closed form matches within 4 standard errors (0.141)
+
+2. P2  TE_crn(1) = 0 exactly when u_3 >= q, though DE(1) != 0 there
+   direct rate P(u_3 >= q) over 20000 seeds = 0.0974   [nominal 0.10]
+  [PASS] the direct rate is within 0.005 of 1 - q
+   exact-zero rate per block: ['0.017', '0.083', '0.083', '0.033', '0.083']
+   mean 0.060, sd 0.032, nominal 1 - q = 0.10
+   on those draws, mean |DE(1)| = 0.2544 (sd 0.0143), so the step demonstrably acts
+  [PASS] every u_3 >= q draw gave TE_crn(1) exactly zero
+  [PASS] no u_3 < q draw gave a zero
+   over the 300 estimator seeds: 18 flips, binomial two-sided p against 1 - q = 0.020
+  [PASS] the estimator seed set is not significantly off 1 - q at the 1% level
+  [PASS] DE(1) is nonzero on every such draw
+
+3. P3  The cancellation needs w = 1 - w. Zero-rate against w
+        w   P(TE_crn(1)==0)  mean TE_crn(1)       sd
+      0.2             0.000         -0.0444   0.4815
+      0.3             0.000         -0.0414   0.4751
+      0.4             0.000         -0.0385   0.4713
+      0.5             0.133         -0.0355   0.4702
+      0.6             0.000         -0.0325   0.4718
+      0.8             0.000         -0.0266   0.4829
+  [PASS] zero-rate is nonzero at w = 1/2
+  [PASS] zero-rate is exactly 0 at every other w tested
+
+4. P4  The pooled pin-plausibility number is 1/2 for every q, by construction
+   Averaged over a'_1 ~ Bern(1/2): q if the intervention did not change the
+   action, 1-q if it did, mean (q + (1-q))/2 = 1/2 regardless of q.
+        q   pooled  unchanged arm  changed arm
+     0.60    0.507          0.396        0.610
+  [PASS] pooled is 1/2 to within Monte Carlo error at q=0.6
+  [PASS] the two arms separate at q=0.6
+     0.75    0.489          0.751        0.246
+  [PASS] pooled is 1/2 to within Monte Carlo error at q=0.75
+  [PASS] the two arms separate at q=0.75
+     0.90    0.483          0.899        0.097
+  [PASS] pooled is 1/2 to within Monte Carlo error at q=0.9
+  [PASS] the two arms separate at q=0.9
+     0.99    0.482          0.990        0.010
+  [PASS] pooled is 1/2 to within Monte Carlo error at q=0.99
+  [PASS] the two arms separate at q=0.99
+
+elapsed 60.0s   python 3.11.9   numpy 1.26.4
+
+RESULT: ALL CHECKS PASS
