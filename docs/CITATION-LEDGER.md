@@ -422,3 +422,78 @@ had wrong, and both make the citations stronger. The author-order error is the
 one that mattered: it had survived three weeks and two prior sweeps, because
 every earlier check confirmed that the paper existed rather than that our
 transcription of it was right.
+
+---
+
+## 2026-09-05, second pass. The ledger closes, and one entry was wrong
+
+The 4 September sweep ended with the sentence "**this bibliography must not be
+described as fully checked**", because two entries rested on an August check
+that could not be refreshed. Both have now been read against their arXiv
+records. The check took four minutes, not the two it was estimated at, and it
+found something.
+
+| ID | Field checked | Record says | Entry said | State |
+|---|---|---|---|---|
+| 2606.09692 | title | Observability for Delegated Execution in Agentic AI Systems | same | `VERIFIED` |
+| 2606.09692 | authors | Abhinav Mishra, Kumar Sharad | same, same order | `VERIFIED` |
+| 2606.09692 | primary class | cs.CR (also cs.AI) | cs.CR | `VERIFIED` |
+| 2606.09692 | version | v1 only, submitted 8 Jun 2026 | not recorded | **added** |
+| 2605.09168 | title | CIVeX: Causal Intervention Verification for Language Agents | same | `VERIFIED` |
+| 2605.09168 | authors | Fabio Rovai, sole author | same | `VERIFIED` |
+| 2605.09168 | primary class | cs.AI (also cs.LG) | **absent** | **added** |
+| 2605.09168 | version | v1 only, submitted 9 May 2026 | not recorded | **added** |
+| 2605.09168 | note | Comments: 16 pages, 3 figures | **"The Tesseract Academy"** | **CORRECTED** |
+
+**The correction that matters.** The `civex2026` note asserted the affiliation
+"The Tesseract Academy". That string appears nowhere on the arXiv record: not in
+the author line, not in Comments, not in the journal reference. It may well be
+true, but it was an unsourced field sitting in a bibliography whose entire
+discipline is that fields come from the source. It is replaced by the Comments
+field, which is on the record. Where it came from is not recoverable from the
+ledger, which is itself the lesson: a field added without a row here cannot be
+audited later.
+
+**Every entry in `paper/refs.bib` is now `VERIFIED` against a primary record.**
+The header sentence in that file which said otherwise has been replaced rather
+than deleted.
+
+### Regulatory sources, upgraded from VERIFIED-SECONDARY to primary
+
+Part IV of `docs/REGULATORY-BASIS.md` recorded Articles 86 and 73(6) as
+`VERIFIED-SECONDARY`, because the EUR-Lex consolidated HTML truncates inside
+Article 26 and the OJ PDF truncates inside the recitals, so neither could be
+read through to them.
+
+Both were retrieved on 5 September from
+`https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32024R1689`, the
+**original Official Journal text**, by restricting the extraction to the
+document's own `art_86`, `art_73`, `cpt_IX.sct_2` and `cpt_IX.sct_4` elements
+instead of requesting the whole 800-page document and being truncated. The
+element identifiers are themselves the proof of placement: Article 86 is inside
+`cpt_IX.sct_4`, headed "SECTION 4 / Remedies", between Articles 85 and 87;
+Article 73 is inside `cpt_IX.sct_2`, headed "SECTION 2 / Sharing of information
+on serious incidents".
+
+| Source | Was | Now | Discrepancy against the secondary read |
+|---|---|---|---|
+| Article 86(1)-(3) | `VERIFIED-SECONDARY` | `VERIFIED` primary | none, character for character |
+| Article 73(6), both subparagraphs | `VERIFIED-SECONDARY` | `VERIFIED` primary | none, character for character |
+| Article 86 in Chapter IX Section 4 | inferred | `VERIFIED` primary | none |
+| Article 73 in Chapter IX Section 2 | inferred | `VERIFIED` primary | none |
+
+Nothing had to be corrected. That is worth recording too: two independent
+secondary reads agreed with the primary text, which is evidence about the
+sources as well as about the quotations.
+
+**Note for anyone repeating this.** The reason three earlier attempts failed is
+that the fetchers truncate a large document from the beginning, and the AI Act's
+recitals alone exhaust the budget. Requesting the specific element by its
+identifier returns the article and nothing else. That technique is the finding;
+it should be the first thing tried on any EUR-Lex article, not the fourth.
+
+### The pre-submission list is now empty
+
+All four items carried since 4 September are closed. Nothing in the manuscript
+or the regulatory analysis now rests on a source that was not read from its
+primary record this week.

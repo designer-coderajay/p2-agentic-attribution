@@ -1,0 +1,199 @@
+Two are upheld and change the paper. Two are refuted, and the refutation is
+computed here so that the next reviewer does not have to take our word for it.
+
+  A  UPHELD in part. CAR's point-of-commitment rule IS implemented and IS
+     exercised (scripts/validate_estimators.py prints it), so "never
+     implemented" is wrong. But it is printed, never compared. Contribution 1
+     claims a separation from that instrument and nothing measured the
+     separation. Measured here: the rule's locus and our largest-CRN-effect
+     step disagree, in a specific and repeatable direction.
+
+  B  UPHELD, and worse than the objection said. Figure 2's numbers are quoted
+     at vocabulary 32 and one source entropy. Held at matched TV = 0.18,
+     quantile agreement ranges 0.0044 to 0.6307 across vocabulary size and
+     source entropy, a factor of 142, and probability-sorted agreement ranges
+     0.0000 to 0.7742. Maximal coupling does not move at all, because it is
+     1 - TV by construction, which makes the case for it far stronger at a real
+     vocabulary than at 32.
+
+     A SECOND finding, which the objection did not raise and which the paper
+     currently states backwards: probability sorting is NOT uniformly worse
+     than a fixed index order. In 1 of 12 cells it is better, by 0.774 against
+     0.631, and the reversal survives a Monte Carlo run through the sampler.
+     The defect in sorting is that the order becomes a function of the branch's
+     own distribution, not that it is always worse. The design requirement has
+     to be restated.
+
+  C  REFUTED, with a caveat that is worth more than the objection. "g =
+     beta/||beta|| is guaranteed near +/-1 exactly when H1 is true." H1 drives
+     g_causal toward 0, which says nothing about whether any other component
+     reaches 1; with two live covariates the largest |g_j| is 0.707. The pole
+     needs ONE component to dominate, which is a different condition.
+
+     The committed dry-run fit does sit at the pole, |g| = 0.9957, but because
+     verbosity dominates recency 0.78 to 0.067, not because H1 holds. And there
+     the delta-method 95% interval runs to 1.0154, outside the parameter space
+     of a unit-vector component. That is the reason PREREG locks the bootstrap,
+     demonstrated from results/dry_run.json rather than asserted.
+
+  D  UPHELD, and it generalises WS1.11. A do_resample intervention on a
+     DETERMINISTIC step draws the factual action every time, so its estimated
+     effect is exactly zero however decisive it is. At q = 1 the executing step
+     is deterministic given the retrieval and reports zero effect, zero change
+     rate, and is indistinguishable from an inert step.
+
+Nothing is repaired. Where a number does not generalise it is reported as not
+generalising.
+
+A. The comparison contribution 1 claims, actually run
+   Planted truth: step 1 is the decisive retrieval, step 3 executes what
+   step 1 decided, steps 0 and 2 have no path to the outcome.
+   CAR's rule (reproduced verbatim in effects.point_of_commitment) returns
+   the LATEST step whose total-effect interval still excludes zero.
+
+   over 60 factual draws, 300 rollouts per node
+   CAR locus on TE_marg           : {3: 60}
+   largest |TE_crn| step          : {1: 52, 3: 8}
+   disagreement rate              : 52/60 = 0.867
+   CAR names the EXECUTING step 3 : 60/60 = 1.000
+   ours names the RETRIEVAL step 1: 52/60 = 0.867
+
+   READ THIS CAREFULLY. CAR is not wrong. Its rule asks where the outcome
+   became committed, and on this chain that is the executing step. Ours
+   asks which step's own action carried the effect, and that is the
+   retrieval. The paper must report a DISAGREEMENT WITH A DIRECTION, not
+   a failure of the incumbent, and contribution 1 must say which question
+   each estimand answers.
+  [PASS] the two rules disagree on a majority of draws
+  [PASS] CAR's locus is the executing step on a majority of draws
+  [PASS] ours is the retrieval on a majority of draws
+
+B. Coupling agreement at MATCHED total variation, across V and entropy
+   Construction is the committed one in scripts/validate_coupling.py:
+   p = softmax(N(0, s)), q = softmax(base + N(0, shift)), shift bisected
+   to hit the target TV. All three agreements are CLOSED FORM, so V = 1e5
+   costs nothing and no Monte Carlo error enters the comparison.
+
+  [PASS] the general form reproduces quantile_agreement under identity ordering
+         V  entropy s      TV  maximal  quantile  p-sorted
+        32        0.5  0.1800   0.8200    0.5738    0.1526
+        32        1.5  0.1800   0.8200    0.5947    0.3207
+        32        3.0  0.1800   0.8200    0.6307    0.7742
+      1000        0.5  0.1800   0.8200    0.0331    0.0068
+      1000        1.5  0.1800   0.8200    0.1466    0.0433
+      1000        3.0  0.1800   0.8200    0.5179    0.3939
+     32000        0.5  0.1800   0.8200    0.0171    0.0004
+     32000        1.5  0.1800   0.8200    0.0561    0.0106
+     32000        3.0  0.1800   0.8200    0.2262    0.1539
+    100000        0.5  0.1800   0.8200    0.0044    0.0000
+    100000        1.5  0.1800   0.8200    0.0199    0.0008
+    100000        3.0  0.1800   0.8200    0.1533    0.0302
+
+   maximal agreement spread   : 0.8200 to 0.8200   (it is 1 - TV by construction, so it does not move)
+   quantile agreement spread  : 0.0044 to 0.6307   ratio 142.2x
+   p-sorted agreement spread  : 0.0000 to 0.7742   ratio 17756.9x
+
+   UPHELD. At one fixed TV the two order-dependent agreements move by
+   more than an order of magnitude with vocabulary size and source
+   entropy. Quoting 0.412 and 0.086 without saying 'at V = 32, at this
+   entropy' invites a reader to carry them to a real vocabulary, where
+   they do not hold.
+  [PASS] maximal coupling is invariant at matched TV, as theory says
+  [PASS] quantile agreement moves by more than 2x across the grid
+  [PASS] maximal dominates both order-dependent couplings in every cell
+
+   cells where p-sorted is WORSE than fixed order : 11/12
+   cells where p-sorted is BETTER                 : 1/12
+     V=32, s=3.0: sorted 0.7742 > fixed 0.6307
+
+   NEW, AND THE PAPER SAYS THE OPPOSITE. Sorting the vocabulary by
+   probability is not uniformly worse than a fixed index order. When both
+   branches are peaked they largely agree on WHICH tokens are large, the
+   two sorted orders nearly coincide, and sorting aligns the big intervals
+   and RAISES agreement. When they are flat the orders diverge and sorting
+   destroys it. The defect in sorting is therefore not that it is worse;
+   it is that the order becomes a function of the branch's OWN
+   distribution, so its cost is set by the divergence rather than by the
+   implementer. The requirement that survives is: the order must be shared
+   and branch-independent, or else use maximal coupling, which needs no
+   order at all.
+  [PASS] probability sorting is worse in some cells and better in others, so the paper's blanket claim is false
+
+   Same V = 32, near-identical TV, two perturbation models:
+     committed validator construction : TV 0.1788  quantile 0.4121  p-sorted 0.0860
+     this script's construction       : TV 0.1800  quantile 0.5947  p-sorted 0.3207
+     p-sorted differs by a factor of 3.7 at the same vocabulary and the same divergence
+  [PASS] the two constructions agree on TV to within 0.01
+  [PASS] and still disagree on p-sorted agreement by more than 2x
+
+   Monte Carlo at V=32, s=3.0, 40000 draws through the sampler:
+     p-sorted   empirical 0.7726  closed form 0.7742  (0.6 sigma)
+     fixed order empirical 0.6323  closed form 0.6307  (0.6 sigma)
+  [PASS] the reversal survives a Monte Carlo run through the actual sampler
+  [PASS] both empirical rates match their closed forms within 4 sigma
+
+C. The claim that H1 forces the normalised direction to a pole
+   Covariates are (causal rank, recency, verbosity), so K = 3.
+   H1 says the causal coefficient is small. H2 says recency and verbosity
+   are jointly nonzero AFTER conditioning on it. Neither says one of them
+   dominates the other, and only that would drive |g| to 1.
+
+                           beta   |g|_max  regime
+                  [0.  0.7 0.7]     0.707  H1 and H2 both hold, the two compete
+                  [0.  0.9 0.3]     0.949  H1 and H2 hold, recency leads
+                     [0. 1. 0.]     1.000  one covariate alone: THIS is the pole
+                  [0.8 0.1 0.1]     0.985  H1 FAILS, causal dominates
+
+   REFUTED as stated. Under H1 with two live covariates the largest
+   |g_j| is 0.707, not 1. The pole is reached only when a single
+   covariate carries the whole vector, which is neither H1 nor H2.
+  [PASS] H1 with two competing covariates does not reach the pole
+  [PASS] the single-covariate case does reach the pole
+
+   The actual fit, read from results/dry_run.json:
+     beta        = [-0.0292  0.0667  0.7804]
+     g recomputed= [-0.0372  0.0851  0.9957]
+     g as stored = [-0.0372  0.0851  0.9957]
+  [PASS] normalized_beta reproduces the stored g to 1e-12
+
+   That fit IS at the pole, |g| = 0.9957, and the reason matters.
+   beta_causal is -0.0292, so H1 holds. But recency is 0.0667 against
+   verbosity 0.7804: ONE covariate carries the vector. It is that, not H1,
+   that puts the fit at the pole, which is exactly what the refutation says.
+
+   delta-method 95% CI on g_2: [0.9760, 1.0154]
+   bootstrap    95% CI on g_2: [0.9448, 0.9998]
+   g is a component of a UNIT vector, so it cannot exceed 1. The delta
+   method's upper limit does. That is not a small under-coverage, it is an
+   interval outside the parameter space, and it is why PREREG locks the
+   bootstrap. Read from the committed artifact, not asserted.
+  [PASS] the delta-method interval leaves the parameter space at the pole
+  [PASS] the bootstrap interval stays inside it
+  [PASS] the bootstrap interval is the wider of the two
+
+D. What do_resample does to a step with no randomness left
+   At fidelity q the executing step follows the retrieval with
+   probability q. At q = 1 it is a deterministic function of it.
+
+        q  step  change rate   TE_marg    TE_crn        DE
+     0.90     1       0.5050   +0.5012   +0.5050   +0.2525
+     0.90     3       0.1125   +0.0563   +0.0563   +0.0563
+     0.99     1       0.5050   +0.5050   +0.5050   +0.2525
+     0.99     3       0.0150   +0.0075   +0.0075   +0.0075
+     1.00     1       0.5050   +0.5050   +0.5050   +0.2525
+     1.00     3       0.0000   +0.0000   +0.0000   +0.0000
+
+   UPHELD, and it is the same failure as Proposition 2 seen from the other
+   side. A do_resample intervention redraws from the UNCHANGED policy. If
+   the policy is a point mass, the redraw is the factual action every time,
+   the change rate is 0, and every effect is exactly 0 no matter how
+   decisive the step is. Attribution by resampling is defined only where
+   the policy still has entropy left at that step, and the change rate is
+   the quantity that says whether it does. The paper reports change rate
+   already; it does not say that a zero there voids the effect estimate.
+  [PASS] at q = 1 the executing step has change rate exactly 0
+  [PASS] at q = 1 every effect at that step is exactly 0
+
+elapsed 8.7s   python 3.11.9   numpy 1.26.4
+
+RESULT: ALL CHECKS PASS

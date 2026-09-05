@@ -23,10 +23,19 @@
 \newcommand{\Ex}{\mathbb{E}}
 \newcommand{\TV}{\mathrm{TV}}
 
+% Double-blind build. IASEAI'26 required anonymised submissions under
+% double-blind review; the IASEAI'27 call had not published its submission
+% guide when this was written, so the anonymous variant is built from the same
+% source rather than forked, and there is nothing to re-synchronise later:
+%     pdflatex "\def\anon{}\input{main}"
+\newif\ifanon
+\ifdefined\anon \anontrue \fi
+
 \title{Causal Attribution for Agentic Decisions:\\
 Estimators, Coupling, and a Traceability Specification}
-\author{Ajay Pravin Mahale}
-\date{Draft of \today}
+\author{\ifanon Anonymous author(s)\\Submission under double-blind review%
+        \else Ajay Pravin Mahale\fi}
+\date{\ifanon\relax\else Draft of \today\fi}
 
 \begin{document}
 \maketitle
@@ -119,7 +128,10 @@ the serving stack rather than by seed control \citep{he2025}.
   decisive one the identical effect on every run of the planted chain, and a
   proof that the common-random-numbers estimand, which does separate them, still
   returns exactly zero for a decisive step on a measurable set of runs, so a zero
-  is evidence of nothing on its own (Section~\ref{sec:two-te}).
+  is evidence of nothing on its own. Run against the incumbent locus rule of
+  \citet{car2026} on the same chain, the two name different components on $52$
+  of $60$ draws, in a direction we characterise rather than score
+  (Section~\ref{sec:two-te}).
 \item The natural direct effect under a pinned downstream, its decomposition
   identity, and pin plausibility reported per arm rather than pooled, the pooled
   figure being $1/2$ for every fidelity parameter and therefore uninformative
@@ -139,10 +151,10 @@ the serving stack rather than by seed control \citep{he2025}.
   yet exist (Section~\ref{sec:annexiv} and Appendix~\ref{app:spec}).
 \end{enumerate}
 
-\paragraph{One argument at two levels.} A companion study asks the same
-question of circuit-level evidence and finds that the claim a provider would file
-is not stable across defensible analytic choices
-\citep{mahale2026multiplicity}. That result is about whether the evidence is
+\paragraph{One argument at two levels.} \ifanon Prior work asks\else A companion
+study by the same author asks\fi{} the same question of circuit-level evidence and
+finds that the claim a provider would file is not stable across defensible
+analytic choices \citep{mahale2026multiplicity}. That result is about whether the evidence is
 reproducible by a second analyst. This paper is about whether the evidence tracks
 causation at all, one level of abstraction up, where the object is a trajectory
 rather than a forward pass. The two failures are independent: evidence could be
@@ -373,6 +385,41 @@ it is. Requirement R5 in Appendix~\ref{app:spec} exists for this reason: the
 record has to carry the factual noise, so that the reader of an attribution can
 tell which of the two cases produced the zero.
 
+\subsection{Against the incumbent instrument}
+\label{sec:vs-car}
+
+Contribution~1 claims a separation from the locus rule of \citet{car2026}, and
+until now nothing in this paper measured it. The rule is reproduced verbatim in
+our code, as the latest step whose total-effect interval still excludes zero, and
+\texttt{scripts/validate\_triage\_closeout.py} runs it against our estimand on the
+chain \eqref{eq:scm} over $60$ factual draws. It returns the executing step~3 on
+$60$ of $60$. The largest $|\TEcrn|$ returns the retrieval step~1 on $52$ of
+$60$. The two disagree on $52$ of the $60$ draws.
+
+We do not read that as the incumbent being wrong, and the paper would be weaker
+if we did. The two rules answer different questions. A point-of-commitment rule
+asks where the outcome became inevitable, and on this chain that is the tool call
+that wrote the result. A common-random-numbers total effect asks which step's own
+action carried the difference, and that is the retrieval whose output the tool
+call executed. Both answers are defensible and they are not the same component. A
+provider filing an attribution therefore has to say which question it answered,
+because on a structure this simple the two disagree on seven runs in eight, and
+nothing in any record the Regulation currently asks for would tell a reader which
+was meant.
+
+\paragraph{Resampling cannot attribute to a step that has stopped deciding.} The
+intervention throughout is \texttt{do\_resample}: redraw the action at $k$ from
+the unchanged policy. Where that policy has collapsed to a point mass, the redraw
+returns the factual action every time and every effect at that step is exactly
+zero, however decisive the step is. Setting $q = 1$ in \eqref{eq:scm} makes the
+executing step a deterministic function of the retrieval, and on the committed
+estimator its change rate is then exactly $0$ with $\TEmarg$, $\TEcrn$ and $\DE$
+all exactly $0$, while the retrieval is untouched at $0.505$. This is
+Proposition~\ref{prop:crn-degeneracy} seen from the other side and it has the
+same remedy. The change rate is already computed for every step; a zero effect
+has to be read next to it. A zero effect at a zero change rate is not a
+measurement of no influence, it is the absence of a measurement.
+
 \begin{remark}
 This is a statement about estimators on a known structure. It is not a statement
 about any deployed system, and we do not write it as one.
@@ -479,23 +526,60 @@ it is available here because the factual run is being replayed anyway.
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.72\textwidth]{figures/fig2_coupling_gap}
-\caption{Agreement probability against divergence, vocabulary 32, 40{,}000 draws
-per point. Lines are closed forms and markers are measured; every measurement
-falls within 1.9 Monte Carlo standard errors of its closed form, and the full
-table is in Appendix~\ref{app:coupling-table}. The arrow marks the cost of the
-sampler's index order: at $\mathrm{TV}=0.18$ maximal coupling agrees $82\%$ of
-the time and a sampler that sorts its vocabulary by probability agrees $8.6\%$
-of the time, a factor of nine below what is achievable.}
+\caption{Agreement probability against divergence, \emph{vocabulary 32},
+40{,}000 draws per point. Lines are closed forms and markers are measured; every
+measurement falls within 1.9 Monte Carlo standard errors of its closed form, and
+the full table is in Appendix~\ref{app:coupling-table}. The arrow marks the cost
+of the sampler's index order: at $\mathrm{TV}=0.18$ maximal coupling agrees
+$82\%$ of the time and a sampler that sorts its vocabulary by probability agrees
+$8.6\%$ of the time. Read the $82\%$ as general and everything else on this
+figure as specific to $V=32$ and to this perturbation model: only maximal
+coupling's $1-\mathrm{TV}$ is invariant, and the text below gives the range the
+other two cover.}
 \label{fig:coupling}
 \end{figure}
 
-Figure~\ref{fig:coupling} makes three design requirements binding. Use maximal
-coupling, not quantile coupling: at $\TV = 0.179$ the gap is $0.821$ against
-$0.412$. Fix the vocabulary order in the sampler: sorting by probability is the
-default in common implementations and it collapses agreement to $0.086$ at that
-same divergence, a factor of nine below what is achievable. And keep the uniform
-draw a pure function of its key, since an advancing generator makes the draw
-depend on call order, and call order differs between branches.
+Figure~\ref{fig:coupling} makes two design requirements binding and corrects a
+third that an earlier version of this section stated too strongly.
+
+\paragraph{Use maximal coupling, not quantile coupling.} At $\TV = 0.179$ and
+$V = 32$ the gap is $0.821$ against $0.412$. This is the requirement that
+survives everything below, and it survives because maximal coupling's agreement
+is $1 - \TV$ by construction: it does not depend on the vocabulary, on the source
+entropy, or on how the divergence was produced. Held at $\TV = 0.18$ across
+vocabularies from $32$ to $10^5$ and three source entropies, it is $0.820$ in
+every one of twelve cells, while quantile agreement runs from $0.631$ down to
+$0.0044$, a factor of $142$, and probability-sorted agreement from $0.774$ down
+to $0.0000$. At a production vocabulary the case for the extra forward pass is
+therefore far stronger than this figure at $V = 32$ makes it look.
+
+\paragraph{Keep the uniform draw a pure function of its key.} An advancing
+generator makes the draw depend on call order, and call order differs between
+branches.
+
+\paragraph{The correction.} An earlier version said to fix the vocabulary order,
+on the ground that sorting by probability collapses agreement, quoting $0.086$
+against $0.412$. That inequality is not general and we withdraw the reasoning
+behind the requirement while keeping a weaker version of the requirement itself.
+When both branches are peaked they largely agree on which tokens are large, their
+two sorted orders nearly coincide, and sorting \emph{raises} agreement: at
+$V = 32$ with a peaked source it gives $0.774$ against $0.631$ for a fixed index
+order, a reversal that survives a Monte Carlo run through the sampler itself.
+What is wrong with sorting is not that it is worse. It is that the ordering
+becomes a function of the branch's own distribution, so the coupling's cost is
+set by the divergence rather than chosen by the implementer. The requirement that
+holds is that the order be shared and branch-independent, or that maximal
+coupling be used, which needs no order at all.
+
+\paragraph{Two cautions on the numbers.} They are quoted at $V = 32$ and they do
+not survive a change of vocabulary. They do not survive a change of perturbation
+model either, at fixed vocabulary and fixed divergence: forming $q$ by adding
+Gaussian logit noise of a stated scale gives quantile $0.412$ and sorted $0.086$
+at $\TV = 0.179$, while bisecting a scale on a fixed noise vector to reach
+$\TV = 0.180$ gives $0.595$ and $0.321$, a factor of $3.7$ on the second. The
+result of this section is the ordering and the invariance of $1 - \TV$. The
+magnitudes are illustrations of it and we do not offer them as estimates of
+anything a deployed sampler would show.
 
 \subsection{What replay actually requires}
 
@@ -522,7 +606,10 @@ effect.
 
 \begin{remark}
 This is a result about samplers, established on synthetic categorical
-distributions. It has not been run against a language model.
+distributions. It has not been run against a language model. The only quantity
+in it that is model-independent is maximal coupling's $1 - \TV$. Every other
+number here is as much a property of the vocabulary size, the source entropy and
+the perturbation model as it is of the coupling.
 \end{remark}
 
 \section{Inconsistent mediation, and a pre-registered statistic built on it}
@@ -942,13 +1029,32 @@ policy is not a Bernoulli draw.
 is established on synthetic categorical distributions. The closed forms are exact
 and the measurements agree with them, but a real sampler brings a vocabulary four
 orders of magnitude larger, a context that diverges progressively rather than at
-one step, and a serving stack whose batch invariance we could not test.
+one step, and a serving stack whose batch invariance we could not test. We now
+know part of what the first of those costs: at a matched divergence, quantile
+agreement at $V = 10^5$ is $0.0044$ against $0.631$ at $V = 32$. The
+order-dependent numbers in Section~\ref{sec:coupling} are therefore illustrations
+of an ordering, not estimates of what a deployed sampler would show, and we do
+not report them as if they were.
 
 \paragraph{No interaction arm.} Single-step interventions miss interactions
 between steps. The Shapley value over agent steps is the principled treatment and
 it is prior art \citep{car2026,castro2009}, so we cut it rather than reproduce it.
 Where two steps interact, our per-step effects will not sum to the joint effect
 and we do not report them as if they did.
+
+\paragraph{Two bodies of law bearing on Section~\ref{sec:annexiv} were not
+retrieved.} We read the Regulation. We did not read the harmonised standards
+beneath it. Articles 40 and 41 make compliance presumptive on harmonised
+standards, and the Commission's standardisation request to CEN and CENELEC
+includes a deliverable on record keeping through logging capabilities. If that
+deliverable specifies log content, then our claim that no minimum content is
+prescribed for Annex~III point~5(b) is true of the Regulation and possibly false
+of the standard a provider would actually conform to. We state the claim at the
+level we checked it. Separately, Article~86(3) defers to rights "otherwise
+provided for under Union law", which points at Regulation (EU) 2016/679, and the
+ten-year retention in Appendix~\ref{app:spec} raises a storage-limitation
+question under it. We have not analysed either interaction and do not claim to
+have.
 
 \paragraph{Two cleared references are absent from the bibliography.} Two papers we
 consider relevant were verified to exist but our citation ledger records no author

@@ -930,3 +930,82 @@ is not yet owed. That is the framing the paper now carries.
 quotations corrected. Both articles are unamended, so the OJ original is the
 right source and the consolidation adds nothing. This sits on the same
 pre-submission list as the two arXiv abstract pages.
+
+---
+
+# PART V. Primary retrieval, and a paragraph of Article 73 we had not read
+
+## 21. Articles 86 and 73(6) are now primary
+
+Part IV marked both `VERIFIED-SECONDARY` because the EUR-Lex consolidated HTML
+truncates inside Article 26 and the OJ PDF truncates inside the recitals. Both
+were retrieved on 2026-09-05 from the **original Official Journal text**,
+`CELEX:32024R1689`, by extracting the document's own `art_86` and `art_73`
+elements rather than requesting the whole document. See
+`docs/CITATION-LEDGER.md` for the field-by-field comparison. **No discrepancy
+was found against either secondary read.** Placement is confirmed by the element
+identifiers: Article 86 sits inside `cpt_IX.sct_4`, "SECTION 4 / Remedies";
+Article 73 inside `cpt_IX.sct_2`, "SECTION 2 / Sharing of information on serious
+incidents". Both are therefore in Chapter IX, outside every Article 113
+exception, and in application since 2 August 2026.
+
+## 22. Article 73(2) and (4): the reporting duty is triggered by a causal finding
+
+Reading Article 73 whole, rather than fetching only the paragraph the reviewer
+named, turned up something stronger than 73(6) on its own.
+
+`VERBATIM`, Article 73(2), first subparagraph:
+
+> The report referred to in paragraph 1 shall be made immediately after the provider has established a causal link between the AI system and the serious incident or the reasonable likelihood of such a link, and, in any event, not later than 15 days after the provider or, where applicable, the deployer, becomes aware of the serious incident.
+
+`VERBATIM`, Article 73(4):
+
+> Notwithstanding paragraph 2, in the event of the death of a person, the report shall be provided immediately after the provider or the deployer has established, or as soon as it suspects, a causal relationship between the high-risk AI system and the serious incident, but not later than 10 days after the date on which the provider or, where applicable, the deployer becomes aware of the serious incident.
+
+`INFERRED`, and this is the sharpest version of the paper's argument on the
+in-force side of the calendar. The serious-incident regime is **causal from its
+trigger to its remedy**:
+
+1. **73(2)** starts the clock when the provider "**has established a causal
+   link**" between the system and the incident.
+2. **73(4)** does the same for a death, on "a **causal relationship**", with
+   suspicion sufficient.
+3. **73(6)** then requires investigation of "**the causes of the incident**" and
+   forbids altering the system in a way that may affect a subsequent evaluation
+   of those causes.
+
+Three separate paragraphs of one Article turn on a causal finding about a system
+that, for an agentic pipeline, is a chain of retrievals, tool calls and model
+steps. **The Regulation nowhere says what record that causal finding is to be
+made on.** Article 12(3), the only enumerated minimum log content, binds Annex
+III point 1(a) alone; and the whole of Chapter III Section 2 applies only from
+2 December 2027 in any case. The obligation to find a cause is in force. The
+obligation to have kept anything to find it in is not.
+
+The 15-day and 10-day limits sharpen it further. A causal link must be
+established, or its reasonable likelihood judged, inside a fortnight, from
+whatever the provider happens to hold.
+
+`CAVEAT`, and it belongs in the paper too: "causal link between the AI system and
+the serious incident" is causation at the level of the whole system, not between
+components inside it. Article 73 does not ask which retrieval or tool call caused
+the outcome. The argument is not that it does; it is that a provider who cannot
+answer the internal question has no principled way to answer the external one for
+an agentic system, and that the Act asks for the external answer in fifteen days
+without specifying a record.
+
+## 23. What Part V does not close
+
+- **Article 40 and 41**, harmonised standards and common specifications, and
+  standardisation request C(2023) 3215, were named by the red team as where log
+  content actually gets specified. **NOT RETRIEVED.** If the standardisation
+  deliverable on "record keeping through logging capabilities" does specify
+  content, the claim that no minimum exists for Annex III point 5(b) is true of
+  the Regulation and potentially false of the harmonised standard beneath it.
+  This is the strongest remaining regulatory objection and it is open.
+- **GDPR**, Regulation (EU) 2016/679. Article 86(3) defers to rights "otherwise
+  provided for under Union law", which points at GDPR Article 22 and its Article
+  15(1)(h) information duty. Appendix A also specifies ten-year retention of
+  credit data without addressing storage limitation. **NOT RETRIEVED.** The paper
+  should not claim to have analysed the interaction; it currently does not, and
+  should say so.

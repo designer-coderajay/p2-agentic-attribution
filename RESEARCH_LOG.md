@@ -998,3 +998,175 @@ rather than clearance. Three things are worth writing down.
 - Gate D sign-off, open since 20 August.
 - Main text is 20 pages including bibliography and appendix; IASEAI wants 10 of
   main text. Trim not started.
+
+---
+
+## 2026-09-05, second pass. Triage closed, ledger closed, page budget deferred on purpose
+
+### The four open objections, each settled against the code
+
+`scripts/validate_triage_closeout.py`. All checks pass.
+
+**A. "The point-of-commitment rule from car2026 is never implemented, so
+contribution 1 is untested." PARTLY UPHELD.** The rule is implemented
+(`effects.point_of_commitment`) and is exercised (`validate_estimators.py`
+prints it), so "never implemented" is wrong. But it was printed and never
+compared, and contribution 1 claimed a separation from it. Measured over 60
+factual draws on the planted chain: **CAR's locus returns the executing step 3
+on 60 of 60; largest |TE_crn| returns the retrieval step 1 on 52 of 60; they
+disagree on 52 of 60.**
+
+The right reading is not that CAR is wrong. The two rules answer different
+questions, a point-of-commitment rule asking where the outcome became
+inevitable and a CRN total effect asking whose action carried the difference,
+and on this chain those are different components on seven runs in eight. The
+paper now says that, in a new subsection, and contribution 1 says it too. This
+is a better contribution than the one it replaces.
+
+**B. "Coupling agreement indexed by TV alone hides a factor of 45." UPHELD, and
+the true factor is larger.** Held at TV = 0.18 across V in {32, 1e3, 3.2e4, 1e5}
+and source entropy s in {0.5, 1.5, 3.0}, all closed form:
+
+- maximal coupling: 0.820 in all twelve cells, because it is 1 - TV by
+  construction,
+- quantile: 0.631 down to 0.0044, a factor of **142**,
+- probability-sorted: 0.774 down to 0.0000.
+
+**Two further findings the objection did not contain.**
+
+1. **The paper's requirement to fix the vocabulary order is stated backwards.**
+   Probability sorting is not uniformly worse than a fixed index order. In 1 of
+   12 cells it is better, 0.774 against 0.631 at V = 32 with a peaked source,
+   and the reversal survives 40000 Monte Carlo draws through the sampler
+   (0.7726 vs 0.6323, both within 0.6 sigma of their closed forms). The defect
+   in sorting is that the ordering becomes a function of the branch's own
+   distribution, not that it is worse. The requirement is restated and the
+   reasoning behind it withdrawn in the paper's own words.
+2. **The magnitudes do not survive a change of perturbation model either.** At
+   the same V = 32 and the same TV, the committed validator's construction gives
+   quantile 0.412 and sorted 0.086; bisecting a scale on a fixed noise vector
+   gives 0.595 and 0.321. A factor of 3.7 on the number Figure 2 quotes, from
+   the choice of how to perturb alone.
+
+   The reconstruction of the committed construction reproduces its Appendix B
+   row exactly (TV 0.1788, quantile 0.4121, sorted 0.0860 against the table's
+   0.1788 / 0.4121 / 0.0858), so this is a real difference and not a coding
+   error.
+
+Net effect on the paper: the case for maximal coupling gets *stronger*, because
+it is the only invariant quantity in the section and the alternatives collapse
+at a production vocabulary. The quoted numbers are demoted to illustrations.
+
+**C. "g = beta/||beta|| is guaranteed near +/-1 exactly when H1 is true."
+REFUTED.** H1 drives the causal coefficient toward zero. That says nothing about
+whether any other component reaches the pole, and with K = 3 covariates and two
+live ones the largest |g_j| is 0.707, not 1. The pole needs a single covariate
+to carry the whole vector, which is neither H1 nor H2. The actual dry-run fit
+sits at 0.968, which is high but is driven by verbosity dominating, not by H1.
+What survives of the objection was already known before the red team: the
+delta-method interval under-covers near the pole, which is why
+`bootstrap_normalized_beta` exists and is what the paper reports.
+
+**D. "At q = 1 every deterministic step gets zero effect." UPHELD, and it
+generalises Proposition 2.** `do_resample` redraws from the unchanged policy.
+Where the policy is a point mass the redraw returns the factual action every
+time, the change rate is exactly 0, and TE_marg, TE_crn and DE are all exactly
+0 however decisive the step is. Measured at q = 1: step 3 change rate 0.0000,
+all three effects 0.0000, while step 1 is untouched at 0.505. Attribution by
+resampling is defined only where the policy still has entropy at that step. The
+paper now says a zero effect must be read next to its change rate, and that a
+zero effect at a zero change rate is the absence of a measurement rather than a
+measurement of no influence.
+
+### Citation ledger: closed, with one correction
+
+Both outstanding arXiv entries read against their records. 2606.09692 needed no
+correction. 2605.09168 was missing its primary class and carried the note "The
+Tesseract Academy", **which appears nowhere on the arXiv record**. An unsourced
+field in a bibliography whose whole discipline is that fields come from the
+source. Replaced with the Comments field, which is on the record.
+
+Articles 86 and 73(6) upgraded from VERIFIED-SECONDARY to primary, read from the
+original OJ text at CELEX:32024R1689, with no discrepancy against either
+secondary read. The technique that finally worked, after three truncated
+attempts, is to request the document's own `art_86` / `art_73` elements instead
+of the whole document. That should be the first thing tried on EUR-Lex, not the
+fourth.
+
+Reading Article 73 whole rather than only the paragraph the reviewer named found
+**73(2) and 73(4)**: the reporting clock starts when the provider "has
+established a **causal link**", and for a death on a "**causal relationship**"
+with suspicion sufficient. Three paragraphs of one in-force Article turn on a
+causal finding, inside 15 days, about a system the Act never says what record to
+keep for. That is now Part V section 22 of the regulatory basis.
+
+### Page budget: measured, and deliberately not acted on
+
+**The 10-page limit is not verified and may not exist.** Checked on 5 September:
+the IASEAI'27 conference page publishes themes, dates and participation types
+and **states no page limit**; the '27 FAQ has no submission-format section at
+all; the archived IASEAI'26 Call for Papers states none either and defers to a
+separate "Paper Submission Guide" that is not linked from it. Trimming a
+manuscript to a number nobody has published is work that could be wrong in
+either direction, so it is not being done yet.
+
+Measured instead, from `main.aux` after the build:
+
+| section | starts p |
+|---|---|
+| 1 Introduction | 1 |
+| 2 Setting and estimands | 3 |
+| 3 Two total effects | 3 |
+| 4 Direct effect | 6 |
+| 5 Coupling | 7 |
+| 6 Inconsistent mediation | 9 |
+| 7 Pre-registered experiment | 11 |
+| 8 What the Act requires | 13 |
+| 9 Limitations | 15 |
+| 10 Related work | 17 |
+| Appendix A | 19 |
+| Appendix B | 21 |
+
+Main text is **about 17 pages**, up from 15, because this week's honesty cost
+two pages. Total 22.
+
+If a 10-page limit does turn out to apply, the trim is roughly: proofs of
+Propositions 1 to 3 to an appendix (0.75p), Section 7 reduced to a half-page
+pointer to the published pre-registration (1.5p), Section 6 halved (1p),
+Section 8's block quotations to an appendix (0.75p), Section 5's numeric ranges
+to a table in Appendix B (0.75p), Section 10 tightened (0.5p), Section 3's
+validator numbers to Appendix B (0.75p). That is about 6 pages, which is enough,
+and none of it removes a claim. **Do not start it before the submission guide
+publishes on 18 September.**
+
+### What did get built for the submission, because it is verified
+
+IASEAI'26 required **anonymised submissions under double-blind review**. That is
+a published fact about the prior year, and near-certain to hold. The manuscript
+now builds both variants **from one source**, so there is nothing to
+re-synchronise later:
+
+    latexmk -pdf main.tex                                    # the arXiv version
+    latexmk -pdf -jobname=anon \
+      -pdflatex='pdflatex %O "\def\anon{}\input{%S}"' main.tex   # double-blind
+
+The anonymous build blanks the author line and rewrites the one self-identifying
+sentence in the body ("A companion study by the same author asks" becomes "Prior
+work asks"). The author's name then survives in exactly one place, bibliography
+entry [16], which is the ordinary third-person citation of one's own published
+prior work and is accepted at most double-blind venues. **Confirm that against
+the '27 submission guide**; a minority of venues require it to be cited as
+anonymous instead. `GATE 5` fails the build if the name appears anywhere in the
+anonymous PDF before the References heading.
+
+### On the critical path, and not a writing task
+
+**Every author needs an OpenReview account before 18 September**, because the
+call states verification can take up to two weeks and the portal opens that day.
+That is a lead-time item with no slack and it is the only one.
+
+Corrected dates from the call, which differ from what the plan assumed: the
+portal **opens** 18 September and paper proposals **close 2 October 2026**.
+Reviews 2 November, decisions 6 November, conference 9 to 12 February 2027 at
+UNESCO House. The arXiv posting next week is therefore comfortably ahead of the
+submission window rather than racing it.

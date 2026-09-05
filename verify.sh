@@ -12,7 +12,7 @@ fail=0
 # belongs in this loop rather than in a separate command, and
 # tests/test_contracts.py enforces that: a check that is not part of ALL GREEN
 # is a check that stops being run.
-for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation validate_primary validate_suppression validate_crn_degeneracy; do
+for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation validate_primary validate_suppression validate_crn_degeneracy validate_triage_closeout; do
   printf '%-24s' "$s"
   if out=$(python3 "scripts/$s.py" 2>&1); then
     echo "PASS  $(echo "$out" | grep -o 'env_hash [0-9a-f]*' | head -1)"
