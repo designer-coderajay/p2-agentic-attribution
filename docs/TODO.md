@@ -109,7 +109,7 @@ repo's actual state. Corrected below against `preregistration/PREREG.md`,
 | 7.1 | Positioning paragraph one, against CAR | Differentiation in the abstract, not in related work | **DONE 2026-09-04.** Section 1 paragraph three, built on CAR's own concessions |
 | 7.2 | Limitations in the abstract | Single organisation's systems, no Shapley arm, CRN degradation | **DONE 2026-09-04.** The absent live arm is the third sentence from the end of the abstract; section 9 carries the rest |
 | 7.3 | Red-team session, fresh context | An independent attempt to make the result an artifact, and the response | D16 |
-| 7.4 | Every figure traceable | Config, seed, environment hash per figure | continuous |
+| 7.4 | Every figure traceable | Config, seed, environment hash per figure | **PARTIAL 2026-09-05.** Both figures regenerate from `paper/make_figures.py`, which cites the `DERIVATIONS.md` section each value comes from. No seed: the figures plot derived analytic and previously-measured values and draw no randomness |
 | 7.5 | Public repo, pinned environment | Clean-checkout reproduction of every number | D18 |
 
 ---

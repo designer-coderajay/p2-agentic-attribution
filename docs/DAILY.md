@@ -307,3 +307,14 @@ any step of the sprint plan from D9 onward, all of which needed pipeline access.
 5. **Tomorrow.** Figures. Then the red team in a fresh session.
 6. **Needing Ajay.** Open arxiv.org/abs/2606.09692 and arxiv.org/abs/2605.09168
    and confirm title and authors against refs.bib. Gate D sign-off.
+
+## D-restart+3 (cont.), Saturday 5 September 2026
+
+1. **Shipped.** Two figures, reproducible from `paper/make_figures.py`. Coupling
+   table moved to the appendix. Type 3 font defect found and fixed.
+2. **Slipped.** Nothing.
+3. **Gates.** Unchanged.
+4. **Deviation from pre-registration.** None. Figures report values already
+   derived; no new number enters the paper.
+5. **Tomorrow.** The red team, in a fresh session with no context, per rule 7.
+6. **Needing Ajay.** The two arXiv abstract pages. Gate D sign-off.

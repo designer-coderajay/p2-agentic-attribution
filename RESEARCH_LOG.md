@@ -869,3 +869,48 @@ explanatory `%` comments inside the entries. BibTeX has no in-entry comment
 syntax and skipped every entry that followed one, silently dropping 46 citations.
 Comments belong between entries, where BibTeX ignores them. A gate now fails on
 any `%` inside an entry.
+
+## 2026-09-05, second entry
+
+**Two figures, and the paper had none.**
+
+Figure 1 puts the two estimands side by side on the same four planted steps, with
+hatching for the steps that have no path to the outcome. The left panel shows the
+inert step matching the decisive one in length; the right shows both inert steps
+at exactly zero. That is the paper's first substantive claim and it was only a
+table before.
+
+Figure 2 plots agreement against divergence with closed forms as lines and
+measurements as markers, so their agreement is shown rather than asserted, and
+marks the factor of nine that a probability-sorted sampler costs at
+`TV = 0.18`. The coupling table moved to the appendix: it carried the same six
+rows, the figure shows the shape, and the table holds the exact values needed to
+check the 1.9-sigma claim. Main text stayed at 12 pages despite gaining two
+figures.
+
+**The figures caught three things that were not on the plan.**
+
+**Type 3 fonts.** matplotlib defaults to Type 3 in PDF output. Several venues
+reject Type 3 outright, it does not scale, and it is not text-searchable. The
+manuscript body is Type 1 Latin Modern, so the figures would have been the only
+non-conforming part of a submission. Now Type 42 in Computer Modern, which also
+makes the figure type match the body rather than sitting beside it in a different
+face. Verified with `pdffonts`: 0 Type 3 and 0 unembedded fonts across the whole
+document.
+
+**My own font check was wrong in the opposite direction.** A byte-count for
+`/FontFile` reported "fonts=0", implying nothing was embedded, when everything
+was. `/FontFile` is not the marker for Type 3. Counting byte patterns in a binary
+format is not inspecting it, and the reflex to grep a file rather than parse it
+has now produced four defects in this project.
+
+**Three annotation placements collided before the fourth worked**, and the fourth
+was to stop annotating inside the plot and let the caption carry the sentence.
+Each failed placement is recorded in `make_figures.py` so nobody re-tries them.
+
+**Greyscale legibility was computed, not eyeballed**, as relative luminance
+between the three series inks and against the paper. The first pass checked only
+series against each other and missed the background comparison, which is what
+told me the lightest ink needed darkening from `#B0B0B0` to `#949494`. Every
+series also carries a distinct linestyle and marker, so identity never rests on
+tone alone.

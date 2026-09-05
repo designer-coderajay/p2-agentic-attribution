@@ -10,3 +10,9 @@
 *.synctex.gz
 *.toc
 main.pdf
+
+# Figure PNGs are for eyeballing during development only. The PDFs are the
+# inputs LaTeX actually uses and they ARE committed, because a figure that
+# cannot be rebuilt from a committed source and a committed output is not
+# reproducible. make_figures.py regenerates both.
+figures/*.png
