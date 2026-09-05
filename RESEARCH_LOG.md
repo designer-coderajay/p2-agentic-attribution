@@ -1170,3 +1170,76 @@ portal **opens** 18 September and paper proposals **close 2 October 2026**.
 Reviews 2 November, decisions 6 November, conference 9 to 12 February 2027 at
 UNESCO House. The arXiv posting next week is therefore comfortably ahead of the
 submission window rather than racing it.
+
+---
+
+## 2026-09-05, third pass. One real defect in the manuscript, and one I invented
+
+### The real one
+
+`paper/main.tex`, Appendix B, the probability-sorted entry at logit shift 2.00
+read **0.0446**. `results/validation_coupling.json` says **0.165525**. The wrong
+value is a transcription of the 0.0447 on the row above it. Checked cell by cell
+against the artifact on the machine of record: **1 mismatch in 42 cells.**
+
+It had been there since the table was written. It survived a full citation
+sweep, a figure pass, two adversarial reviews and four readings, because a
+transcribed table is not something a reader re-checks digit by digit.
+
+It also carries content. The sorted column is **not monotone** in the
+divergence: 0.0447 at TV = 0.3969, rising to 0.1655 at TV = 0.4245. That is the
+same mechanism as the ordering reversal in section 5, sitting in our own
+committed data and not noticed until a machine compared the two.
+
+`scripts/audit_paper_numbers.py` now derives all 42 cells of that table, all 16
+of Table 1, and the section 6 worked instance from their artifacts, and fails
+when the manuscript disagrees. It reports its own coverage rather than implying
+it: 48 of the manuscript's 99 distinct decimal literals are pinned to an
+artifact and the other 51 are listed by name. Wired into `verify.sh`, into
+`make -C paper audit`, and into CI.
+
+### The one I invented, and how
+
+Earlier today this session reported, in some detail, that
+`scripts/validate_primary.py` had raised `AttributeError` on every run since
+commit `988ed58`, that `verify.sh` could not reach `ALL GREEN`, and that
+`results/validation_primary.json` was older than the code producing it.
+
+**All of that is false.** `validate_primary.py` unpacks `h4_statistic`'s
+three-tuple correctly and has done since `988ed58`, the same commit that changed
+the signature, which also added an assertion that the discard rate is zero on
+the planted design. Run on the machine of record: *All primary-contrast checks
+passed in 111s.*
+
+The cause. The analysis was run against a copy of the repository staged into the
+cloud session on **20 August**, sixteen days stale, predating `988ed58`. The
+"confirmation that the defect was pre-existing" was run against that same stale
+directory, so it confirmed nothing except that the stale file was stale. Three
+separate checks agreed with each other because all three read the same wrong
+source.
+
+This is the failure mode this repository has spent a month building gates
+against, committed by the process building the gates. The rule that a number
+enters the paper only from its source applies with equal force to a claim about
+the source itself. A cached copy is an artifact, and an artifact is not the
+source of record.
+
+What stopped it from reaching a commit: `release_session.sh` GATE 1 checks that
+every anchor it intends to edit is present exactly once, and the
+`validate_primary.py` anchor was absent, because the line it described does not
+exist. The anchor check was written to catch drift in the manuscript. It caught
+a fabricated premise instead. **Eleven of its twelve anchors verified against
+the real files; the twelfth was the invented one.**
+
+Two things follow, and both are cheap.
+
+1. Re-stage before analysing, never after. The staging call reports a
+   modification time; if it is older than the last commit touching that file,
+   the copy is stale by definition and nothing read from it is evidence.
+2. A finding about the repository gets the same treatment as a finding about the
+   world: verified means read from the source this session, and anything else is
+   recalled. The three epistemic states were applied to citations and to the
+   Regulation all week, and not to the code.
+
+Nothing false reached a commit. The two commits pushed today, `1c58102` and
+`52b1e4c`, were checked for it and contain none of it.

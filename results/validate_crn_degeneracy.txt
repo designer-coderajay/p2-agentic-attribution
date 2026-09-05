@@ -85,6 +85,6 @@ q = 0.9, w = 0.5, rollouts/node = 200, 5 blocks x 60 factual draws
   [PASS] pooled is 1/2 to within Monte Carlo error at q=0.99
   [PASS] the two arms separate at q=0.99
 
-elapsed 60.0s   python 3.11.9   numpy 1.26.4
+elapsed 58.8s   python 3.11.9   numpy 1.26.4
 
 RESULT: ALL CHECKS PASS

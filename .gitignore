@@ -17,3 +17,6 @@ _scratch_*
 # results/ is committed for now: the validation JSONs are small and every
 # reported number must be traceable to a committed artifact. Revisit when
 # Stage 1 rollouts start producing large outputs.
+
+# Local machine-transfer notes. Not part of the reproducibility surface.
+PUSH.md

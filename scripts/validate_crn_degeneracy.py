@@ -30,7 +30,10 @@ Three results, in order of how much they cost the paper.
 Nothing here is repaired. w is not retuned to make the degeneracy go away; that
 would be exactly the repair PREREG s4 forbids. It is measured and reported.
 """
-import sys, os, json, time, platform, hashlib
+import os
+import platform
+import sys
+import time
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 import numpy as np
 from p2.scm import SyntheticSCM, CRNStream, partial_mediation_scm, Q_FIDELITY, W_DIRECT

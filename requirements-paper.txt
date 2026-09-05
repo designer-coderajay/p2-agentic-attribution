@@ -1,0 +1,19 @@
+# Figure regeneration only. PINNED for the same reason as requirements.txt:
+# paper/figures/*.pdf are committed artifacts that appear in the manuscript, and
+# "reproducible from a pinned environment" is a claim the paper makes about every
+# number and every figure in it.
+#
+# This was a real gap until 2026-09-05. matplotlib produced two committed PDFs
+# and appeared in no requirements file, because requirements.txt reasoned about
+# what src/ imports and paper/make_figures.py is not in src/. The version below
+# is read from the committed PDFs themselves, which record their producer in
+# their metadata: `strings paper/figures/fig1_two_total_effects.pdf | grep -i matplotlib`.
+#
+# Regenerating on this pin reproduces both figures with identical rendered
+# content and identical font programs (Cmr10 and Cmmi10 as CID TrueType, which
+# is the Type 42 embedding the manuscript needs; matplotlib's default Type 3
+# was a defect fixed on 2026-09-05 and pdffonts is how you check it stayed
+# fixed). The PDF bytes still differ run to run because matplotlib stamps a
+# creation date, so compare rendered content, not checksums.
+-r requirements.txt
+matplotlib==3.10.9

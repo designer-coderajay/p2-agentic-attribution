@@ -1,0 +1,46 @@
+# Lint configuration. Curated, not maximal.
+#
+# The rule set below is the one that catches DEFECTS. It deliberately excludes
+# the stylistic families, for reasons specific to this repository.
+#
+# PLR2004 "magic value in comparison" fires 68 times on a numerics codebase whose
+# whole subject is specific constants: 0.5 is the direct weight and 0.9 the
+# fidelity parameter, and naming them at every comparison would make the SCM
+# definitions less readable, not more. The two that matter ARE named, in
+# src/p2/scm.py as W_DIRECT and Q_FIDELITY, and are pinned by tests.
+#
+# E702 "multiple statements on one line" fires 36 times on the validators, which
+# use compact `a = ...; b = ...` lines to keep a derivation next to its check.
+# That is deliberate and reviewed.
+#
+# I001 import sorting is not enforced on the older scripts, because reordering
+# imports in a file that produced a committed artifact is churn with a nonzero
+# chance of changing behaviour, immediately before a preprint. Revisit after.
+#
+# What IS enforced: F (undefined names, unused imports, dead assignments),
+# E9 (syntax and runtime errors), B (likely bugs, including zip without strict).
+line-length = 100
+
+[lint]
+select = ["E9", "F", "B"]
+ignore = []
+
+# Three exclusions, each earned rather than assumed. A blanket ignore is how a
+# linter stops being evidence, so every entry here names the case that produced
+# it.
+[lint.per-file-ignores]
+
+# B007. The rule fired on `for it in range(...)` in fit_plackett_luce, where
+# `it` is genuinely unused INSIDE the loop and is returned AFTER it as the
+# iteration count. Renaming it to `_it` on the rule's advice produced an
+# undefined name, caught by F821 in the same run. The rule cannot distinguish
+# "unused" from "used after the loop", and in an optimiser that pattern is
+# normal.
+"src/p2/ranking.py" = ["B007"]
+
+# B905. `zip(vals, vals[1:])` in test_ranking.py is the pairwise-adjacent idiom,
+# where the two arguments have lengths n and n-1 BY CONSTRUCTION. strict=True
+# would make a correct test raise. F841 is excused because tests construct
+# objects to assert on their construction, and binding the result is clearer
+# than not.
+"tests/*" = ["F841", "B905"]

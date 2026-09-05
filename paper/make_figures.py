@@ -68,7 +68,7 @@ fig, axes = plt.subplots(1, 2, figsize=(6.6, 2.6), sharey=True)
 for ax, vals, title in zip(
         axes, [te_marg, te_crn],
         [r"marginal  $\mathrm{TE}_{\mathrm{marg}}$",
-         r"common random numbers  $\mathrm{TE}_{\mathrm{crn}}$"]):
+         r"common random numbers  $\mathrm{TE}_{\mathrm{crn}}$"], strict=True):
     y = np.arange(len(steps))
     for i, v in enumerate(vals):
         ax.barh(y[i], v, height=0.55,
@@ -95,7 +95,7 @@ for ax, vals, title in zip(
 
 # The one thing this figure exists to show, marked only on the panel where it
 # is true: two pairs of bars are the same length, and one of each pair is inert.
-for xpos, rows, lab in [(-0.50, (0, 1), None), (-0.05, (2, 3), None)]:
+for xpos, rows, _lab in [(-0.50, (0, 1), None), (-0.05, (2, 3), None)]:
     off = xpos - 0.035
     axes[0].plot([off, off], [rows[0] - 0.28, rows[1] + 0.28],
                  color=INK, lw=0.9, zorder=6)

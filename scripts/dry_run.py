@@ -69,7 +69,6 @@ def main():
                                  n_rollouts=N_ROLL, pin_probes=8, seed=SEED + d)
         te = np.array([a.te_crn.estimate for a in attrs])
         de = np.array([a.de.estimate for a in attrs])
-        me = np.array([a.me.estimate for a in attrs])
         # WS1.7: NaN wherever |ME|/|TE| is not a share (suppression), never a
         # clamp. h4_statistic drops those and reports the rate.
         share, suppressed = mediated_share(te, de)
@@ -105,7 +104,7 @@ def main():
     h1 = {}
     for a in ATTRIBUTORS:
         taus = np.array([kendall_tau_b(rank_desc(o[a.name]), rank_desc(np.abs(c)))
-                         for o, c in zip(obs_l, causal_l)])
+                         for o, c in zip(obs_l, causal_l, strict=True)])
         taus = taus[np.isfinite(taus)]
         m, lo, hi = bootstrap_over_decisions(taus, seed=SEED)
         h1[a.name] = (m, lo, hi)
@@ -115,7 +114,7 @@ def main():
     print("\nH2  PL joint 2-df Wald on (recency, verbosity) | causal rank")
     print("    PRE-REGISTERED PRIMARY CONTRAST")
     dec = []
-    for o, c, sp in zip(obs_l, causal_l, spans_l):
+    for o, c, sp in zip(obs_l, causal_l, spans_l, strict=True):
         n = len(c)
         z = lambda v: (v - v.mean()) / (v.std() if v.std() > 0 else 1.0)
         X = np.column_stack([z(np.abs(c)), z(np.arange(n, dtype=float)),

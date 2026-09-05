@@ -32,6 +32,19 @@ else
   echo "FAIL"; echo "$out" | tail -8; fail=1
 fi
 
+printf '%-24s' "paper numbers"
+# Added 2026-09-05. A cell in the manuscript's Appendix B table read 0.0446 where
+# results/validation_coupling.json said 0.1655, and had done since the table was
+# written. It survived a citation sweep, a figure pass, two adversarial reviews
+# and four readings. This derives every cell of every artifact-backed table from
+# the artifact and fails when the manuscript disagrees. Transcription is not
+# something a reader checks; it is something a machine checks.
+if out=$(python3 scripts/audit_paper_numbers.py 2>&1); then
+  echo "PASS  $(echo "$out" | grep -oE '[0-9]+ checks, 0 failures' | head -1)"
+else
+  echo "FAIL"; echo "$out" | tail -12; fail=1
+fi
+
 printf '%-24s' "import surface"
 python3 - <<'PY' || fail=1
 import sys; sys.path.insert(0,'src')

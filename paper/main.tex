@@ -1294,17 +1294,37 @@ max.\ emp. & prob-sorted \\
 0.25 & 0.0856 & 0.7851 & 0.7839 & 0.9144 & 0.9142 & 0.5298 \\
 0.50 & 0.1788 & 0.4121 & 0.4087 & 0.8212 & 0.8221 & 0.0858 \\
 1.00 & 0.3969 & 0.2777 & 0.2740 & 0.6031 & 0.6075 & 0.0447 \\
-2.00 & 0.4245 & 0.3057 & 0.3054 & 0.5755 & 0.5801 & 0.0446 \\
+2.00 & 0.4245 & 0.3057 & 0.3054 & 0.5755 & 0.5801 & 0.1655 \\
 4.00 & 0.9369 & 0.0167 & 0.0177 & 0.0631 & 0.0654 & 0.0252 \\
 \bottomrule
 \end{tabular}
 \caption{Vocabulary 32, 40{,}000 draws per point, $q$ formed by perturbing the
 logits of $p$ with Gaussian noise of the stated scale. Every empirical value is
 within 1.9 Monte Carlo standard errors of its closed form. The last column is
-what a sampler that sorts the vocabulary by probability delivers, because
-sorting breaks the fixed index order \eqref{eq:quant} depends on.}
+what a sampler that sorts the vocabulary by probability delivers. It is
+\emph{not monotone} in the divergence: it falls to $0.0447$ at $\TV = 0.3969$
+and rises again to $0.1655$ at $\TV = 0.4245$, because sorted agreement depends
+on how far the two branches' orderings have moved relative to each other rather
+than on how far the distributions have moved. That is the mechanism behind the
+reversal reported in Section~\ref{sec:coupling}, visible here in the committed
+data.}
 \label{tab:coupling}
 \end{table}
+
+\paragraph{One cell of this table was wrong until 5 September 2026.} The
+probability-sorted entry at logit shift $2.00$ read $0.0446$, a transcription of
+the $0.0447$ on the row above it, where
+\texttt{results/validation\_coupling.json} says $0.1655$. It had been there
+since the table was written and it survived a full citation sweep, a figure pass,
+two adversarial reviews and four readings, because a transcribed table is not
+something a reader re-checks digit by digit. It was found by
+\texttt{scripts/audit\_paper\_numbers.py}, which derives all forty-two cells of
+this table from that artifact and fails the build when the manuscript disagrees
+with it. We record the correction rather than making it silently: a paper about
+evidentiary discipline that quietly repairs its own table has failed its own
+test. The error did not touch any claim, because the sentence the column supports
+is about ordering rather than magnitude, but no process in this repository would
+have caught it before the audit existed.
 
 
 \end{document}

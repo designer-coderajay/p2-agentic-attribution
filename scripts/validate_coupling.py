@@ -20,8 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 import numpy as np
 from p2.coupling import (keyed_uniform, inverse_transform, total_variation,
-                         overlap, quantile_agreement, maximal_coupling_sample,
-                         measure_coupling)
+                         overlap, maximal_coupling_sample, measure_coupling)
 
 SEED = 20260813
 N_DRAWS = 40000

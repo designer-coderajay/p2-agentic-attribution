@@ -38,7 +38,7 @@ def pl_negloglik_grad_hess(beta, decisions):
         theta = X @ beta
         s_d = np.zeros(K)
         remaining = list(order)
-        for t in range(len(order) - 1):
+        for _t in range(len(order) - 1):
             idx = np.array(remaining)
             th = theta[idx]
             lse = _logsumexp(th)
@@ -287,7 +287,7 @@ def h3_statistic(causal_list, obs_rank_list, delta=1.0, tau=0.5):
     granularities. A single (delta, tau) pair is a tuned number."""
     hits = 0
     n_dec = len(causal_list)
-    for causal, obs_rank in zip(causal_list, obs_rank_list):
+    for causal, obs_rank in zip(causal_list, obs_rank_list, strict=True):
         causal = np.abs(np.asarray(causal, float))
         obs_rank = np.asarray(obs_rank, float)
         n = len(causal)
@@ -369,7 +369,8 @@ def h4_statistic(mediated_share_list, obs_rank_list, causal_rank_list):
     taus = []
     n_dropped = 0
     n_total = 0
-    for ms, obs_r, cau_r in zip(mediated_share_list, obs_rank_list, causal_rank_list):
+    for ms, obs_r, cau_r in zip(mediated_share_list, obs_rank_list,
+                                causal_rank_list, strict=True):
         ms = np.asarray(ms, float)
         gap = np.asarray(obs_r, float) - np.asarray(cau_r, float)
         keep = np.isfinite(ms) & np.isfinite(gap)

@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this software or the paper it accompanies, please cite them as below."
+title: "Causal Attribution for Agentic Decisions: Estimators, Coupling, and a Traceability Specification"
+abstract: >-
+  Estimators for post-hoc causal attribution over LLM-agent trajectories, the
+  coupling that keeps a direct effect estimable once contexts diverge, and a
+  traceability specification read against Regulation (EU) 2024/1689. Includes a
+  proof that the marginal total effect cannot separate an inert step from a
+  decisive one, and a proof that the common-random-numbers total effect returns
+  exactly zero for a decisive step on a measurable set of runs.
+type: software
+authors:
+  - given-names: Ajay Pravin
+    family-names: Mahale
+    orcid: ""            # add once registered
+license: MIT
+repository-code: "https://github.com/designer-coderajay/p2-agentic-attribution"
+keywords:
+  - causal inference
+  - mediation analysis
+  - common random numbers
+  - LLM agents
+  - interpretability
+  - AI governance
+  - EU AI Act
+  - reproducible research
+
+# Fill in after the preprint is posted, then commit the change on its own:
+#   preferred-citation:
+#     type: article
+#     title: "Causal Attribution for Agentic Decisions: Estimators, Coupling, and a Traceability Specification"
+#     authors:
+#       - given-names: Ajay Pravin
+#         family-names: Mahale
+#     year: 2026
+#     journal: "arXiv preprint"
+#     identifiers:
+#       - type: other
+#         value: "arXiv:XXXX.XXXXX"
+#     url: "https://arxiv.org/abs/XXXX.XXXXX"

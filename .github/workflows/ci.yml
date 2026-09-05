@@ -77,6 +77,14 @@ jobs:
         working-directory: paper
         run: make check
 
+      - name: Build the double-blind variant and check it is anonymous
+        run: |
+          sudo apt-get install -y --no-install-recommends poppler-utils
+          make -C paper anon
+
+      - name: Every artifact-backed number in the manuscript matches its artifact
+        run: python3 scripts/audit_paper_numbers.py
+
       - name: Report page count and overfull boxes
         working-directory: paper
         run: |
@@ -87,4 +95,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: manuscript-pdf
-          path: paper/main.pdf
+          path: |
+            paper/main.pdf
+            paper/anon.pdf
