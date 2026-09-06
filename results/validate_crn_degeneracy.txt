@@ -84,7 +84,11 @@ q = 0.9, w = 0.5, rollouts/node = 200, 5 blocks x 60 factual draws
      0.99    0.482          0.990        0.010
   [PASS] pooled is 1/2 to within Monte Carlo error at q=0.99
   [PASS] the two arms separate at q=0.99
+   NOTE. The row(s) at q = 0.6 read as though the two arms were swapped, and
+   they are not. a_3 = a_1 exactly when u_3 < q, so at those q the fixed
+   factual draw satisfies u_3 >= q, the mediator inverts to a_3 = 1 - a_1,
+   and both arm probabilities exchange. That is P2 above, not a mislabel.
 
-elapsed 58.8s   python 3.11.9   numpy 1.26.4
+elapsed 59.0s   python 3.11.9   numpy 1.26.4
 
 RESULT: ALL CHECKS PASS

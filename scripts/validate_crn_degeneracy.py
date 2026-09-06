@@ -191,6 +191,7 @@ print("\n4. P4  The pooled pin-plausibility number is 1/2 for every q, by constr
 print("   Averaged over a'_1 ~ Bern(1/2): q if the intervention did not change the")
 print("   action, 1-q if it did, mean (q + (1-q))/2 = 1/2 regardless of q.")
 print(f"   {'q':>6} {'pooled':>8} {'unchanged arm':>14} {'changed arm':>12}")
+inverted = []
 for q in (0.6, 0.75, 0.9, 0.99):
     m = build(W_DIRECT, q=q)
     crn = CRNStream(950_000); fact = m.run(crn, replicate=0)
@@ -203,9 +204,24 @@ for q in (0.6, 0.75, 0.9, 0.99):
                 for mm in range(32)) / 32.0
         hits[int(alt != a1f)].append(h)
     pooled = np.mean(hits[0] + hits[1])
+    # a_3 = a_1 exactly when u_3 < q, so a3f != a1f IS the event u_3^fact >= q.
+    # Deriving the flag here rather than testing u_3 against a hardcoded 0.770
+    # keeps the note below true if the factual draw is ever changed.
+    if a3f != a1f:
+        inverted.append(q)
     print(f"   {q:>6.2f} {pooled:>8.3f} {np.mean(hits[0]):>14.3f} {np.mean(hits[1]):>12.3f}")
     check(f"pooled is 1/2 to within Monte Carlo error at q={q}", abs(pooled - 0.5) < 0.05)
     check(f"the two arms separate at q={q}", abs(np.mean(hits[0]) - np.mean(hits[1])) > 0.1)
+
+# One row of the sweep above reads as though its two arms were transposed. It is
+# P2's mechanism surfacing in a table that is not about P2, and an unexplained
+# row in a public repository invites a bug report that is not a bug.
+if inverted:
+    print("   NOTE. The row(s) at q = " + ", ".join(f"{q:g}" for q in inverted) +
+          " read as though the two arms were swapped, and")
+    print("   they are not. a_3 = a_1 exactly when u_3 < q, so at those q the fixed")
+    print("   factual draw satisfies u_3 >= q, the mediator inverts to a_3 = 1 - a_1,")
+    print("   and both arm probabilities exchange. That is P2 above, not a mislabel.")
 
 print(f"\nelapsed {time.time()-t0:.1f}s   python {platform.python_version()}   "
       f"numpy {np.__version__}")
