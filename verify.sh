@@ -6,21 +6,29 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 fail=0
+# validate_standardisation_request was added 2026-09-06. It is not a numerics
+# check: it pins Section 8's block quotation to the verbatim primary text
+# committed under docs/sources/, and asserts the paper names the operative
+# standardisation request rather than the one it repealed. It exists because a
+# draft of that paragraph quoted C(2023) 3215, which had been repealed in June
+# 2025 by C(2025) 3871, and no reading caught it. A legal instrument quoted from
+# a search result is an instrument nobody has checked the status of.
+#
 # validate_crn_degeneracy was added 2026-09-05 in response to an adversarial
 # review. It is slower than the others, about a minute, because the degeneracy
 # rate has to be measured over enough factual draws to be worth reporting. It
 # belongs in this loop rather than in a separate command, and
 # tests/test_contracts.py enforces that: a check that is not part of ALL GREEN
 # is a check that stops being run.
-for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation validate_primary validate_suppression validate_crn_degeneracy validate_triage_closeout; do
-  printf '%-24s' "$s"
+for s in validate_estimators validate_coupling validate_analysis validate_ranking validate_mediation validate_primary validate_suppression validate_crn_degeneracy validate_triage_closeout validate_standardisation_request; do
+  printf '%-34s' "$s"
   if out=$(python3 "scripts/$s.py" 2>&1); then
     echo "PASS  $(echo "$out" | grep -o 'env_hash [0-9a-f]*' | head -1)"
   else
     echo "FAIL"; echo "$out" | tail -5; fail=1
   fi
 done
-printf '%-24s' "citation coverage"
+printf '%-34s' "citation coverage"
 # Every reference cited in committed SOURCE must be tracked in the ledger.
 # Added 2026-08-23 after "(Fieller 1954)" sat in a ranking.py docstring for
 # three days with no ledger entry, justifying a pre-registered analysis choice
@@ -32,7 +40,7 @@ else
   echo "FAIL"; echo "$out" | tail -8; fail=1
 fi
 
-printf '%-24s' "paper numbers"
+printf '%-34s' "paper numbers"
 # Added 2026-09-05. A cell in the manuscript's Appendix B table read 0.0446 where
 # results/validation_coupling.json said 0.1655, and had done since the table was
 # written. It survived a citation sweep, a figure pass, two adversarial reviews
@@ -45,7 +53,7 @@ else
   echo "FAIL"; echo "$out" | tail -12; fail=1
 fi
 
-printf '%-24s' "import surface"
+printf '%-34s' "import surface"
 python3 - <<'PY' || fail=1
 import sys; sys.path.insert(0,'src')
 import numpy as np
@@ -66,7 +74,7 @@ g1,_,_ = normalized_beta(b, V); g2,_,_ = normalized_beta(7.5*b, 56.25*V)
 assert np.allclose(g1, g2, atol=1e-12), "normalized_beta lost scale invariance"
 print("PASS  3 attributors; chi2/Wald exact; CAUTION_K=2.0; g scale-invariant")
 PY
-printf '%-24s' "unit + contract tests"
+printf '%-34s' "unit + contract tests"
 # Added 2026-09-04 (WS1.9). The validators above assert numerics against closed
 # forms. These assert the OTHER thing: that what the pre-registration LOCKS is
 # actually reached by the analysis, that every validator is wired into this file,

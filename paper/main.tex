@@ -43,32 +43,29 @@ Estimators, Coupling, and a Traceability Specification}
 \begin{abstract}
 A provider of a high-risk AI system must keep records that make a decision
 traceable, and for agentic systems it has not been established what those
-records must contain for post-hoc causal attribution to be possible at all. We
-give the estimator framework and then the conditions under which it fails. We
-separate the marginal total effect that prior work measures from a
-common-random-numbers total effect that isolates a step's own contribution, add
-the natural direct effect under a pinned downstream, and check the estimators
-against hand derivations rather than against each other. Both estimands then
-fail, in different ways and in the same direction. Under the marginal estimand a
-causally inert step has, on our planted chain, the identical total effect to the
-decisive one on every run, which is an algebraic identity rather than a
-coincidence at one draw. Under common random numbers the decisive step returns
-exactly zero on the runs where the executing step flips, about one in ten, while
-its direct effect there is $0.25$ and it demonstrably acts. An exact zero
-therefore does not certify that a step did nothing, and we put that here rather
-than in the limitations. We derive the coupling that keeps the direct effect
-estimable once contexts diverge, together with a closed form for its
-degradation, and we show that the mediated share on which a natural ranking is
-built is not a share under suppression: where the direct and mediated paths
-oppose it exceeds one and ranks a suppressed component above a pure mediator. We
-pre-register the discrepancy experiment in full and publish the pre-registration
-rather than a result, because the live regulated pipeline it requires was not
-available in the study window. We contribute the traceability specification such
-a filing would need, and set it against a gap the Act's own calendar opens:
-Article 86's individual right to an explanation of the role of an AI system in a
-decision has applied since 2 August 2026, while the Article 12 logging and Annex
-IV documentation that could evidence one were deferred by Regulation (EU)
-2026/1744 to 2 December 2027.
+records must contain for post-hoc causal attribution to be possible. We give the
+estimator framework and then the conditions under which it fails. We separate the
+marginal total effect that prior work measures from a common-random-numbers total
+effect that isolates a step's own contribution, add the natural direct effect
+under a pinned downstream, and check the estimators against hand derivations.
+Both estimands then fail, in the same direction. Under the marginal estimand a
+causally inert step has the identical total effect to the decisive one on every
+run of our planted chain, an algebraic identity and not a coincidence at one
+draw. Under common random numbers the decisive step returns exactly zero on the
+runs where the executing step flips, about one in ten, while its direct effect
+there is $0.25$ and it demonstrably acts; an exact zero does not certify that a
+step did nothing, and we put that here rather than in the limitations. We derive
+the coupling that keeps the direct effect estimable once contexts diverge, with a
+closed form for its degradation, and show that the mediated share on which a
+natural ranking is built is not a share under suppression: where the direct and
+mediated paths oppose, it exceeds one and ranks a suppressed component above a
+pure mediator. We publish the discrepancy experiment's pre-registration rather
+than a result, because the live pipeline it requires was not available in the
+study window. We contribute the traceability specification such a filing would
+need, against a gap the Act's calendar opens: Article 86's right to an
+explanation has applied since 2 August 2026, while the Article 12 logging and
+Annex IV documentation that could evidence one were deferred to 2 December 2027
+by Regulation (EU) 2026/1744.
 \end{abstract}
 
 \section{Introduction}
@@ -81,11 +78,11 @@ which contain the technical documentation duty in Article 11, the record-keeping
 duty in Article 12 and the transparency duty in Article 13, from 2 August 2026 to
 2 December 2027 for Annex III high-risk systems. Recital (40) gives the
 legislature's reason, and it is worth quoting because it is a statement about
-evidence rather than about scheduling: the deferral responds to "the delayed
+evidence rather than about scheduling: the deferral responds to ``the delayed
 availability of standards, common specifications, and alternative guidance and
-the delayed establishment of national competent authorities", which together
-"lead to challenges that jeopardise the effective entry into application of those
-obligations".\footnote{Recital (40) is explanatory and non-binding. We cite it as
+the delayed establishment of national competent authorities'', which together
+``lead to challenges that jeopardise the effective entry into application of those
+obligations''.\footnote{Recital (40) is explanatory and non-binding. We cite it as
 a recital and never as operative law.} The apparatus for demonstrating conformity
 was not ready, on the Union's own record.
 
@@ -116,7 +113,7 @@ chain that indistinguishability is an identity rather than a near miss. Under
 common random numbers the inert steps return exactly zero, but the implication
 runs one way only, and Proposition~\ref{prop:crn-degeneracy} gives the
 conditions under which a decisive step returns exactly zero as well.
-Section~\ref{sec:coupling} turns "hard across divergent contexts" into a closed
+Section~\ref{sec:coupling} turns ``hard across divergent contexts'' into a closed
 form, an optimal construction, a measured cost, and three implementation
 requirements, one of which is that the replay floor is set by batch invariance in
 the serving stack rather than by seed control \citep{he2025}.
@@ -488,7 +485,7 @@ point estimate. Both arms are reported alongside every $\ME$.
 
 \citet[\S7]{car2026} states that a direct-effect arm needs common random numbers
 across branches, calls this hard once contexts diverge, and leaves it as a
-refinement. We give the closed form for what "hard" costs.
+refinement. We give the closed form for what ``hard'' costs.
 
 Token sampling is inverse-transform sampling from a categorical distribution. If
 the uniform draw is a pure function of $(\text{run id}, \text{step},
@@ -615,8 +612,8 @@ the perturbation model as it is of the coupling.
 \section{Inconsistent mediation, and a pre-registered statistic built on it}
 \label{sec:suppression}
 
-A natural way to operationalise "how much of this step's influence travelled
-through what it caused later steps to do" is the ratio $|\ME| / |\TEcrn|$. We
+A natural way to operationalise ``how much of this step's influence travelled
+through what it caused later steps to do'' is the ratio $|\ME| / |\TEcrn|$. We
 pre-registered a rank statistic on exactly that quantity. It is the wrong
 quantity, and the mediation literature has said so for thirty years.
 
@@ -784,9 +781,19 @@ small, so the convention would become a ratio-of-normals problem
 \citep{fieller1954} precisely when the finding is true. Dividing by the vector's
 own norm is invariant to the same $c$, bounded in $[-1,1]$, and undefined only
 if no attributor carries any signal, which is reported as itself. The interval
-reported is the decision-level bootstrap percentile interval, not the delta-method
-standard error, because the delta method under-covers near $|g_j| = 1$ where the
-linear term vanishes.
+reported is the decision-level bootstrap percentile interval and not a
+delta-method standard error, and the reason is a property of the map rather than
+a preference. Differentiating $g_j = \beta_j / \lVert \beta \rVert_2$ gives
+$\partial g_j / \partial \beta_k = (\delta_{jk} - g_j g_k) / \lVert \beta \rVert_2$,
+so, using $\lVert g \rVert_2 = 1$,
+\[
+  \bigl\lVert \nabla_{\beta}\, g_j \bigr\rVert_2
+  \;=\; \frac{\sqrt{1 - g_j^2}}{\lVert \beta \rVert_2} \,,
+\]
+which vanishes as $|g_j| \to 1$. The linear term degenerates exactly where the
+constraint $|g_j| \le 1$ binds, and a symmetric interval built on it is not
+confined to the parameter space it is an interval for. A percentile interval
+inherits the constraint from the statistic and needs no repair.
 
 \paragraph{Separation guard.} Quasi-complete separation is detected on the
 unpenalised fit by two structural signals, neither of which scales with sample
@@ -864,22 +871,22 @@ the provision that makes the question urgent, and that we had left out.
 
 \paragraph{The right that would need an attribution is in force; the record that
 could support one is not.} Article~86 sits in Chapter IX, outside every deferral
-in Article~113, and has applied since 2 August 2026. It gives "any affected
-person" subject to a decision taken by the deployer on the basis of the output
+in Article~113, and has applied since 2 August 2026. It gives ``any affected
+person'' subject to a decision taken by the deployer on the basis of the output
 of an Annex III high-risk system, point 2 excepted, the right to obtain from the
-deployer "clear and meaningful explanations of the role of the AI system in the
-decision-making procedure and the main elements of the decision taken".
+deployer ``clear and meaningful explanations of the role of the AI system in the
+decision-making procedure and the main elements of the decision taken''.
 Creditworthiness assessment is Annex III point 5(b) and is squarely inside that
 scope. Three features of the text decide what could ever discharge it. The
 duty-holder is the \emph{deployer}, not the provider who built the pipeline, so
 the actor with the best access to the internals owes nothing under this Article.
-The entitlement has two limbs joined by "and", and neither is the system's
+The entitlement has two limbs joined by ``and'', and neither is the system's
 processing: the \emph{role of the system in the procedure}, a procedural fact
 about where the output entered and how much it decided, and the \emph{main
 elements of the decision}, the substance of the human decision. There is no
 third limb reaching how the output was produced. And the trigger is
-per-instance and subjective, "in a way that they consider to have an adverse
-impact", which is unusually claimant-friendly. The right therefore terminates at
+per-instance and subjective, ``in a way that they consider to have an adverse
+impact'', which is unusually claimant-friendly. The right therefore terminates at
 exactly the layer at which causal attribution would have to begin.
 
 Set that against the calendar. Article 11, Article 12 and Annex IV sit in
@@ -897,9 +904,9 @@ is not currently observable by anyone, because the record is not yet owed.
 
 \paragraph{Description versus record, and general versus per-instance.} The most
 component-aware sentence in the entire high-risk documentation package is Annex
-IV point 2(c), which requires "the description of the system architecture
+IV point 2(c), which requires ``the description of the system architecture
 explaining how software components build on or feed into each other and integrate
-into the overall processing". That is a design-time duty, discharged before
+into the overall processing''. That is a design-time duty, discharged before
 placing on the market: it yields a diagram of the pipeline in general. Article 12
 yields events over the system's lifetime. Neither yields a record of how the
 components related on one particular occasion. The distinction between a
@@ -913,8 +920,8 @@ that may present a risk within the meaning of Article 79(1), post-market
 monitoring under Article 72, and deployer monitoring under Article 26(5). Having
 read all three, none imports a component-level requirement. Article 79(1) asks
 whether the system presents a risk. Article 72(2) asks for data on the system's
-performance over its lifetime and, where relevant, "an analysis of the
-interaction with other AI systems", which is interaction between systems rather
+performance over its lifetime and, where relevant, ``an analysis of the
+interaction with other AI systems'', which is interaction between systems rather
 than between components inside one. A provider who logs enough to serve both
 purposes can still be unable to say which retrieval, tool call or model step
 determined a contested decision.
@@ -926,11 +933,60 @@ Annex III point 5(b) and falls outside it. For that class, and every Annex III
 class except biometric identification, the Regulation prescribes no minimum log
 content whatsoever.
 
+\paragraph{The delegation to harmonised standards points back at Article 12.}
+Article~40(1) makes conformity with a harmonised standard whose reference has
+been published in the \emph{Official Journal} a presumption of conformity with
+the Section~2 requirements, so a reader may reasonably expect the operational
+content of Article~12 to live in the standard rather than in the Regulation.
+That is the strongest objection to the preceding paragraph and we put it to the
+source. The operative instrument is Commission Implementing Decision
+C(2025)~3871 of 23 June 2025, standardisation request M/613, which repealed and
+replaced C(2023)~3215 of 22 May 2023: the earlier request had been drafted
+against the \emph{proposal} for this Regulation rather than against the adopted
+text, and its Annex~II still cross-referred to it as such. Item 3 of the current
+Annex~I asks for a deliverable on ``record keeping through logging capabilities
+by AI systems''. Its entire specification, Annex~II point~2.3, is this:
+
+\begin{quote}
+``The harmonised standards and standardisation deliverables in this area shall
+set up specifications for record keeping. Those specifications shall
+comprehensively cover all elements referred to in Article 12 of Regulation (EU)
+2024/1689.''
+\end{quote}
+
+Thirty-two words, every one of them a reference. The request names no log content
+of its own. It instructs CEN and Cenelec to cover the elements of Article 12,
+which is the Article this section has just read as bounded above by three
+system-level purposes, with an enumerated minimum that binds Annex~III
+point~1(a) alone. The delegation is circular in content: the Regulation defers
+the specification to the standard, and the request for the standard defers it
+back to the Regulation. The same formula runs through the annex, at points 2.1,
+2.2, 2.7, 2.8 and 2.9, so the brevity of 2.3 is not itself the finding. The
+direction of the reference is.
+
+Two caveats bound this, and the second is the one a standards reader will raise.
+First, we found no reference to a harmonised standard under this Regulation
+published in the \emph{Official Journal}, so the Article~40 presumption appears
+to be available to nobody at present; we report that as what our search returned
+rather than as a verified universal negative, and note that the Commission's own
+register still records M/613 as under execution with an expiry date of 28
+February 2027. Second, the drafting is well advanced. The CEN-CENELEC JTC~21
+secretariat records that prEN~18229-1, ``AI Trustworthiness Framework, Part~1:
+Logging'', was in public enquiry until 20 August 2026. Drafts at that stage are
+not public documents, so what it requires is unknown to us and to any provider
+reading the public record today. If it specifies log content at the level this
+paper argues is missing, that narrows this paragraph and not the one before it,
+and it does so by supplying content that no binding instrument asked for. What we
+can say on the text that can currently be read is narrower than ``the Act is
+silent'' and stronger than the paragraph above on its own: at both binding
+layers, the question of what a log must contain is answered by a pointer to the
+other layer.
+
 \paragraph{The record expires twenty times sooner than the description.} Article
 18(1) keeps the technical documentation at the disposal of competent authorities
-for ten years. Article 19(1) and Article 26(6) keep the logs for "at least six
-months", and both are limited to logs "to the extent such logs are under their
-control". The static architectural description outlives the dynamic execution
+for ten years. Article 19(1) and Article 26(6) keep the logs for ``at least six
+months'', and both are limited to logs ``to the extent such logs are under their
+control''. The static architectural description outlives the dynamic execution
 record by a factor of twenty, and in a pipeline spanning several external
 services no single actor need hold the whole trace. For a financial institution
 the log duty is absorbed into existing financial-services record-keeping
@@ -939,13 +995,13 @@ the log duty is absorbed into existing financial-services record-keeping
 \paragraph{The investigative ladder reaches the logs and stops at their content.}
 Article~74 grants a market surveillance authority access to documentation and to
 the training, validation and testing data sets, and access to source code only
-on a reasoned request and only once procedures "based on the data and
+on a reasoned request and only once procedures ``based on the data and
 documentation provided by the provider have been exhausted or proved
-insufficient". Between those rungs sits Article~21(2), under which providers
-shall, on a reasoned request by a competent authority, "give the requesting
+insufficient''. Between those rungs sits Article~21(2), under which providers
+shall, on a reasoned request by a competent authority, ``give the requesting
 competent authority, as applicable, access to the automatically generated logs
 of the high-risk AI system referred to in Article 12(1), to the extent such logs
-are under their control". An earlier draft of this section said execution traces
+are under their control''. An earlier draft of this section said execution traces
 appear on neither rung. That was wrong, and correcting it sharpens the argument
 rather than weakening it: the access right exists, and what does not exist, for
 every Annex III class except remote biometric identification, is any prescribed
@@ -953,16 +1009,16 @@ minimum of what those logs must contain. It is a right of access to a record
 whose granularity the provider sets. Article~21 is itself in Chapter III
 Section 3 and so was deferred to 2 December 2027 along with the logging duty it
 reaches. Article 79(6)(b) then offers the finest granularity in the Act for
-attributing a failure, "a failure of a high-risk AI system to meet requirements
-set out in Chapter III, Section 2": one whole system against one whole Section.
+attributing a failure, ``a failure of a high-risk AI system to meet requirements
+set out in Chapter III, Section 2'': one whole system against one whole Section.
 
 \paragraph{There is an express duty to investigate causes, and it is in force
 now.} Article~73(6) requires a provider, once a serious incident has been
-reported, to "perform the necessary investigations in relation to the serious
-incident and the AI system concerned", including a risk assessment and
-corrective action, and forbids any investigation "which involves altering the AI
+reported, to ``perform the necessary investigations in relation to the serious
+incident and the AI system concerned'', including a risk assessment and
+corrective action, and forbids any investigation ``which involves altering the AI
 system concerned in a way which may affect any subsequent evaluation of the
-causes of the incident" before the authorities have been informed. That is a
+causes of the incident'' before the authorities have been informed. That is a
 causal-investigation duty with an evidence-preservation clause attached. It sits
 in Chapter IX and has applied since 2 August 2026. It is the closest the
 Regulation comes to naming the question this paper asks, and it names no record
@@ -1042,19 +1098,24 @@ it is prior art \citep{car2026,castro2009}, so we cut it rather than reproduce i
 Where two steps interact, our per-step effects will not sum to the joint effect
 and we do not report them as if they did.
 
-\paragraph{Two bodies of law bearing on Section~\ref{sec:annexiv} were not
-retrieved.} We read the Regulation. We did not read the harmonised standards
-beneath it. Articles 40 and 41 make compliance presumptive on harmonised
-standards, and the Commission's standardisation request to CEN and CENELEC
-includes a deliverable on record keeping through logging capabilities. If that
-deliverable specifies log content, then our claim that no minimum content is
-prescribed for Annex~III point~5(b) is true of the Regulation and possibly false
-of the standard a provider would actually conform to. We state the claim at the
-level we checked it. Separately, Article~86(3) defers to rights "otherwise
-provided for under Union law", which points at Regulation (EU) 2016/679, and the
-ten-year retention in Appendix~\ref{app:spec} raises a storage-limitation
-question under it. We have not analysed either interaction and do not claim to
-have.
+\paragraph{One body of law bearing on Section~\ref{sec:annexiv} was not
+retrieved.} Article~86(3) defers to rights ``otherwise provided for under Union
+law'', which points at Regulation (EU) 2016/679, and the ten-year retention in
+Appendix~\ref{app:spec} raises a storage-limitation question under it. We have
+not analysed either interaction and do not claim to have.
+
+An earlier version of this paragraph also listed the harmonised standards beneath
+the Regulation as unread, and named the risk plainly: that our claim about
+minimum log content might be true of the Regulation and false of the standard a
+provider actually conforms to. That question is now addressed in
+Section~\ref{sec:annexiv}, where the standardisation request turns out to
+specify no log content of its own either. We record the sequence because the
+objection was raised against this paper by an adversarial reader before it was
+resolved, and because resolving it took two attempts: the first retrieval quoted
+Implementing Decision C(2023)~3215, which had been repealed in June 2025, and the
+error was caught by the Commission's own register rather than by a reading of the
+draft. The standard itself remains unread, because drafts at enquiry are not
+public. What we claim is bounded by that.
 
 \paragraph{Two cleared references are absent from the bibliography.} Two papers we
 consider relevant were verified to exist but our citation ledger records no author
@@ -1149,8 +1210,8 @@ the record and not the system.
 \item[L2, counterfactually replayable.] A named step can be re-executed under a
   changed action while the rest of the trajectory is held at its factual
   randomness. Requirements R5 to R9. This is the level at which $\TEcrn$ and
-  $\DE$ become estimable, and therefore the level at which "which component
-  caused this" becomes a question with an answer.
+  $\DE$ become estimable, and therefore the level at which ``which component
+  caused this'' becomes a question with an answer.
 \item[L3, attributable and contestable.] The record supports attribution that
   survives an adversarial reading, including its own uncertainty. Requirements
   R10 to R12.
@@ -1233,8 +1294,8 @@ market surveillance under Article 74.
 \paragraph{R11, cross-actor completeness.} Either one actor is accountable for the
 whole trajectory, or every participating actor records a common join key and the
 filed documentation names who holds which segment. \emph{Why:} Articles 19(1) and
-26(6) both limit retention to logs "to the extent such logs are under their
-control", which writes accountability diffusion into the retention duty itself. A
+26(6) both limit retention to logs ``to the extent such logs are under their
+control'', which writes accountability diffusion into the retention duty itself. A
 trajectory nobody is obliged to hold whole is a trajectory that cannot be
 reassembled.
 

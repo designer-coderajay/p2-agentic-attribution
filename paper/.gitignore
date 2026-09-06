@@ -8,11 +8,21 @@
 *.log
 *.out
 *.synctex.gz
+*.tmp
 *.toc
 main.pdf
+# The double-blind variant, produced by `make anon`. Derived from the same
+# main.tex behind the \anon flag, so committing it would be committing a
+# second copy of the manuscript that nothing keeps in step.
+anon.pdf
 
 # Figure PNGs are for eyeballing during development only. The PDFs are the
 # inputs LaTeX actually uses and they ARE committed, because a figure that
 # cannot be rebuilt from a committed source and a committed output is not
 # reproducible. make_figures.py regenerates both.
 figures/*.png
+
+# Derived arXiv submission package. `make arxiv` rebuilds it from main.tex and
+# main.bbl; committing a second copy of the manuscript invites drift.
+p2-arxiv-submission.tar.gz
+arxiv/

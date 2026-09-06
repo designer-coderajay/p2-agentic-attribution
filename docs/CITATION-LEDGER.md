@@ -497,3 +497,24 @@ it should be the first thing tried on any EUR-Lex article, not the fourth.
 All four items carried since 4 September are closed. Nothing in the manuscript
 or the regulatory analysis now rests on a source that was not read from its
 primary record this week.
+
+## Retrievals of 2026-09-06, pre-arXiv
+
+| ID | Exact title as fetched | Authors | Venue | Date | State | Verified on | Source URL | Notes |
+|---|---|---|---|---|---|---|---|---|
+| C(2025) 3871 final | COMMISSION IMPLEMENTING DECISION on a standardisation request to the European Committee for Standardisation and the European Committee for Electrotechnical Standardisation as regards high-risk AI-systems in support of Regulation (EU) 2024/1689 of the European Parliament and of the Council and repealing Implementing Decision C(2023)3215 | European Commission | Register of Commission Documents; standardisation request M/613 | 23 June 2025 | VERIFIED | 2026-09-06 | ec.europa.eu/transparency/documents-register, files C(2025)3871_0 and C(2025)3871_1 | Body (7pp) and ANNEXES 1 to 2 (8pp) both read. Annex II point 2.3 quoted verbatim in the paper. |
+| C(2023) 3215 final | ANNEXES to the COMMISSION IMPLEMENTING DECISION on a standardisation request ... in support of Union policy on artificial intelligence | European Commission | standardisation request M/593 | 22 May 2023 | **SUPERSEDED** | 2026-09-06 | ec.europa.eu/growth/tools-databases/enorm/mandate/593_en | **Repealed** by Article 4 of C(2025) 3871. A draft of Section 8 quoted it as operative. Withdrawn from the manuscript. Retained here so the correction is on the record, not erased. |
+| Art. 40, Reg. (EU) 2024/1689 | Harmonised standards and standardisation deliverables | European Parliament and Council | OJ L, 2024/1689, 12.7.2024 | 13 June 2024 | VERIFIED primary | 2026-09-06 | eur-lex CELEX:32024R1689, element `art_40` | Art. 40(1) quoted in docs/REGULATORY-BASIS.md Part VI. |
+| Art. 41, Reg. (EU) 2024/1689 | Common specifications | European Parliament and Council | OJ L, 2024/1689, 12.7.2024 | 13 June 2024 | VERIFIED primary | 2026-09-06 | eur-lex CELEX:32024R1689, element `art_41` | Read whole. Not quoted in the paper; summarised in Part VI. |
+| prEN 18229-1 status | AI Trustworthiness Framework - Part 1: Logging, in public hearing (Enquiry) until 20 August 2026 | CEN-CENELEC JTC 21 secretariat | jtc21.eu notice of 9 July 2026 | 9 July 2026 | VERIFIED | 2026-09-06 | jtc21.eu/significant-milestone-for-european-ai-standardization/ | Status only. The draft's **content** is NOT RETRIEVED and cannot be: CEN drafts at enquiry are not public. |
+| arXiv 2608.13754 | Explanation Multiplicity: Circuit-Level Interpretability Evidence Does Not Survive Defensible Analytic Variation | Ajay Pravin Mahale | arXiv, cs.AI | v1, 13 August 2026 | VERIFIED (re-check) | 2026-09-06 | arxiv.org/abs/2608.13754 | Title, author, date, class all match refs.bib. The 73.2% figure the paper attributes to it appears on the abstract page. |
+| arXiv 2606.08275 | Causal Agent Replay: Counterfactual Attribution for LLM-Agent Failures | Jaineet Shah | arXiv, cs.LG | v1, 6 June 2026 | VERIFIED (re-check) | 2026-09-06 | arxiv.org/abs/2606.08275 | Matches refs.bib field for field. |
+| arXiv 2606.04990 | From Agent Traces to Trust: A Survey of Evidence Tracing and Execution Provenance in LLM Agents | Yiqi Wang et al., 11 authors | arXiv, cs.CR | submitted 3 June 2026, v4 28 June 2026 | VERIFIED (re-check) | 2026-09-06 | arxiv.org/abs/2606.04990 | Author list and both dates match refs.bib. |
+
+**Correction recorded, not erased.** A draft paragraph in Section 8 quoted a
+repealed standardisation request and drew a word-count comparison across its ten
+deliverables, including a "median of 115" that was in fact the sixth value of a
+ten-element sorted list. Both the instrument and the statistic are gone from the
+manuscript. `scripts/validate_standardisation_request.py` now pins the quotation
+to the committed primary text and fails if the paper names the repealed
+instrument without saying it was repealed.

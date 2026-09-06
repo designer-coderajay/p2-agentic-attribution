@@ -1243,3 +1243,93 @@ Two things follow, and both are cheap.
 
 Nothing false reached a commit. The two commits pushed today, `1c58102` and
 `52b1e4c`, were checked for it and contain none of it.
+
+## 2026-09-06. Pre-arXiv close: a repealed instrument, a bad median, and the typography
+
+Four changes to the manuscript, two of them corrections of things that were
+wrong, plus the release mechanics. Numbers in the results are untouched;
+`scripts/audit_paper_numbers.py` still reports 81 checks, 0 failures.
+
+### 1. CORRECTION. Section 8 quoted a repealed standardisation request
+
+The open objection from the 2026-09-05 red team was that Articles 40 and 41 make
+conformity presumptive on harmonised standards, so log content may live in the
+standard rather than in the Regulation. Retrieving Article 40(1) verbatim
+confirmed the mechanism. The first retrieval of the standardisation request
+returned **C(2023) 3215 of 22 May 2023** and a draft paragraph quoted its Annex
+II point 2.3 as the operative specification.
+
+**C(2023) 3215 was repealed on 23 June 2025** by Article 4 of C(2025) 3871
+(request M/613). The Commission's eNorm register caught it; the PDF of the
+repealed document does not say it is repealed, and its own giveaway, that it
+cross-refers to the AI Act "proposal" throughout, had been read and not acted on.
+
+The corrected finding is stronger. C(2025) 3871 Annex II point 2.3 reads in its
+entirety: "The harmonised standards and standardisation deliverables in this area
+shall set up specifications for record keeping. Those specifications shall
+comprehensively cover all elements referred to in Article 12 of Regulation (EU)
+2024/1689." Thirty-two words, all of them a back-reference. Article 40 makes the
+standard presumptive of Section 2; the request for the standard points back at
+Article 12; Article 12 names three system-level purposes and an enumerated
+minimum for Annex III point 1(a) alone. The delegation is circular in content.
+
+`scripts/validate_standardisation_request.py` is new and wired into `verify.sh`.
+It pins the manuscript's block quotation to the verbatim text committed at
+`docs/sources/C2025_3871_standardisation_request.md`, checks the stated word
+count, and fails if the paper names C(2023) 3215 without saying it was repealed.
+Part VI of `docs/REGULATORY-BASIS.md` and eight new rows in
+`docs/CITATION-LEDGER.md` carry the retrieval.
+
+**Transferable rule, and the second of its kind in a week:** a legal instrument
+retrieved from a search result has a status the instrument itself does not state.
+Read the register, not only the text. The 2026-09-05 entry says the same thing
+about a cached working tree.
+
+### 2. CORRECTION. A median that was not a median
+
+The withdrawn paragraph reported "a median of 115" across the ten deliverables of
+the 2023 annex. Recomputing gave 112: 115 is the sixth value of a ten-element
+sorted list, not its median. The word-count comparison has been removed entirely
+rather than recomputed, because under the 2025 request the same formulaic sentence
+appears at 2.1, 2.2, 2.7, 2.8 and 2.9, so length carries nothing. Recorded because
+the error survived a reading, and because the interim guard that caught it, a
+script that recomputed the counts from committed source, is the reason it was
+caught at all.
+
+### 3. A derivation where there had been an assertion
+
+Section 7's reporting convention said the delta method "under-covers near
+|g_j| = 1 where the linear term vanishes". It now gives the reason:
+d g_j / d beta_k = (delta_jk - g_j g_k) / ||beta||, so ||grad g_j|| =
+sqrt(1 - g_j^2) / ||beta||, using ||g|| = 1. The gradient vanishes exactly where
+the constraint |g_j| <= 1 binds, so a symmetric first-order interval is not
+confined to the parameter space it is an interval for. Two lines, and it removes
+a claim the reader had to take on trust.
+
+### 4. Typography, and a stale PDF
+
+Every quotation in the manuscript used straight ASCII double quotes, which T1
+typesets as a vertical glyph on both sides. Converted to LaTeX `` and '' by an
+alternating pass over non-comment lines; the 24 resulting pairs were each printed
+and read before the change was kept, the pass is balanced at EOF, and a
+quote-normalised diff of `pdftotext` output shows no other change.
+
+Separately: `paper/main.pdf` on the working machine was stale. It is gitignored,
+so nothing wrong was committed, but it predated the 2026-09-05 red-team edits and
+would have been the file uploaded to arXiv. Rebuilt. `make` and `make anon` both
+build clean: 23 pages, no undefined references or citations, no overfull or
+underfull boxes, and `scripts/check_anonymous.py` passes on the anonymous build.
+
+### Release state
+
+`make -C paper arxiv` writes `paper/p2-arxiv-submission.tar.gz` containing
+`main.tex`, `main.bbl` and the two figure PDFs and nothing else. It is built in a
+scratch directory and test-compiled with three `pdflatex` passes and no bibtex,
+the way arXiv compiles it, and the recipe asserts the shipped `main.tex` is
+byte-identical to `paper/main.tex`. A tarball rather than a directory because a
+directory in a working tree keeps whatever the previous build left in it, which
+is exactly what happened on the first attempt. Figures embed CID TrueType, no
+Type 3, and both are legible in greyscale. `docs/ARXIV-SUBMISSION.md` holds the
+metadata for the submission form, including the abstract trimmed to 1916
+characters against arXiv's 1920-character limit; the manuscript's own abstract
+was trimmed to match rather than allowed to diverge from it.

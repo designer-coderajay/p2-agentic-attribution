@@ -1,7 +1,16 @@
 # Causal Attribution for Agentic Decisions
 
+[![verify](https://github.com/designer-coderajay/p2-agentic-attribution/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/designer-coderajay/p2-agentic-attribution/actions/workflows/ci.yml)
+
 Estimators, coupling, and a traceability specification for post-hoc causal
 attribution over LLM-agent trajectories, read against Regulation (EU) 2024/1689.
+
+The badge is not decoration. Green means a clean Ubuntu checkout installed the
+pinned environment, ran the unit and contract tests and the full validator suite,
+confirmed `results/` was byte-identical after re-running it, built the manuscript
+and the double-blind variant from source, and re-derived every artifact-backed
+number in the paper from its artifact. That is the evidence for the
+reproducibility claim the paper makes, as against reproducibility on one laptop.
 
 **Paper:** `paper/main.tex`. Build with `make -C paper`.
 **Status:** preprint. The empirical study is pre-registered and **not run**; see
@@ -60,6 +69,12 @@ The environment is pinned rather than floored (`numpy==1.26.4`), because
 "reproducible from a pinned environment" is a claim the paper makes. Every file
 in `results/` records the python and numpy that produced it and a hash over them.
 
+The same command runs in CI on every push to `main`, from a checkout with nothing
+cached, in `.github/workflows/ci.yml`. A second job installs TeX Live and builds
+both PDF variants, because `latexmk` is not installed on the machine of record and
+an unresolved citation renders as a bracketed question mark that is easy to miss
+in a twenty-three page document.
+
 ### Building the manuscript
 
 ```bash
@@ -68,7 +83,15 @@ make -C paper anon     # anon.pdf, the double-blind variant, from the same sourc
 make -C paper audit    # every artifact-backed number against its artifact
 make -C paper check    # fails on any unresolved reference or citation
 make -C paper figures  # regenerate the two figures, and check they are not Type 3
+make -C paper arxiv    # the submission tarball, test-compiled the way arXiv compiles it
 ```
+
+`make -C paper arxiv` writes `paper/p2-arxiv-submission.tar.gz` containing
+`main.tex`, `main.bbl` and the two figure PDFs, and nothing else. arXiv does not
+run bibtex, so the `.bbl` ships with the source; the recipe builds in a scratch
+directory, compiles the package with three `pdflatex` passes and no bibtex, fails
+if anything is unresolved, and asserts the shipped `main.tex` is byte-identical
+to `paper/main.tex`. `docs/ARXIV-SUBMISSION.md` holds the form metadata.
 
 Figure regeneration needs `requirements-paper.txt`, which pins matplotlib
 separately because `paper/figures/*.pdf` are committed artifacts that appear in
@@ -93,6 +116,7 @@ author is identified anywhere before the References heading.
 | `preregistration/PREREG.md` | the locked analysis plan, committed before the pooled analysis |
 | `paper/` | manuscript, bibliography, figure generation |
 | `docs/` | derivations, the citation ledger, the regulatory basis, working notes |
+| `docs/sources/` | verbatim primary text of instruments the paper quotes, so a quotation can be checked without refetching |
 | `RESEARCH_LOG.md` | dated, append-only. What was run and what was learned |
 
 ---
@@ -153,6 +177,20 @@ anything:
 - Article 86 was retrieved verbatim into `docs/REGULATORY-BASIS.md` in August,
   described there as the sharpest point in the regulatory analysis, and appeared
   zero times in the manuscript until 5 September.
+- A draft of Section 8 quoted Commission Implementing Decision C(2023) 3215 as
+  the operative standardisation request. It had been **repealed** in June 2025 by
+  C(2025) 3871, and had been drafted against the AI Act *proposal* rather than
+  the adopted Regulation. The document itself does not say it is repealed; the
+  Commission's eNorm register does. A legal instrument retrieved from a search
+  result has a status that the instrument's own text does not state.
+  `scripts/validate_standardisation_request.py` now pins the manuscript's
+  quotation to the committed primary text and fails if the paper names the
+  repealed instrument without saying so.
+- The same draft reported a "median of 115" across the ten deliverables of that
+  annex. It was the sixth value of a ten-element sorted list. The correct median
+  was 112, and the comparison has been removed rather than corrected, because
+  under the 2025 request the same formulaic sentence appears at five other
+  points and length carries nothing.
 
 ---
 

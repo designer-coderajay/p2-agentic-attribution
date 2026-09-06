@@ -1009,3 +1009,84 @@ without specifying a record.
   credit data without addressing storage limitation. **NOT RETRIEVED.** The paper
   should not claim to have analysed the interaction; it currently does not, and
   should say so.
+
+# PART VI. Retrieved 2026-09-06. Articles 40 and 41, and the request that was repealed
+
+## 24. Article 40(1) is verbatim, and the objection's mechanism was right
+
+`VERBATIM`, Article 40(1) of Regulation (EU) 2024/1689, retrieved from
+`CELEX:32024R1689` by extracting the document's own `art_40` element:
+
+> High-risk AI systems or general-purpose AI models which are in conformity with harmonised standards or parts thereof the references of which have been published in the Official Journal of the European Union in accordance with Regulation (EU) No 1025/2012 shall be presumed to be in conformity with the requirements set out in Section 2 of this Chapter or, as applicable, with the obligations set out in of Chapter V, Sections 2 and 3, of this Regulation, to the extent that those standards cover those requirements or obligations.
+
+The red team was right about the mechanism. A harmonised standard, once its
+reference is in the OJ, carries a presumption of conformity with Section 2, which
+contains Article 12. Article 41(3) attaches the same presumption to a Commission
+common specification, available only under the Article 41(1) conditions, among
+them that no reference to a harmonised standard covering the requirement has been
+published and none is expected within a reasonable period.
+
+## 25. The request the red team named had been repealed, and we quoted it anyway
+
+`CORRECTION`, and it is the most serious of this session. The first retrieval of
+the standardisation request returned **C(2023) 3215 of 22 May 2023**, and a draft
+of Section 8 quoted its Annex II point 2.3 and argued from the length of that
+text relative to the other nine deliverables. **C(2023) 3215 was repealed on
+23 June 2025** by Article 4 of Implementing Decision **C(2025) 3871**,
+standardisation request M/613.
+
+The tell was in the document we had already read and did not act on: C(2023) 3215
+cross-refers throughout to "the Artificial Intelligence Act **proposal**". It was
+written against the proposal, and recital (6) of C(2025) 3871 says the Commission
+replaced rather than amended it so that the content "should reflect the final text
+of that Regulation", and records that CEN and Cenelec had reported significant
+delays.
+
+What caught it was the Commission's own eNorm register entry for M/613, which
+lists C(2023) 3215 under "Repeals". Nothing in the PDF of the repealed document
+says it is repealed. **A legal instrument retrieved from a search result has a
+status that the instrument itself does not state. Check the register, not only
+the text.** That is the transferable lesson and it is the second of this kind in
+this project, after the stale-cache incident of 2026-09-05.
+
+## 26. What the operative request actually says, and why it is a better finding
+
+`VERBATIM`, C(2025) 3871, Annex II point 2.3, in its entirety:
+
+> The harmonised standards and standardisation deliverables in this area shall set up specifications for record keeping. Those specifications shall comprehensively cover all elements referred to in Article 12 of Regulation (EU) 2024/1689.
+
+Thirty-two words and no content of its own. `INFERRED`, and this is stronger than
+the paragraph it replaced: the delegation is **circular in content**. Article 40
+makes the standard presumptive of conformity with Section 2. The request for the
+standard instructs CEN and Cenelec to cover "all elements referred to in Article
+12". Article 12 names three system-level purposes and enumerates minimum content
+for Annex III point 1(a) alone. Each binding layer answers the question of what a
+log must contain by pointing at the other one.
+
+The 2025 annex uses the same formula at 2.1, 2.2, 2.7, 2.8 and 2.9. So the
+brevity of 2.3 is not the finding, and the word-count comparison that the earlier
+draft made across the 2023 annex has been removed rather than recomputed. The
+direction of the reference is the finding.
+
+## 27. Status of the deliverables
+
+`VERIFIED` from the CEN-CENELEC JTC 21 secretariat's own site, notice of
+9 July 2026: prEN 18229-1, "AI Trustworthiness Framework, Part 1: Logging", was
+in public enquiry until 20 August 2026; EN 18286 on quality management systems
+was expected to publish in July 2026.
+
+`SEARCH RESULT, NOT A VERIFIED NEGATIVE`: no reference to a harmonised standard
+under this Regulation was found published in the Official Journal. eNorm records
+M/613 as under execution, expiry 28 February 2027. The paper states this as a
+search result and not as a certainty.
+
+`NOT RETRIEVED`: the content of prEN 18229-1. CEN drafts at enquiry are not
+public. The paper says so.
+
+## 28. What Part VI closes and what it leaves
+
+- Articles 40 and 41: **CLOSED**. Retrieved verbatim, objection met on the
+  operative instrument, and the manuscript's quotation is pinned by
+  `scripts/validate_standardisation_request.py`.
+- GDPR, Regulation (EU) 2016/679: **STILL NOT RETRIEVED**, and the Limitations
+  section says so.
